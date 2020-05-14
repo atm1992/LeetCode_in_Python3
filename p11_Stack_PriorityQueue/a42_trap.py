@@ -84,6 +84,7 @@ class Solution_3:
             maxright = max(height[right], maxright)
             # 能否盛水，盛多少水，取决于短板（矮的那个）
             if maxleft < maxright:
+                # res每次累加的都是当前柱子上能接多少雨水，所以当left = right时，累加的是left和right最后共同指向的那根柱子
                 res += maxleft - height[left]
                 left += 1
             else:
