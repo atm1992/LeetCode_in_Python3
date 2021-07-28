@@ -28,10 +28,10 @@ class Solution:
         carry = 0
         while a or b:
             sum_ = (a.val if a else 0) + (b.val if b else 0) + carry
-            carry = sum_ // 10 if sum_ > 9 else 0
+            carry = sum_ // 10
             cur.val = sum_ % 10
             a, b = a.next if a else None, b.next if b else None
-            cur.next = a if a else b
+            cur.next = a or b
             # 避免a、b同时为空时，将cur置为None，从而导致处理进位carry时的cur.next报错
             if cur.next:
                 cur = cur.next
