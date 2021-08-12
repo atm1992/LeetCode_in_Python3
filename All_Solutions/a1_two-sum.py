@@ -31,4 +31,9 @@ from typing import List
 
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        pass
+        temp = {}
+        for idx, num in enumerate(nums):
+            if num in temp:
+                return [temp[num], idx]
+            else:
+                temp[target - num] = idx
