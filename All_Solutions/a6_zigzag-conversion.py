@@ -37,4 +37,38 @@ s consists of English letters (lower-case and upper-case), ',' and '.'.
 
 class Solution:
     def convert(self, s: str, numRows: int) -> str:
-        pass
+        """使用二维数组"""
+        if numRows == 1:
+            return s
+        # 当len(s)小于numRows时，下面几行是空的
+        tmp = [[] for _ in range(min(numRows, len(s)))]
+        mod = 2 * (numRows - 1)
+        for idx, char in enumerate(s):
+            i = idx % mod
+            i = i if i < numRows else mod - i
+            tmp[i].append(char)
+        return ''.join([''.join(row) for row in tmp])
+
+    def convert_2(self, s: str, numRows: int) -> str:
+        """使用一维数组"""
+        if numRows == 1:
+            return s
+        # 当len(s)小于numRows时，下面几行是空的
+        tmp = ['' for _ in range(min(numRows, len(s)))]
+        idx = 0
+        go_down = False
+        for char in s:
+            tmp[idx] += char
+            if idx == 0:
+                go_down = True
+            if idx == numRows - 1:
+                go_down = False
+            idx += 1 if go_down else -1
+        return ''.join(tmp)
+
+
+if __name__ == '__main__':
+    s = "PAYPALISHIRING"
+    numRows = 3
+    print(Solution().convert_2(s, numRows) == 'PAHNAPLSIIGYIR')
+
