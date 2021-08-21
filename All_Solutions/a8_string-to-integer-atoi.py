@@ -89,4 +89,30 @@ s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+
 
 class Solution:
     def myAtoi(self, s: str) -> int:
-        pass
+        s = s.lstrip()
+        flag = '+'
+        if s and s[0] in ['+', '-']:
+            flag = s[0]
+            s = s[1:]
+        res = 0
+        # 因为要求取值范围在 [-2147483648, 2147483647]，所以在最后一步计算前先判断当前值与214748364的大小关系
+        MAX_BASE = 214748364
+        # 最后一位数的最大允许值
+        MAX_LAST_NUM = 8 if flag == '-' else 7
+        sign = int(flag + '1')
+        digits = [str(i) for i in range(10)]
+        for char in s:
+            if char in digits:
+                num = int(char)
+                if res > MAX_BASE or (res == MAX_BASE and num >= MAX_LAST_NUM):
+                    # 避免先MAX_BASE * 10 + MAX_LAST_NUM，再 * sign，因为负数时，计算过程中的2147483648已经超出了2147483647
+                    return sign * MAX_BASE * 10 + sign * MAX_LAST_NUM
+                res = res * 10 + num
+            else:
+                break
+        return sign * res
+
+
+if __name__ == '__main__':
+    s = "   128347233212qw3d3223"
+    print(Solution().myAtoi(s))
