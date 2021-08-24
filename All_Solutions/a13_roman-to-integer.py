@@ -51,8 +51,33 @@ It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 
 class Solution:
     def romanToInt(self, s: str) -> int:
-        pass
+        mappings = {
+            'M': 1000,
+            'CM': 900,
+            'D': 500,
+            'CD': 400,
+            'C': 100,
+            'XC': 90,
+            'L': 50,
+            'XL': 40,
+            'X': 10,
+            'IX': 9,
+            'V': 5,
+            'IV': 4,
+            'I': 1
+        }
+        n = len(s)
+        idx = 0
+        res = 0
+        while idx < n:
+            if idx + 1 < n and s[idx:idx + 2] in mappings:
+                res += mappings[s[idx:idx + 2]]
+                idx += 2
+            else:
+                res += mappings[s[idx:idx + 1]]
+                idx += 1
+        return res
 
 
 if __name__ == '__main__':
-    pass
+    print(Solution().romanToInt('LVIII'))
