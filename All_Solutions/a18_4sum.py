@@ -27,8 +27,45 @@ from typing import List
 
 class Solution:
     def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
-        pass
+        """排序 + 双指针"""
+        n = len(nums)
+        if n < 4:
+            return []
+        nums.sort()
+        res = []
+        for a in range(n - 3):
+            if a > 0 and nums[a] == nums[a - 1]:
+                continue
+            if nums[a] + nums[a + 1] + nums[a + 2] + nums[a + 3] > target:
+                break
+            if nums[a] + nums[n - 3] + nums[n - 2] + nums[n - 1] < target:
+                continue
+            for b in range(a + 1, n - 2):
+                if b > a + 1 and nums[b] == nums[b - 1]:
+                    continue
+                target_ab = target - nums[a] - nums[b]
+                if nums[b + 1] + nums[b + 2] > target_ab:
+                    break
+                if nums[n - 2] + nums[n - 1] < target_ab:
+                    continue
+                c, d = b + 1, n - 1
+                while c < d:
+                    if nums[c] + nums[d] == target_ab:
+                        res.append([nums[a], nums[b], nums[c], nums[d]])
+                    if nums[c] + nums[d] <= target_ab:
+                        c0 = c + 1
+                        while c0 < d and nums[c0] == nums[c]:
+                            c0 += 1
+                        c = c0
+                    else:
+                        d0 = d - 1
+                        while c < d0 and nums[d0] == nums[d]:
+                            d0 -= 1
+                        d = d0
+        return res
 
 
 if __name__ == '__main__':
-    pass
+    nums = [1, 0, -1, 0, -2, 2]
+    target = 0
+    print(Solution().fourSum(nums, target))
