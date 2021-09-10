@@ -46,7 +46,50 @@ class ListNode:
 
 class Solution:
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        n = len(lists)
-        if n == 0:
-            return None
+        """分治合并"""
+        return self.merge(lists, 0, len(lists) - 1)
 
+    def merge(self, lists: List[ListNode], l: int, r: int) -> ListNode:
+        if l > r:
+            return None
+        if l == r:
+            return lists[l]
+        mid = (l + r) // 2
+        return self.merge_two_lists(self.merge(lists, l, mid), self.merge(lists, mid + 1, r))
+
+    def merge_two_lists(self, a: ListNode, b: ListNode) -> ListNode:
+        if not a or not b:
+            return a if a else b
+        dummy_node = ListNode(-1)
+        cur = dummy_node
+        while a and b:
+            if a.val <= b.val:
+                cur.next = a
+                a = a.next
+            else:
+                cur.next = b
+                b = b.next
+            cur = cur.next
+        cur.next = a if a else b
+        return dummy_node.next
+
+
+class Solution2:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        """使用优先队列合并"""
+        import heapq as hq
+        heap = []
+        for idx, node in enumerate(lists):
+            if node:
+                # heapq 构建的是 最小堆。node.val相等的情况下，会再去比较谁的idx更小，因此得到了一个稳定的堆排序
+                hq.heappush(heap, (node.val, idx, node))
+        dummy_node = ListNode(-1)
+        cur = dummy_node
+        while heap:
+            item = hq.heappop(heap)
+            node = item[2]
+            cur.next = node
+            cur = cur.next
+            if node.next:
+                hq.heappush(heap, (node.next.val, item[1], node.next))
+        return dummy_node.next
