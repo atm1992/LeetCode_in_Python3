@@ -41,6 +41,38 @@ class ListNode:
 
 
 class Solution:
-    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
-        pass
+    def reverse(self, head: ListNode, tail: ListNode):
+        """翻转一个子链表，head为该子链表中的第一个节点，tail为该子链表中的最后一个节点。
+        返回子链表翻转后的第一个节点与最后一个节点"""
+        # 从head开始逐个翻转到tail，记录下节点翻转后所需后接的节点。初始时设置为None，其实也没有影响
+        next_node = tail.next
+        # 当前待翻转的节点
+        cur = head
+        # 最后一次进入while循环为：cur指向tail，next_node指向tail的前置节点。所以next_node指向tail时，表示子链表翻转已完成
+        while next_node != tail:
+            # 先记录好下一次需要翻转的节点
+            tmp = cur.next
+            cur.next = next_node
+            next_node = cur
+            cur = tmp
+        # 翻转完以后，原来的tail变成了当前的head，原来的head变成了当前的tail。因为head、tail的指向始终没有改变过
+        return tail, head
 
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        dummy_node = ListNode(-1, head)
+        pre = dummy_node
+        while head:
+            tail = pre
+            # 将tail移动到待翻转子链表中的最后一个节点
+            for _ in range(k):
+                tail = tail.next
+                if not tail:
+                    return dummy_node.next
+            next_head = tail.next
+            new_head, new_tail = self.reverse(head, tail)
+            # 将翻转后的子链表接回原链表
+            pre.next = new_head
+            new_tail.next = next_head
+            pre = new_tail
+            head = next_head
+        return dummy_node.next
