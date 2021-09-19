@@ -47,12 +47,16 @@ from typing import List
 
 class Solution:
     def removeElement(self, nums: List[int], val: int) -> int:
-        if not nums:
-            return 0
-        idx = 0
-        while idx < len(nums):
-            if nums[idx] == val:
-                nums.pop(idx)
+        """双指针"""
+        left = 0
+        right = len(nums) - 1
+        while left <= right:
+            if nums[right] == val:
+                right -= 1
+            elif nums[left] == val:
+                nums[left] = nums[right]
+                left += 1
+                right -= 1
             else:
-                idx += 1
-        return len(nums)
+                left += 1
+        return left
