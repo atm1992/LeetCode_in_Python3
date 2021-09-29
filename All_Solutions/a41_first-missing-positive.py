@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 缺失的第一个正数
+title: 缺失的第一个正数。找出其中没有出现的最小的正整数
 Given an unsorted integer array nums, return the smallest missing positive integer.
 You must implement an algorithm that runs in O(n) time and uses constant extra space.
 
@@ -19,12 +19,13 @@ Output: 1
 
 
 Constraints:
-1 <= nums.length <= 5 * 105
--231 <= nums[i] <= 231 - 1
+1 <= nums.length <= 5 * 10^5
+-2^31 <= nums[i] <= 2^31 - 1
 """
 from typing import List
 
 
 class Solution:
     def firstMissingPositive(self, nums: List[int]) -> int:
-        pass
+        res = 1
+

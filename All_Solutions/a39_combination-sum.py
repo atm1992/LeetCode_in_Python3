@@ -49,8 +49,9 @@ class Solution:
                 res.append(combination)
                 return
             # 对idx == n的判断必须放在target == 0的判断之后，考虑特殊情况：把最后一个元素(n-1)加入combination之后，idx将变为n，
-            # 如果最后一个元素(n-1)刚好是符合条件的，idx == n的判断会直接return，从而丢弃了该结果
-            if idx == n or target < 0:
+            # 如果最后一个元素(n-1)刚好是符合条件的，idx == n的判断会直接return，从而丢弃了该结果。
+            # 使用target < candidates[idx]，相比使用target < 0，可以大大减少运行时间。要多注意剪枝
+            if idx == n or target < candidates[idx]:
                 return
             # 对于任意一个元素，最多可以加入max_times次到combination中
             number = candidates[idx]
