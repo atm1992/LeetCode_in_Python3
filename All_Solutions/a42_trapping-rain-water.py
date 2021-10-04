@@ -1,93 +1,84 @@
 # -*- coding: UTF-8 -*-
 """
 title：接雨水。
-给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
-例如：输入数组 [0,1,0,2,1,0,1,3,2,1,2,1]，输出 6
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
 
-解题思路：
-方法一：暴力法（Python超时，其它语言可以）
-对于数组中的每个元素，只考虑该柱子上方是否可以盛水，能盛多少水
-柱子上能盛多少水，取决于该柱子左右两侧最近的最大值
-时间复杂度O(N^2)，空间复杂度为O(1)
 
-方法二：动态规划
-在方法一中存在大量的重复计算，对于每个柱子都需要遍历一次左右两侧的最高柱子。
-可以使用两个数组maxleft、maxright来分别存储左右两侧的最高柱子，maxleft[i]表示下标为i柱子左侧的最高柱子。
-这样就只需遍历一次便可得到结果，遍历重复计算
-时间复杂度O(N)，空间复杂度为O(N)
+Example 1:
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
 
-方法三：双指针法
-使用left,right两个指针逐步向中间移动，使用maxleft、maxright这两个变量来存储当前的左右两侧最大值
-若maxleft小于maxright，则left移动一步；否则right移动一步，直到left小于right
-时间复杂度O(N)，空间复杂度为O(1)
+Example 2:
+Input: height = [4,2,0,3,2,5]
+Output: 9
+
+
+Constraints:
+n == height.length
+1 <= n <= 2 * 10^4
+0 <= height[i] <= 10^5
 """
 from typing import List
 
 
-class Solution_1:
-    """暴力法。此方案Python运行超时"""
-
+class Solution:
     def trap(self, height: List[int]) -> int:
-        if not height or len(height) < 3:
+        """暴力法。对于数组中的每个元素，只考虑该柱子上方能盛多少水。柱子上能盛多少水，取决于该柱子左右两侧最近的最大值。
+        时间复杂度O(N^2)，空间复杂度为O(1)"""
+        if len(height) < 3:
             return 0
         res = 0
         for i in range(len(height)):
-            max_left, max_right = 0, 0
-            for l in range(i):
-                max_left = max(max_left, height[l])
-            for r in range(i + 1, len(height)):
-                max_right = max(max_right, height[r])
-            if min(max_left, max_right) > height[i]:
-                res += min(max_left, max_right) - height[i]
+            extra_height = min(max(height[:i]) if height[:i] else 0, max(height[i + 1:]) if height[i + 1:] else 0) - height[i]
+            if extra_height > 0:
+                res += extra_height
         return res
 
-
-class Solution_2:
-    """动态规划"""
-
-    def trap(self, height: List[int]) -> int:
-        if not height or len(height) < 3:
+    def trap_2(self, height: List[int]) -> int:
+        """动态规划。上个方法中存在大量的重复计算，对于每个柱子都需要遍历一次左右两侧的最高柱子。
+        可使用两个数组left_max、right_max来分别存储左右两侧的最高柱子，left_max[i]表示下标为i柱子左侧的最高柱子。这样就只需遍历一次便可得到结果，避免重复计算。
+        时间复杂度O(N)，空间复杂度为O(N)"""
+        if len(height) < 3:
             return 0
         n = len(height)
-        # 千万不能写成maxleft = maxright = [0] * n，否则修改maxright的时候也会修改maxleft
-        # 引用传递，maxleft、maxright指向的是同一个数组
-        maxleft, maxright = [0] * n, [0] * n
+        # 千万不能写成left_max = right_max = [0] * n，否则修改right_max的同时也会修改left_max
+        # 引用传递，left_max、right_max指向的是同一个数组
+        left_max, right_max = [0] * n, [0] * n
         res = 0
         # 初始化
-        maxleft[0] = 0
-        maxright[n - 1] = 0
-        for l in range(1, n):
-            maxleft[l] = max(height[l - 1], maxleft[l - 1])
-        for r in range(n - 2, -1, -1):
-            maxright[r] = max(height[r + 1], maxright[r + 1])
+        for i in range(1, n):
+            left_max[i] = max(height[i - 1], left_max[i - 1])
+        for i in range(n - 2, -1, -1):
+            right_max[i] = max(height[i + 1], right_max[i + 1])
         # 第一个柱子以及最后一个柱子上面肯定是没有水的
         for i in range(1, n - 1):
-            if min(maxleft[i], maxright[i]) > height[i]:
-                res += min(maxleft[i], maxright[i]) - height[i]
+            extra_height = min(left_max[i], right_max[i]) - height[i]
+            if extra_height > 0:
+                res += extra_height
         return res
 
-
-class Solution_3:
-    """双指针法"""
-
-    def trap(self, height: List[int]) -> int:
-        if not height or len(height) < 3:
+    def trap_3(self, height: List[int]) -> int:
+        """双指针法。时间复杂度O(N)，空间复杂度为O(1)"""
+        if len(height) < 3:
             return 0
-        n = len(height)
-        maxleft, maxright = height[0], height[n - 1]
-        left, right = 1, n - 2
+        left, right = 0, len(height) - 1
+        left_max = right_max = 0
         res = 0
-        while left <= right:
-            # 更新maxleft, maxright
-            # 确保此时的maxleft一定大于等于height[left]，从而确保maxleft-height[left]大于等于0
-            maxleft = max(height[left], maxleft)
-            maxright = max(height[right], maxright)
-            # 能否盛水，盛多少水，取决于短板（矮的那个）
-            if maxleft < maxright:
-                # res每次累加的都是当前柱子上能接多少雨水，所以当left = right时，累加的是left和right最后共同指向的那根柱子
-                res += maxleft - height[left]
+        while left < right:
+            # 更新left_max, right_max。确保此时的left_max一定大于等于height[left]，从而确保left_max - height[left]大于等于0
+            left_max = max(height[left], left_max)
+            right_max = max(height[right], right_max)
+            # 能盛多少水，取决于短板（矮的那个）
+            if height[left] < height[right]:
+                # res每次累加的都是当前柱子上能接多少雨水
+                res += left_max - height[left]
                 left += 1
             else:
-                res += maxright - height[right]
+                res += right_max - height[right]
                 right -= 1
         return res
+
+
+if __name__ == '__main__':
+    print(Solution().trap_2([4, 2, 0, 3, 2, 5]))

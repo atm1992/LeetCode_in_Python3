@@ -47,7 +47,6 @@ class Solution:
         动态规划。用f[i][j]表示 s 的前 i 个字符与 p 中的前 j 个字符是否能够匹配。状态转移方程分为p中的第j个字符是否为 * 两种情况进行讨论。
         若为*，则需要将j-1、j作为一个组合进行匹配
         """
-        m, n = len(s), len(p)
 
         def matches(i: int, j: int) -> bool:
             # s中的第i个字符(下标为i-1) 与 p中的第j个字符(下标为j-1) 是否匹配
@@ -55,6 +54,7 @@ class Solution:
                 return False
             return s[i - 1] == p[j - 1] or p[j - 1] == '.'
 
+        m, n = len(s), len(p)
         # m为行，n为列
         f = [[False] * (n + 1) for _ in range(m + 1)]
         # s、p均为空字符串时，匹配结果设为True
