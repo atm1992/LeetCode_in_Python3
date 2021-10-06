@@ -35,5 +35,32 @@ class Solution:
     def rotate(self, matrix: List[List[int]]) -> None:
         """
         Do not return anything, modify matrix in-place instead.
+        使用辅助矩阵。旋转规律：对于矩阵中第 i 行的第 j 个元素，在旋转后，它出现在倒数第 i 列的第 j 个位置。
+        即 matrix[i][j] ——> matrix[j][n-1-i]
         """
-        pass
+        n = len(matrix)
+        matrix_new = [[0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(n):
+                matrix_new[j][n - 1 - i] = matrix[i][j]
+        # 不能写成 matrix = matrix_new。修改变量matrix中保存的地址所指向的内容，而并不修改变量matrix中保存的地址
+        matrix[:] = matrix_new
+
+    def rotate_2(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        使用翻转代替旋转。顺时针旋转90度 等价于 先水平轴翻转，再主对角线翻转。可以用Example 2为例尝试下。
+        水平轴翻转：matrix[i][j] <——> matrix[n-1-i][j]
+        主对角线翻转：matrix[i][j] <——> matrix[j][i]
+        上面的两个等式联立，其实就是上面的：matrix[i][j] ——> matrix[j][n-1-i]
+        """
+        n = len(matrix)
+        # 水平轴翻转
+        for i in range(n // 2):
+            for j in range(n):
+                matrix[i][j], matrix[n - 1 - i][j] = matrix[n - 1 - i][j], matrix[i][j]
+
+        # 主对角线翻转
+        for i in range(1, n):
+            for j in range(i):
+                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
