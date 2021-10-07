@@ -28,4 +28,12 @@ from typing import List
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        pass
+        from collections import defaultdict
+        dd = defaultdict(list)
+        for st in strs:
+            dd[''.join(sorted(st))].append(st)
+        return list(dd.values())
+
+
+if __name__ == '__main__':
+    print(Solution().groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))
