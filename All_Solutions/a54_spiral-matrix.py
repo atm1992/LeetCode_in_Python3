@@ -29,19 +29,19 @@ class Solution:
         visited = [[False] * n for _ in range(m)]
         total = m * n
         res = []
-        # 分别代表4个方向：向右(只加j)、向下(只加i)、向左(只减j)、向上(只减i)
+        # 分别代表4个方向：向右(只加col)、向下(只加row)、向左(只减col)、向上(只减row)
         directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
         direction_idx = 0
-        i = j = 0
+        row = col = 0
         for _ in range(total):
             # res append满total个元素，就可以退出for循环了
-            res.append(matrix[i][j])
-            visited[i][j] = True
-            next_i, next_j = i + directions[direction_idx][0], j + directions[direction_idx][1]
-            if next_i not in range(m) or next_j not in range(n) or visited[next_i][next_j]:
+            res.append(matrix[row][col])
+            visited[row][col] = True
+            next_row, next_col = row + directions[direction_idx][0], col + directions[direction_idx][1]
+            if next_row < 0 or next_row >= m or next_col < 0 or next_col >= n or visited[next_row][next_col]:
                 direction_idx = (direction_idx + 1) % 4
-            i += directions[direction_idx][0]
-            j += directions[direction_idx][1]
+            row += directions[direction_idx][0]
+            col += directions[direction_idx][1]
         return res
 
     def spiralOrder_2(self, matrix: List[List[int]]) -> List[int]:
@@ -64,15 +64,15 @@ class Solution:
         while top <= bottom and left <= right:
             for i in range(left, right + 1):
                 res.append(matrix[top][i])
-            if not top + 1 <= bottom:
+            if top + 1 > bottom:
                 break
             for i in range(top + 1, bottom + 1):
                 res.append(matrix[i][right])
-            if not right - 1 >= left:
+            if right - 1 < left:
                 break
             for i in range(right - 1, left - 1, -1):
                 res.append(matrix[bottom][i])
-            if not bottom - 1 >= top + 1:
+            if bottom - 1 < top + 1:
                 break
             for i in range(bottom - 1, top, -1):
                 res.append(matrix[i][left])
