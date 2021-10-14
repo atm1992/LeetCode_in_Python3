@@ -25,8 +25,8 @@ from typing import List
 
 
 class Solution:
-    # 方法二：二维动态规划
     def minPathSum(self, grid: List[List[int]]) -> int:
+        """二维动态规划"""
         rows, cols = len(grid), len(grid[0])
         dp = [[0] * cols for _ in range(rows)]
         # 从最后一行开始填写dp数组
@@ -42,10 +42,8 @@ class Solution:
                     dp[i][j] = grid[i][j] + min(dp[i + 1][j], dp[i][j + 1])
         return dp[0][0]
 
-
-class Solution2:
-    # 方法三：二维动态规划（直接在原矩阵中修改，不需要使用额外存储空间）。从左上角走到右下角，最终返回右下角位置的值
-    def minPathSum(self, grid: List[List[int]]) -> int:
+    def minPathSum_2(self, grid: List[List[int]]) -> int:
+        """二维动态规划（直接在原矩阵中修改，不需要使用额外存储空间）。从左上角走到右下角，最终返回右下角位置的值"""
         rows, cols = len(grid), len(grid[0])
         for i in range(rows):
             for j in range(cols):
