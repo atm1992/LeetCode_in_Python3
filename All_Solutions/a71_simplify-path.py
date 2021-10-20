@@ -40,4 +40,14 @@ path is a valid absolute Unix path.
 
 class Solution:
     def simplifyPath(self, path: str) -> str:
-        pass
+        stack = []
+        for item in path.split('/'):
+            if stack and item == '..':
+                stack.pop()
+            elif item not in ['', '.', '..']:
+                stack.append(item)
+        return '/' + '/'.join(stack)
+
+
+if __name__ == '__main__':
+    print(Solution().simplifyPath("/a/./../../../b/../../c/"))
