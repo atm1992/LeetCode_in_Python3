@@ -31,4 +31,24 @@ from typing import List
 
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
-        pass
+        """回溯 + 剪枝"""
+
+        def dfs(start_idx: int = 1, cnt: int = 0, path: list = []):
+            if cnt == k:
+                res.append(path[:])
+                return
+            # 要求 start_idx + (k - cnt) <= n + 1
+            if start_idx + (k - cnt) > n + 1:
+                return
+            for i in range(start_idx, n + 1):
+                path.append(i)
+                dfs(i + 1, cnt + 1, path)
+                path.pop()
+
+        res = []
+        dfs()
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().combine(n=20, k=5))
