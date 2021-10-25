@@ -41,4 +41,40 @@ s1 and s2 consist of lower-case English letters.
 
 class Solution:
     def isScramble(self, s1: str, s2: str) -> bool:
-        pass
+        """动态规划。记忆化搜索，使用三维数组dp来存储计算过程中的状态"""
+        from collections import Counter
+        n = len(s1)
+        # 0 —— 尚未计算；1 —— True；-1 —— False
+        dp = [[[0] * (n + 1) for _ in range(n)] for _ in range(n)]
+
+        def dfs(s1_idx: int = 0, s2_idx: int = 0, length: int = n) -> bool:
+            """递归计算 s1中以下标s1_idx开始，长度为length的子字符串 与 s2中以下标s2_idx开始，长度为length的子字符串 是否匹配。
+            s1_idx、s2_idx 的取值范围均为0~n-1，length 的取值范围为1~n"""
+            nonlocal dp
+            if dp[s1_idx][s2_idx][length]:
+                return dp[s1_idx][s2_idx][length] == 1
+            if s1[s1_idx:s1_idx + length] == s2[s2_idx:s2_idx + length]:
+                dp[s1_idx][s2_idx][length] = 1
+                return True
+            # 两个子字符串中存在出现次数不同的字符
+            if Counter(s1[s1_idx:s1_idx + length]) != Counter(s2[s2_idx:s2_idx + length]):
+                dp[s1_idx][s2_idx][length] = -1
+                return False
+            # 枚举分割位置，不能有空子字符串
+            for i in range(1, length):
+                # 不交换两个子字符串的位置
+                if dfs(s1_idx, s2_idx, i) and dfs(s1_idx + i, s2_idx + i, length - i):
+                    dp[s1_idx][s2_idx][length] = 1
+                    return True
+                # 交换两个子字符串的位置
+                if dfs(s1_idx, s2_idx + length - i, i) and dfs(s1_idx + i, s2_idx, length - i):
+                    dp[s1_idx][s2_idx][length] = 1
+                    return True
+            dp[s1_idx][s2_idx][length] = -1
+            return False
+
+        return dfs()
+
+
+if __name__ == '__main__':
+    print(Solution().isScramble(s1="great", s2="rgeat"))
