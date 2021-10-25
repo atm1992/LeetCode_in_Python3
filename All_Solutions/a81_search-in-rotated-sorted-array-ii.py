@@ -29,4 +29,27 @@ from typing import List
 
 class Solution:
     def search(self, nums: List[int], target: int) -> bool:
-        pass
+        """二分查找"""
+        n = len(nums)
+        left, right = 0, n - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == target:
+                return True
+            # 例如：nums=[3,1,2,3,3,3,3] 或 [3,3,3,3,1,2,3]，target=2。此时无法判断target在左侧还是右侧，只能先排除left 和 right
+            if nums[left] == nums[mid] == nums[right]:
+                left += 1
+                right -= 1
+            # left ~ mid 为非递减序列，最小值在mid+1 ~ right之间
+            elif nums[left] <= nums[mid]:
+                if nums[left] <= target < nums[mid]:
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            # nums[left]>nums[mid]，此时mid ~ right为非递减序列，最小值在left ~ mid之间
+            else:
+                if nums[mid] < target <= nums[right]:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+        return False
