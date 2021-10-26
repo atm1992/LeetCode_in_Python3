@@ -38,4 +38,15 @@ from typing import List
 
 class Solution:
     def grayCode(self, n: int) -> List[int]:
-        pass
+        """镜像反射法。利用n-1阶格雷码G(n-1)计算出n阶格雷码G(n)，G(n)的元素个数为G(n-1)元素个数的两倍，G(n-1)的第n位二进制位均为0，
+        只需将G(n-1)的所有元素先倒序，然后将最高位n位置为1(相当于加上2^(n-1))，即可得到R(n-1)，G(n) = G(n-1) + R(n-1)"""
+        res = [0, 1]
+        for i in range(1, n):
+            highest = 1 << i
+            for j in range(len(res) - 1, -1, -1):
+                res.append(highest + res[j])
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().grayCode(10))
