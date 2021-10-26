@@ -45,4 +45,26 @@ s contains only digits and may contain leading zero(s).
 
 class Solution:
     def numDecodings(self, s: str) -> int:
-        pass
+        """动态规划。此题与青蛙跳台阶基本一致。
+        设dp_i为字符串s中前i个字符组成的子串的解码方法数。
+        解码分为两种情况：
+        1、将第i个字符作为组合。只要第i个字符s[i-1]不为'0'，此时 dp_i 为 dp_i_1；
+        2、将第i-1、i个字符作为组合。只要第i-1个字符s[i-2]不为'0'，并且int(s[i-2:i])<=26，此时 dp_i 为 dp_i_2。
+        将以上两种情况的结果相加，便得到最终的dp_i，即 dp_i = dp_i_1 + dp_i_2
+        """
+        n = len(s)
+        # 初始时，dp_i_1 表示字符串为空时的解码方法数。dp_i 从第1个字符开始求解
+        dp_i_2, dp_i_1, dp_i = 0, 1, 0
+        # 这里的i表示第i个字符。从第1个字符遍历到第n个字符
+        for i in range(1, n + 1):
+            dp_i = 0
+            if s[i - 1] != '0':
+                dp_i += dp_i_1
+            if i > 1 and s[i - 2] != '0' and int(s[i - 2:i]) <= 26:
+                dp_i += dp_i_2
+            dp_i_2, dp_i_1 = dp_i_1, dp_i
+        return dp_i
+
+
+if __name__ == '__main__':
+    print(Solution().numDecodings("1123"))
