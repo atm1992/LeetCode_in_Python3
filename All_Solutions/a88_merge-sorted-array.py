@@ -42,5 +42,22 @@ class Solution:
     def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
         """
         Do not return anything, modify nums1 in-place instead.
+        逆向双指针
         """
-        pass
+        # p1、p2分别指向nums1、nums2的最后一个元素。两个指针分别从后往前移动，p1始终指向nums1中待比较的最后一个元素，
+        # p2指向的元素覆盖到nums1中，此过程始终不会覆盖到p1指向的位置。以特殊情况为例：p1始终不往前移动(即 指向m-1)，
+        # p2指向的元素会逐个覆盖到m+n-1 ——> m，并不会影响到p1指向的元素。
+        p1, p2 = m - 1, n - 1
+        while p1 >= 0 and p2 >= 0:
+            if nums1[p1] > nums2[p2]:
+                nums1[p1 + p2 + 1] = nums1[p1]
+                p1 -= 1
+            else:
+                nums1[p1 + p2 + 1] = nums2[p2]
+                p2 -= 1
+        if p2 >= 0:
+            nums1[:p2 + 1] = nums2[:p2 + 1]
+
+
+if __name__ == '__main__':
+    Solution().merge(nums1=[1, 2, 3, 0, 0, 0], m=3, nums2=[2, 5, 6], n=3)
