@@ -34,4 +34,46 @@ class TreeNode:
 
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
-        pass
+        """递归"""
+
+        def dfs(node: TreeNode = root, min_val: float = float('-inf'), max_val: float = float('inf')) -> bool:
+            # 递归终止条件
+            if not node:
+                return True
+            val = node.val
+            if not min_val < val < max_val:
+                return False
+            return dfs(node.left, min_val, val) and dfs(node.right, val, max_val)
+
+        return dfs()
+
+    def __init__(self):
+        self.pre_val = float('-inf')
+
+    def isValidBST_2(self, root: TreeNode) -> bool:
+        """递归版中序遍历。由二叉搜索树的定义可知，中序遍历结果正好是一个单调递增的序列，因此，中序遍历过程中，只需判断当前值是否大于前一个值"""
+
+        if not root:
+            return True
+        if not self.isValidBST_2(root.left):
+            return False
+        if root.val <= self.pre_val:
+            return False
+        self.pre_val = root.val
+        return self.isValidBST_2(root.right)
+
+    def isValidBST_3(self, root: TreeNode) -> bool:
+        """非递归(迭代)版中序遍历。由二叉搜索树的定义可知，中序遍历结果正好是一个单调递增的序列，因此，中序遍历过程中，只需判断当前值是否大于前一个值"""
+        stack, cur_node = [], root
+        pre_val = float('-inf')
+        while stack or cur_node:
+            # 先一路找到最左子节点
+            while cur_node:
+                stack.append(cur_node)
+                cur_node = cur_node.left
+            cur_node = stack.pop()
+            if cur_node.val <= pre_val:
+                return False
+            pre_val = cur_node.val
+            cur_node = cur_node.right
+        return True
