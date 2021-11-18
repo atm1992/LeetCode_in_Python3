@@ -38,4 +38,23 @@ class TreeNode:
 
 class Solution:
     def maxDepth(self, root: TreeNode) -> int:
-        pass
+        """深度优先搜索"""
+        if not root:
+            return 0
+        return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
+
+    def maxDepth_2(self, root: TreeNode) -> int:
+        """广度优先搜索"""
+        queue = [[root]]
+        res = 0
+        while queue:
+            cur_queue = queue.pop(0)
+            next_queue = []
+            while cur_queue:
+                cur_node = cur_queue.pop(0)
+                if cur_node:
+                    next_queue.extend([cur_node.left, cur_node.right])
+            if next_queue:
+                res += 1
+                queue.append(next_queue)
+        return res
