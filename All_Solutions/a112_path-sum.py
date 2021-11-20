@@ -1,29 +1,36 @@
 # -*- coding: UTF-8 -*-
 """
 title：路径总和。
-给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和。
-说明: 叶子节点是指没有子节点的节点。
+Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+A leaf is a node with no children.
 
-示例: 
-给定如下二叉树，以及目标和 sum = 22，
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \      \
-        7    2      1
-返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5->4->11->2
 
-解题思路：
+Example 1:
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+Output: true
+
+Example 2:
+Input: root = [1,2,3], targetSum = 5
+Output: false
+
+Example 3:
+Input: root = [1,2], targetSum = 0
+Output: false
+
+
+Constraints:
+The number of nodes in the tree is in the range [0, 5000].
+-1000 <= Node.val <= 1000
+-1000 <= targetSum <= 1000
 """
 
 
+# Definition for a binary tree node.
 class TreeNode:
-    def __init__(self, x):
-        self.val = x
-        self.left = None
-        self.right = None
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 class Solution:

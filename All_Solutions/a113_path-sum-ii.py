@@ -1,61 +1,77 @@
 # -*- coding: UTF-8 -*-
 """
-title：路径总和 II。
-给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和的路径。
-说明: 叶子节点是指没有子节点的节点。
-
-示例:
-给定如下二叉树，以及目标和 sum = 22，
-              5
-             / \
-            4   8
-           /   / \
-          11  13  4
-         /  \    / \
-        7    2  5   1
-返回:
-[
-   [5,4,11,2],
-   [5,8,4,5]
-]
-
-解题思路：递归 + 回溯思想
+title：路径总和 II
+Given the root of a binary tree and an integer targetSum, return all root-to-leaf paths where the sum of the node values in the path equals targetSum. Each path should be returned as a list of the node values, not node references.
+A root-to-leaf path is a path starting from the root and ending at any leaf node. A leaf is a node with no children.
 
 
-tmp + [root.val] 与 tmp.append(root.val) 的区别：
-tmp + [root.val]会返回一个新的数组tmp'，tmp数组本身不会改变
-而tmp.append(root.val)是in-place操作，会修改tmp本身，append方法返回None
+Example 1:
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: [[5,4,11,2],[5,8,4,5]]
+Explanation: There are two paths whose sum equals targetSum:
+5 + 4 + 11 + 2 = 22
+5 + 8 + 4 + 5 = 22
+
+Example 2:
+Input: root = [1,2,3], targetSum = 5
+Output: []
+
+Example 3:
+Input: root = [1,2], targetSum = 0
+Output: []
+
+
+Constraints:
+The number of nodes in the tree is in the range [0, 5000].
+-1000 <= Node.val <= 1000
+-1000 <= targetSum <= 1000
 """
 from typing import List
 
 
+# Definition for a binary tree node.
 class TreeNode:
-    def __init__(self, x):
-        self.val = x
-        self.left = None
-        self.right = None
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
 
 class Solution:
     def pathSum(self, root: TreeNode, sum: int) -> List[List[int]]:
-        if not root:
-            return []
-        res = []
+        """回溯"""
 
-        def dfs(node, cur_sum, cur_res):
+        def dfs(node: TreeNode = root, target_sum: int = sum) -> None:
             if not node:
                 return
-            if cur_sum == node.val and not node.left and not node.right:
-                # 这里也可直接写 res.append(cur_res + [node.val])，
-                # 但不能写成 res.append(cur_res.append(node.val))，因为cur_res.append(node.val)返回的是None
-                cur_res.append(node.val)
-                res.append(cur_res)
+            if target_sum == node.val and not node.left and not node.right:
+                path.append(node.val)
+                res.append(path[:])
+                path.pop()
                 return
-            # cur_sum - node.val表示将计算结果传给形参cur_sum，cur_sum本身的值没有被修改
-            # cur_res + [node.val]会返回一个新的数组，然后将新数组传给形参cur_res，cur_res数组本身没有被修改
-            # 这样做是为了回溯
-            dfs(node.left, cur_sum - node.val, cur_res + [node.val])
-            dfs(node.right, cur_sum - node.val, cur_res + [node.val])
+            path.append(node.val)
+            dfs(node.left, target_sum - node.val)
+            dfs(node.right, target_sum - node.val)
+            path.pop()
 
-        dfs(root, sum, [])
+        res, path = [], []
+        dfs()
+        return res
+
+    def pathSum_2(self, root: TreeNode, sum: int) -> List[List[int]]:
+        """回溯"""
+
+        def dfs(node: TreeNode = root, target_sum: int = sum) -> None:
+            if not node:
+                return
+            path.append(node.val)
+            target_sum -= node.val
+            if target_sum == 0 and not node.left and not node.right:
+                res.append(path[:])
+            dfs(node.left, target_sum)
+            dfs(node.right, target_sum)
+            path.pop()
+
+        res, path = [], []
+        dfs()
         return res
