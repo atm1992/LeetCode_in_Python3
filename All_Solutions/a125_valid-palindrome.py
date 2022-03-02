@@ -1,33 +1,58 @@
 # -*- coding: UTF-8 -*-
 """
 title：验证回文串。
-给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
-说明：本题中，我们将空字符串定义为有效的回文串。
-示例 1:
-输入: "A man, a plan, a canal: Panama"
-输出: true
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+Given a string s, return true if it is a palindrome, or false otherwise. 
 
-示例 2:
-输入: "race a car"
-输出: false
+Example 1:
+Input: s = "A man, a plan, a canal: Panama"
+Output: true
+Explanation: "amanaplanacanalpanama" is a palindrome.
 
-解题思路：首先，得到只保留大小写字母、数字的字符串；然后将大写字母转换为小写字母；最后判断字符串的逆序与原字符串是否相等。
+Example 2:
+Input: s = "race a car"
+Output: false
+Explanation: "raceacar" is not a palindrome.
+
+Example 3:
+Input: s = " "
+Output: true
+Explanation: s is an empty string "" after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.
+
+Constraints:
+1 <= s.length <= 2 * 10^5
+s consists only of printable ASCII characters.
+
+解题思路：
+首先，得到只保留大小写字母、数字的字符串；
+然后，将大写字母转换为小写字母；
+最后，判断字符串的逆序与原字符串是否相等。
 只考虑大小写字母和数字，其余字符不考虑
 """
 
 
 class Solution:
-    # 使用正则表达式
     def isPalindrome(self, s: str) -> bool:
-        import re
-        tmp = "".join(re.findall(r"[a-zA-Z0-9]+", s))
-        tmp = tmp.lower()
+        tmp = ''.join(ch.lower() for ch in s if ch.isalnum())
+        # 也可对tmp使用首尾双指针来判断是否为回文
         return tmp[::-1] == tmp
 
     def isPalindrome_2(self, s: str) -> bool:
-        tmp = ""
-        s = s.lower()
-        for i in s:
-            if 'a' <= i <= 'z' or '0' <= i <= '9':
-                tmp += i
-        return tmp[::-1] == tmp
+        """在原字符串上直接判断，将空间复杂度从O(n)优化到O(1)"""
+        left, right = 0, len(s) - 1
+        while left < right:
+            while left < right and not s[left].isalnum():
+                left += 1
+            while left < right and not s[right].isalnum():
+                right -= 1
+            if left < right:
+                if s[left].lower() != s[right].lower():
+                    return False
+                left += 1
+                right -= 1
+        return True
+
+
+if __name__ == '__main__':
+    print(Solution().isPalindrome("A man, a plan, a canal: Panama"))
