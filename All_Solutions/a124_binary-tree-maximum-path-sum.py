@@ -6,22 +6,23 @@ title：二叉树中的最大路径和。
 
 示例 1:
 输入: [1,2,3]
-
        1
       / \
      2   3
-
 输出: 6
+
 示例 2:
 输入: [-10,9,20,null,null,15,7]
-
    -10
    / \
   9  20
     /  \
    15   7
-
 输出: 42
+
+Constraints:
+The number of nodes in the tree is in the range [1, 3 * 10^4].
+-1000 <= Node.val <= 1000
 
 解题思路：
 最大路径和只可能是以下3种情况之一：
@@ -44,24 +45,25 @@ class TreeNode:
 
 
 class Solution:
-    def maxPathSum(self, root: TreeNode) -> int:
+    def __init__(self):
         # 初始值不能为0，而应为最小的负数。
         # 考虑特殊情况：二叉树中只有一个根节点，其值为负数；或者所有节点的值都是负数，由于至少需要包含一个节点，所以此时应返回最大的负数
-        max_sum = float("-inf")
+        self.maxSum = float("-inf")
 
+    def maxPathSum(self, root: TreeNode) -> int:
         def dfs(node):
-            # 这里使用的是后序遍历
-            # nonlocal关键字用于在函数或其他作用域中使用外层(非全局)变量；global关键字用于在函数或其他局部作用域中使用全局变量
-            nonlocal max_sum
             if not node:
                 return 0
-            # 这里并不需要事先判断node.left是否存在，上一行代码确保了node存在，因此node.left不会报错
+            # 递归计算左右子节点的最大贡献值。只有最大贡献值大于 0 的子节点才对当前节点的最大贡献值有意义
+            # 从叶节点一直向上递归到根节点，在这个递归过程中，会不断更新答案self.maxSum
             left_max = max(0, dfs(node.left))
             right_max = max(0, dfs(node.right))
-            # 更新历史最大值max_sum
-            # left_max + node.val + right_max 是当前子树的最大值，一定大于等于 node.val + max(left_max, right_max)
-            max_sum = max(max_sum, left_max + node.val + right_max)
+            # 更新答案self.maxSum
+            # left_max + node.val + right_max 是当前子树的最大路径和；node.val + max(left_max, right_max) 是当前节点的最大贡献值。
+            # 注意区分这两者。当前子树的最大路径和 一定会大于等于 当前节点的最大贡献值
+            self.maxSum = max(self.maxSum, left_max + node.val + right_max)
+            # 返回当前节点的最大贡献值
             return node.val + max(left_max, right_max)
 
         dfs(root)
-        return max_sum
+        return int(self.maxSum)
