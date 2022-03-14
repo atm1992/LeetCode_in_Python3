@@ -21,6 +21,7 @@ n == board[i].length
 1 <= m, n <= 200
 board[i][j] is 'X' or 'O'
 """
+from collections import deque
 from typing import List
 
 
@@ -31,38 +32,42 @@ class Solution:
         """
         if not board:
             return
-        rows, cols = len(board), len(board[0])
+        m, n = len(board), len(board[0])
         # 若所有位置都在边界，则无需进行任何替换
-        if rows < 3 or cols < 3:
+        if m < 3 or n < 3:
             return
 
-        def bfs(i, j):
-            queue = [(i, j)]
-            while queue:
-                m, n = queue.pop(0)
-                if 0 <= m < rows and 0 <= n < cols and board[m][n] == 'O':
-                    board[m][n] = '#'
-                    for (x, y) in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                        queue.append((m + x, n + y))
+        que = deque()
 
-        for i in range(rows):
+        for i in range(m):
             # 第一列
             if board[i][0] == 'O':
-                bfs(i, 0)
+                que.append((i, 0))
+                board[i][0] = '#'
             # 最后一列
-            if board[i][cols - 1] == 'O':
-                bfs(i, cols - 1)
+            if board[i][n - 1] == 'O':
+                que.append((i, n - 1))
+                board[i][n - 1] = '#'
 
-        for j in range(cols):
+        for i in range(1, n - 1):
             # 第一行
-            if board[0][j] == 'O':
-                bfs(0, j)
+            if board[0][i] == 'O':
+                que.append((0, i))
+                board[0][i] = '#'
             # 最后一行
-            if board[rows - 1][j] == 'O':
-                bfs(rows - 1, j)
+            if board[m - 1][i] == 'O':
+                que.append((m - 1, i))
+                board[m - 1][i] = '#'
 
-        for i in range(rows):
-            for j in range(cols):
+        while que:
+            x, y = que.popleft()
+            for new_x, new_y in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]:
+                if 0 <= new_x < m and 0 <= new_y < n and board[new_x][new_y] == 'O':
+                    que.append((new_x, new_y))
+                    board[new_x][new_y] = '#'
+
+        for i in range(m):
+            for j in range(n):
                 if board[i][j] == 'O':
                     board[i][j] = 'X'
                 elif board[i][j] == '#':
