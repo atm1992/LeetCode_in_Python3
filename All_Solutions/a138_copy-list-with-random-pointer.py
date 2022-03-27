@@ -29,6 +29,7 @@ Constraints:
 -10^4 <= Node.val <= 10^4
 Node.random is null or is pointing to some node in the linked list.
 """
+from typing import Optional
 
 
 # Definition for a Node.
@@ -40,5 +41,45 @@ class Node:
 
 
 class Solution:
-    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
-        pass
+    def __init__(self):
+        self.visited = {}
+
+    def copyRandomList(self, head: Optional['Node']) -> Optional['Node']:
+        """回溯 + 哈希表"""
+        if not head:
+            return None
+        if head not in self.visited:
+            new_head = Node(head.val)
+            self.visited[head] = new_head
+            new_head.next = self.copyRandomList(head.next)
+            new_head.random = self.copyRandomList(head.random)
+        return self.visited[head]
+
+    def copyRandomList_2(self, head: Optional['Node']) -> Optional['Node']:
+        """迭代 + 节点拆分"""
+        if not head:
+            return None
+        node = head
+        # 将原链表扩展为原来的一倍，原链表的每一个节点后面都跟着它的复制节点
+        while node:
+            new_node = Node(node.val)
+            new_node.next = node.next
+            node.next = new_node
+            node = new_node.next
+
+        node = head
+        # 处理每一个复制节点的random
+        while node:
+            new_node = node.next
+            new_node.random = node.random.next if node.random else None
+            node = new_node.next
+
+        new_head = head.next
+        node = head
+        # 从扩展后的新链表中，拆分出原链表和复制链表
+        while node:
+            new_node = node.next
+            node.next = new_node.next
+            new_node.next = node.next.next if node.next else None
+            node = node.next
+        return new_head
