@@ -1,18 +1,30 @@
-#-*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 """
-title：二叉树的后序遍历。
-给定一个二叉树，返回它的 后序 遍历。
-示例:
-输入: [1,null,2,3]
-   1
-    \
-     2
-    /
-   3
-输出: [3,2,1]
-进阶: 递归算法很简单，你可以通过迭代算法完成吗？
+title：二叉树的后序遍历
+Given the root of a binary tree, return the postorder traversal of its nodes' values.
+
+
+Example 1:
+Input: root = [1,null,2,3]
+Output: [3,2,1]
+
+Example 2:
+Input: root = []
+Output: []
+
+Example 3:
+Input: root = [1]
+Output: [1]
+
+
+Constraints:
+The number of the nodes in the tree is in the range [0, 100].
+-100 <= Node.val <= 100
+
+Follow up: Recursive solution is trivial, could you do it iteratively?
 """
 from typing import List
+
 
 # Definition for a binary tree node.
 class TreeNode:
@@ -21,13 +33,28 @@ class TreeNode:
         self.left = None
         self.right = None
 
+
 class Solution:
+
     def postorderTraversal(self, root: TreeNode) -> List[int]:
-        # 转换思路，将后序(左->右->根)看作是(根->右->左)的逆序。前序遍历是(根->左->右)
-        if not root:
-            return []
-        stack = [root]
         res = []
+
+        def dfs(node: TreeNode) -> None:
+            if not node:
+                return
+            dfs(node.left)
+            dfs(node.right)
+            res.append(node.val)
+
+        dfs(root)
+        return res
+
+    def postorderTraversal_2(self, root: TreeNode) -> List[int]:
+        # 转换思路，将后序(左->右->根)看作是(根->右->左)的逆序。前序遍历是(根->左->右)
+        res = []
+        if not root:
+            return res
+        stack = [root]
         while stack:
             node = stack.pop()
             # 先打印根节点

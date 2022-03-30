@@ -5,6 +5,12 @@ title：LRU缓存机制。
 获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
 写入数据 put(key, value) - 如果密钥已经存在，则变更其数据值；如果密钥不存在，则插入该组「密钥/数据值」。当缓存容量达到上限时，它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。
 
+Constraints:
+1 <= capacity <= 3000
+0 <= key <= 10^4
+0 <= value <= 10^5
+At most 2 * 10^5 calls will be made to get and put
+
 进阶:
 你是否可以在 O(1) 时间复杂度内完成这两种操作？
 
@@ -35,7 +41,7 @@ cache.get(4);       // 返回  4
 
 
 class ListNode:
-    def __init__(self, key=None, value=None):
+    def __init__(self, key: int = 0, value: int = 0):
         self.key = key
         self.value = value
         self.prev = None
@@ -94,7 +100,59 @@ class LRUCache:
             # 处理哈希表
             self.hashmap[key] = node
 
+
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)
+
+# 自己默写了一遍
+class ListNode2:
+    def __init__(self, key: int = 0, value: int = 0):
+        self.key = key
+        self.val = value
+        self.prev = None
+        self.next = None
+
+
+class LRUCache2:
+
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.hashmap = {}
+        # 不用担心head、tail的key是否会和其它节点重复，因为head、tail压根不会在self.hashmap里面
+        self.head = ListNode2()
+        self.tail = ListNode2()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def get(self, key: int) -> int:
+        if key not in self.hashmap:
+            return -1
+        self.move_to_tail(key)
+        return self.hashmap[key].val
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.hashmap:
+            self.hashmap[key].val = value
+            self.move_to_tail(key)
+        else:
+            if len(self.hashmap) == self.capacity:
+                self.hashmap.pop(self.head.next.key)
+                self.head.next = self.head.next.next
+                self.head.next.prev = self.head
+            node = ListNode2(key, value)
+            self.hashmap[key] = node
+            node.prev = self.tail.prev
+            node.prev.next = node
+            node.next = self.tail
+            self.tail.prev = node
+
+    def move_to_tail(self, key: int) -> None:
+        node = self.hashmap[key]
+        node.prev.next = node.next
+        node.next.prev = node.prev
+        node.prev = self.tail.prev
+        node.prev.next = node
+        node.next = self.tail
+        self.tail.prev = node
