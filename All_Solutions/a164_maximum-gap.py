@@ -45,8 +45,7 @@ class Solution:
                 idx = (num // exp) % RADIX
                 buckets[idx].append(num)
             nums.clear()
-            # max_val最多10位，bucket个数为10，所以看着是3重循环，实际上时间复杂度依旧为O(n)
-            # 虽然是O(n)，但在通常情况下，O(100n)是要慢于O(nlogn)的，因为n通常远小于2^100 = 1267650600228229401496703205376
+            # 这里看着是双重for循环，但其实就是n，因为二维数组buckets中的元素总数为n
             for bucket in buckets:
                 for num in bucket:
                     # 在原nums中越靠前的元素，在各个bucket中也越靠前，所以是稳定的
@@ -59,7 +58,8 @@ class Solution:
 
     def maximumGap_2(self, nums: List[int]) -> int:
         """
-        方法二：基于计数排序的基数排序
+        方法二：基于计数排序的基数排序。
+        根据时间复杂度预估，方法一会快于方法二，虽然都是O(kn)，但系数k不一样。而且都会慢于传统的基于比较的排序O(nlogn)，因为测试数据的n不够大
         """
         n = len(nums)
         if n < 2:
