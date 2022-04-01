@@ -32,8 +32,58 @@ version1 and version2 only contain digits and '.'.
 version1 and version2 are valid version numbers.
 All the given revisions in version1 and version2 can be stored in a 32-bit integer.
 """
+from itertools import zip_longest
 
 
 class Solution:
     def compareVersion(self, version1: str, version2: str) -> int:
-        pass
+        v1 = list(map(int, version1.split('.')))
+        v2 = list(map(int, version2.split('.')))
+        min_len = min(len(v1), len(v2))
+        i = 0
+        while i < min_len:
+            if v1[i] > v2[i]:
+                return 1
+            elif v1[i] < v2[i]:
+                return -1
+            i += 1
+        if sum(v1[i:]) > sum(v2[i:]):
+            return 1
+        elif sum(v1[i:]) < sum(v2[i:]):
+            return -1
+        else:
+            return 0
+
+    def compareVersion_2(self, version1: str, version2: str) -> int:
+        for v1, v2 in zip_longest(version1.split('.'), version2.split('.'), fillvalue=0):
+            v1, v2 = int(v1), int(v2)
+            if v1 != v2:
+                return 1 if v1 > v2 else -1
+        return 0
+
+    def compareVersion_3(self, version1: str, version2: str) -> int:
+        """双指针。将空间复杂度降低为O(1)"""
+        m, n = len(version1), len(version2)
+        i, j = 0, 0
+        while i < m or j < n:
+            x = 0
+            while i < m and version1[i] != '.':
+                x = x * 10 + ord(version1[i]) - ord('0')
+                i += 1
+            # 跳过 '.'
+            i += 1
+
+            y = 0
+            while j < n and version2[j] != '.':
+                y = y * 10 + ord(version2[j]) - ord('0')
+                j += 1
+            # 跳过 '.'
+            j += 1
+
+            if x != y:
+                return 1 if x > y else -1
+        return 0
+
+
+if __name__ == '__main__':
+    print(Solution().compareVersion_2(version1="0.1", version2="1.1"))
