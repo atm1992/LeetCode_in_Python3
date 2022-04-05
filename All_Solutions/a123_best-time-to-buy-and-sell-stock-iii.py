@@ -69,6 +69,23 @@ class Solution:
             sell2 = max(sell2, buy2 + price)
         return sell2
 
+    def maxProfit_2(self, prices: List[int]) -> int:
+        n = len(prices)
+        # 第一笔交易时，买入、卖出时的最大利润
+        dp_1 = [[0, 0] for _ in range(n)]
+        # 第二笔交易时，买入、卖出时的最大利润
+        dp_2 = [[0, 0] for _ in range(n)]
+        for i in range(n):
+            if i == 0:
+                dp_1[i][0] = -prices[i]
+                dp_2[i][0] = -prices[i]
+            else:
+                dp_1[i][0] = max(dp_1[i - 1][0], -prices[i])
+                dp_1[i][1] = max(dp_1[i - 1][1], dp_1[i - 1][0] + prices[i])
+                dp_2[i][0] = max(dp_2[i - 1][0], dp_1[i - 1][1] - prices[i])
+                dp_2[i][1] = max(dp_2[i - 1][1], dp_2[i - 1][0] + prices[i])
+        return dp_2[-1][1]
+
 
 if __name__ == '__main__':
-    print(Solution().maxProfit([3, 3, 5, 0, 0, 3, 1, 4]))
+    print(Solution().maxProfit_2([7, 6, 4, 3, 1]))
