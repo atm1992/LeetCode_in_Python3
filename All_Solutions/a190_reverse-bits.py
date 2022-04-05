@@ -27,4 +27,17 @@ Follow up: If this function is called many times, how would you optimize it?
 
 class Solution:
     def reverseBits(self, n: int) -> int:
-        pass
+        """逐位颠倒"""
+        res = 0
+        for i in range(32):
+            if n == 0:
+                break
+            res |= (n & 1) << (31 - i)
+            n >>= 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().reverseBits(-12))
+
+
