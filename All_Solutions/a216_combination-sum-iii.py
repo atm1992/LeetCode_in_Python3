@@ -39,4 +39,27 @@ from typing import List
 
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
-        pass
+        """回溯 + 剪枝。参考题77"""
+
+        def dfs(cur_num: int = 1, cnt: int = 0, target: int = n, path: list = []) -> None:
+            if cnt == k:
+                if target == 0:
+                    res.append(path[:])
+                return
+            if 10 - cur_num < k - cnt:
+                return
+            if target < cur_num:
+                return
+
+            for i in range(cur_num, 10):
+                path.append(i)
+                dfs(i + 1, cnt + 1, target - i, path)
+                path.pop()
+
+        res = []
+        dfs()
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().combinationSum3(k=4, n=1))
