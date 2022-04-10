@@ -29,11 +29,44 @@ Constraints:
 1 <= heighti <= 2^31 - 1
 buildings is sorted by lefti in non-decreasing order.
 """
-from typing import List
 import heapq
+from typing import List
 
 
 class Solution:
     def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
-        """扫描线 + 优先队。想象 一条竖线 从左到右的扫描过去"""
-        pass
+        """
+        扫描线 + 优先队列。
+        想象 一条竖线 从0到n-1的扫描所有building，使用优先队列来查找key point的最大高度。
+        """
+        res = []
+        # 把所有building的左右边缘都放到一个数组中，升序
+        boundaries = []
+        for building in buildings:
+            boundaries.append(building[0])
+            boundaries.append(building[1])
+        boundaries.sort()
+
+        pq = []
+        n = len(buildings)
+        # 从0到n - 1 扫描所有building
+        idx = 0
+        # 只有boundary才有可能成为key point，计算与这条boundary相交的所有building的最大高度
+        for boundary in boundaries:
+            # 找到左边缘小于等于当前boundary的所有building，将它们的高度及右边缘加入优先队列(先按高度降序, 相等再按右边缘升序)
+            # 因为buildings已经是按左边缘非降序排列的，所以可以直接 idx += 1 进行遍历
+            while idx < n and buildings[idx][0] <= boundary:
+                heapq.heappush(pq, (-buildings[idx][2], buildings[idx][1]))
+                idx += 1
+            # 从上面那些左边缘小于等于当前boundary的所有building中，找到右边缘大于boundary的那个building，它的高度为最大，因为使用了优先队列对高度降序
+            while pq and pq[0][1] <= boundary:
+                heapq.heappop(pq)
+            max_height = -pq[0][0] if pq else 0
+            # 若当前key point的高度等于上一个key point的高度，则无需加入res
+            if not res or max_height != res[-1][1]:
+                res.append([boundary, max_height])
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().getSkyline([[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]))
