@@ -50,7 +50,8 @@ class Solution:
         return res
 
     def postorderTraversal_2(self, root: TreeNode) -> List[int]:
-        # 转换思路，将后序(左->右->根)看作是(根->右->左)的逆序。前序遍历是(根->左->右)
+        """后序遍历的迭代版本。若类似于前序遍历直接写，会有些麻烦，因为这里需要判断节点的访问状态，根节点需要最后出栈。
+        转换思路，将后序(左->右->根)看作是(根->右->左)的逆序。这里本质上还是前序遍历，并不是真正的后序遍历，因此不建议这种写法"""
         res = []
         if not root:
             return res
@@ -68,4 +69,28 @@ class Solution:
         res.reverse()
         # 注意：不能直接return res.reverse()，因为reverse()方法没有返回值。
         # 逆序也可以使用 return res[::-1]
+        return res
+
+    def postorderTraversal_3(self, root: TreeNode) -> List[int]:
+        """迭代。不用逆序"""
+        res = []
+        stack = []
+        pre_node = None
+        cur_node = root
+        while cur_node or stack:
+            # 若存在左孩子，则一路向左。否则向右走一步，接着继续遍历左，直到既没有左孩子，也没有右孩子。
+            # 此时才开始加入res，使用变量pre_node来记录上一次加入到res的节点，从而避免重复加入，进入死循环。
+            while cur_node:
+                stack.append(cur_node)
+                cur_node = cur_node.left
+            cur_node = stack.pop()
+            if not cur_node.right or cur_node.right == pre_node:
+                res.append(cur_node.val)
+                # 使用pre_node来记录上一次加入到res的节点，从而避免重复加入，进入死循环。想象一条只有右节点的边，从下往上逐个将节点加入res
+                pre_node = cur_node
+                cur_node = None
+            else:
+                # 存在右孩子节点，且该右孩子节点不等于pre_node，则先将前面pop出来的节点加回stack，然后向右走一步
+                stack.append(cur_node)
+                cur_node = cur_node.right
         return res
