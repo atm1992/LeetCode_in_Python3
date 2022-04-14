@@ -37,4 +37,18 @@ class Solution:
         :type node: ListNode
         :rtype: void Do not return anything, modify node in-place instead.
         """
-        pass
+        while node.next.next:
+            node.val = node.next.val
+            node = node.next
+        node.val = node.next.val
+        node.next = None
+
+    def deleteNode_2(self, node):
+        """
+        :type node: ListNode
+        :rtype: void Do not return anything, modify node in-place instead.
+        """
+        # 不用像上一个方法那样，node移动到链表尾部，只需拿下一个节点的val覆盖当前节点的val，然后跳过下一个节点即可
+        # 上一个方法的时间复杂度为O(n)，当前方法的时间复杂度为O(1)
+        node.val = node.next.val
+        node.next = node.next.next
