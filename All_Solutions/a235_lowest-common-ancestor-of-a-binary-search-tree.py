@@ -39,4 +39,26 @@ class TreeNode:
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        pass
+        """递归"""
+        if not root:
+            return root
+        if min(p.val, q.val) > root.val:
+            return self.lowestCommonAncestor(root.right, p, q)
+        elif max(p.val, q.val) < root.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        else:
+            return root
+
+    def lowestCommonAncestor_2(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        """迭代"""
+        node = root
+        min_val = min(p.val, q.val)
+        max_val = max(p.val, q.val)
+        while node:
+            if min_val > node.val:
+                node = node.right
+            elif max_val < node.val:
+                node = node.left
+            else:
+                break
+        return node
