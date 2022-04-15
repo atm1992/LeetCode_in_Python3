@@ -31,5 +31,32 @@ from typing import List
 
 
 class Solution:
+    def __init__(self):
+        # key 为子表达式字符串，value 为计算结果列表
+        self.memo = {}
+
     def diffWaysToCompute(self, expression: str) -> List[int]:
-        pass
+        """记忆化递归(记忆化搜索)"""
+        if expression.isdigit():
+            return [int(expression)]
+        if expression in self.memo:
+            return self.memo[expression]
+        res = []
+        for idx, ch in enumerate(expression):
+            if ch in '+-*':
+                left_res = self.diffWaysToCompute(expression[:idx])
+                right_res = self.diffWaysToCompute(expression[idx + 1:])
+                for left in left_res:
+                    for right in right_res:
+                        if ch == '+':
+                            res.append(left + right)
+                        elif ch == '-':
+                            res.append(left - right)
+                        else:
+                            res.append(left * right)
+        self.memo[expression] = res
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().diffWaysToCompute("2*3-4*5"))
