@@ -27,4 +27,16 @@ from typing import List
 
 class Solution:
     def hIndex(self, citations: List[int]) -> int:
-        pass
+        """H指数不可能大于总的论文发表数"""
+        res = 0
+        citations.sort()
+        n = len(citations)
+        for i in range(n):
+            if citations[i] >= n - i:
+                res = n - i
+                break
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().hIndex([3]))
