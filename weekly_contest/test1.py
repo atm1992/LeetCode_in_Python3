@@ -1,31 +1,44 @@
 # -*- coding: UTF-8 -*-
+from functools import reduce
 from typing import List
 
 
 class Solution:
-    def maximumScore(self, scores: List[int], edges: List[List[int]]) -> int:
-        """枚举中间两个点。假设最终的4个点为：a - x - y - b。枚举edges中的每条边(x - y)，然后在x的相邻点中找到分数最大且不等于y和b的点，
-        同理，在y的相邻点中找到分数最大且不等于a和x的点。因此对于每个点，其实只需保留分数最大的3个相邻点即可"""
-        n = len(scores)
-        nodes = [[] for _ in range(n)]
-        for x, y in edges:
-            nodes[x].append(y)
-            nodes[y].append(x)
-        for i in range(n):
-            nodes[i].sort(key=lambda x: -scores[x])
+    def maxTrailingZeros(self, grid: List[List[int]]) -> int:
+        """统计2、5的个数"""
+        m, n = len(grid), len(grid[0])
+        for i in range(m):
+            for j in range(n):
+                val = grid[i][j]
+                cnt_2, cnt_5 = 0, 0
+                tmp = val
+                while tmp % 2 == 0:
+                    cnt_2 += 1
+                    tmp //= 2
+                tmp = val
+                if tmp % 5 == 0:
+                    cnt_5 += 1
+                    tmp //= 5
+                grid[i][j] = (cnt_2, cnt_5)
 
-        res = -1
-        for x, y in edges:
-            for a in nodes[x][:3]:
-                for b in nodes[y][:3]:
-                    if len({a, x, y, b}) == 4:
-                        # 去掉这里的print，加上会超时
-                        # print([a, x, y, b])
-                        res = max(res, scores[a] + scores[x] + scores[y] + scores[b])
+        def sum_(a: tuple, b: tuple) -> tuple:
+            return a[0] + b[0], a[1] + b[1]
 
+        res = 0
+        for i in range(m):
+            for j in range(n):
+                val = grid[i][j]
+                left = reduce(sum_, grid[i][:j]) if j > 0 else (0, 0)
+                right = reduce(sum_, grid[i][j + 1:]) if j + 1 < m else (0, 0)
+                top = reduce(sum_, [grid[k][j] for k in range(i)]) if i > 0 else (0, 0)
+                bottom = reduce(sum_, [grid[k][j] for k in range(i + 1, m)]) if i + 1 < m else (0, 0)
+                l2t = reduce(sum_, [left, val, top])
+                r2t = reduce(sum_, [right, val, top])
+                l2b = reduce(sum_, [left, val, bottom])
+                r2b = reduce(sum_, [right, val, bottom])
+                res = max(res, max(min(l2t), min(r2t), min(l2b), min(r2b)))
         return res
 
 
 if __name__ == '__main__':
-    print(Solution().maximumScore([14, 12, 10, 8, 1, 2, 3, 1],
-                                  [[1, 0], [2, 0], [3, 0], [4, 0], [5, 1], [6, 1], [7, 1], [2, 1]]))
+    print(Solution().maxTrailingZeros(grid=[[4, 3, 2], [7, 6, 1], [8, 8, 8]]))
