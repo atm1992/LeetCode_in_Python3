@@ -38,7 +38,7 @@ class Solution:
             tmp_sum += nums[i]
             if tmp_sum > res:
                 res = tmp_sum
-            if tmp_sum <= 0:
+            if tmp_sum < 0:
                 tmp_sum = 0
         return res
 

@@ -34,12 +34,10 @@ class Solution:
         """贪心算法"""
         res = -10 ** 4
         tmp_sum = 0
-        for i in range(len(nums)):
-            tmp_sum += nums[i]
-            if tmp_sum > res:
-                res = tmp_sum
-            if tmp_sum <= 0:
-                tmp_sum = 0
+        for num in nums:
+            tmp_sum += num
+            res = max(res, tmp_sum)
+            tmp_sum = max(tmp_sum, 0)
         return res
 
     def maxSubArray_2(self, nums: List[int]) -> int:

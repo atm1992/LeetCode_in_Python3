@@ -43,25 +43,25 @@ class Solution:
     # 这种解法虽然空间复杂度为O(1)，但时间复杂度为O(m+n)，因此不符合要求。
     # 时间复杂度要求为O(log (m+n))，看到有log，并且是有序数组，第一想法就应该是二分查找。
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
-        len1, len2 = len(nums1), len(nums2)
+        m, n = len(nums1), len(nums2)
         p1, p2 = 0, 0
         n1, n2 = 0, 0
-        while p1 + p2 <= int((len1 + len2) / 2):
+        while p1 + p2 <= (m + n) // 2:
             n1 = n2
-            if p1 < len1 and p2 < len2:
+            if p1 < m and p2 < n:
                 if nums1[p1] <= nums2[p2]:
                     n2 = nums1[p1]
                     p1 += 1
                 else:
                     n2 = nums2[p2]
                     p2 += 1
-            elif p1 < len1:
+            elif p1 < m:
                 n2 = nums1[p1]
                 p1 += 1
             else:
                 n2 = nums2[p2]
                 p2 += 1
-        return n2 if (len1 + len2) % 2 == 1 else (n1 + n2) / 2
+        return n2 if (m + n) % 2 == 1 else (n1 + n2) / 2
 
     def findMedianSortedArrays_2(self, nums1: List[int], nums2: List[int]) -> float:
         """找到nums1与nums2之间的较短数组，对其进行二分查找，确定了一个数组的下标，自然也就确定了另一个数组的下标，因为中位数的下标是确定的"""
@@ -84,7 +84,6 @@ class Solution:
             i 可以取值 0 ~ m，取值0表示将整个数组划到右边；取值m表示将整个数组划到左边。所以刚开始时，i 取 0与m 之间的中间位置。
             时间复杂度为 O(log min(m, n))。
             """
-            # 这里 // 2 的目的是避免i为小数
             i = (left + right) // 2
             j = (m + n + 1) // 2 - i
             nums_i_1 = -infinity if i == 0 else nums1[i-1]
