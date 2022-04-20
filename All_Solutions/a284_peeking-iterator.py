@@ -32,29 +32,30 @@ All the calls to next and peek are valid.
 At most 1000 calls will be made to next, hasNext, and peek.
 
 Follow up: How would you extend your design to be generic and work with all types, not just integer?
+对于动态类型语言(Python、JavaScript)无需做任何修改。对于静态类型语言(Java、C++)，可通过泛型来拓展设计，即 用泛型 T 来代替 Integer，其余不变。
 """
 
 
 # Below is the interface for Iterator, which is already defined for you.
-#
-# class Iterator:
-#     def __init__(self, nums):
-#         """
-#         Initializes an iterator object to the beginning of a list.
-#         :type nums: List[int]
-#         """
-#
-#     def hasNext(self):
-#         """
-#         Returns true if the iteration has more elements.
-#         :rtype: bool
-#         """
-#
-#     def next(self):
-#         """
-#         Returns the next element in the iteration.
-#         :rtype: int
-#         """
+class Iterator:
+    def __init__(self, nums):
+        """
+        Initializes an iterator object to the beginning of a list.
+        :type nums: List[int]
+        """
+
+    def hasNext(self):
+        """
+        Returns true if the iteration has more elements.
+        :rtype: bool
+        """
+
+    def next(self):
+        """
+        Returns the next element in the iteration.
+        :rtype: int
+        """
+
 
 class PeekingIterator:
     def __init__(self, iterator):
@@ -62,22 +63,29 @@ class PeekingIterator:
         Initialize your data structure here.
         :type iterator: Iterator
         """
+        self.iterator = iterator
+        self.next_item = iterator.next()
 
     def peek(self):
         """
         Returns the next element in the iteration without advancing the iterator.
         :rtype: int
         """
+        return self.next_item
 
     def next(self):
         """
         :rtype: int
         """
+        res = self.next_item
+        self.next_item = self.iterator.next() if self.iterator.hasNext() else None
+        return res
 
     def hasNext(self):
         """
         :rtype: bool
         """
+        return self.next_item is not None
 
 # Your PeekingIterator object will be instantiated and called as such:
 # iter = PeekingIterator(Iterator(nums))
