@@ -37,7 +37,7 @@ s consists of parentheses only '()[]{}'.
 class Solution:
     def isValid(self, s: str) -> bool:
         """使用栈"""
-        if len(s) % 2 == 1:
+        if len(s) & 1:
             return False
         stack = []
         mappings = {')': '(', '}': '{', ']': '['}

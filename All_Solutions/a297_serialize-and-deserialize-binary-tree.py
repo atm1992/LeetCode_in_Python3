@@ -19,6 +19,7 @@ Constraints:
 The number of nodes in the tree is in the range [0, 10^4].
 -1000 <= Node.val <= 1000
 """
+from collections import deque
 
 
 # Definition for a binary tree node.
@@ -37,6 +38,27 @@ class Codec:
         :type root: TreeNode
         :rtype: str
         """
+        if not root:
+            return ''
+        res = []
+        queue = deque([root])
+        while queue:
+            has_child = False
+            size = len(queue)
+            for _ in range(size):
+                node = queue.popleft()
+                if not node:
+                    queue.extend([None, None])
+                    res.extend(['', ''])
+                    continue
+                if not has_child and (node.left or node.right):
+                    has_child = True
+                queue.extend([node.left, node.right])
+                res.append(str(node.left.val) if node.left else '')
+                res.append(str(node.right.val) if node.right else '')
+            if not has_child:
+                break
+        return ','.join(res)
 
     def deserialize(self, data):
         """Decodes your encoded data to tree.
@@ -44,6 +66,32 @@ class Codec:
         :type data: str
         :rtype: TreeNode
         """
+        node_vals = data.split(',')
+        root = None
+        if node_vals[0] != '':
+            root = TreeNode(int(node_vals[0]))
+        if not root:
+            return root
+        n = len(node_vals)
+        queue = deque([root])
+        for i in range(n):
+            node = queue.popleft()
+            if not node:
+                queue.extend([None, None])
+                continue
+            if i * 2 + 1 < n:
+                left_node = None
+                if node_vals[i * 2 + 1] != '':
+                    left_node = TreeNode(int(node_vals[i * 2 + 1]))
+                    node.left = left_node
+                queue.append(left_node)
+            if i * 2 + 2 < n:
+                right_node = None
+                if node_vals[i * 2 + 2] != '':
+                    right_node = TreeNode(int(node_vals[i * 2 + 2]))
+                    node.right = right_node
+                queue.append(right_node)
+        return root
 
 # Your Codec object will be instantiated and called as such:
 # ser = Codec()
