@@ -17,8 +17,8 @@ Constraints:
 1 <= intervals.length <= 10^4
 0 <= starti < endi <= 10^6
 """
-from typing import List
 import heapq
+from typing import List
 
 
 class Solution:
@@ -40,4 +40,26 @@ class Solution:
         # 最终最小堆的长度表示的是整个过程中，总共开启过多少个房间，哪怕有些房间在最后时刻已经不在使用了，但它依旧还在最小堆中。
         return len(end_heap)
 
-
+    def minMeetingRooms_2(self, intervals: List[List[int]]) -> int:
+        """
+        从上面方法中可知，其实需不需要新开房间取决于当前会议开始时，是否存在一个已结束的会议，存在的话，就用那个已结束会议的房间；
+        不存在的话，就只能新开房间。所以可将所有会议的开始时间放入一个数组(升序)，所有会议的结束时间放入另一个数组(升序)，
+        因为我们其实并不关心哪个会议结束了，只关心当前是否有会议结束了，所以不需要关心开始时间和结束时间的原始对应关系
+        """
+        starts, ends = [], []
+        for s, e in intervals:
+            starts.append(s)
+            ends.append(e)
+        starts.sort()
+        ends.sort()
+        n = len(intervals)
+        start_idx = 0
+        end_idx = 0
+        res = 0
+        while start_idx < n:
+            if starts[start_idx] >= ends[end_idx]:
+                end_idx += 1
+            else:
+                res += 1
+            start_idx += 1
+        return res
