@@ -41,41 +41,130 @@ from typing import List
 
 class Solution:
     def calcEquation(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
-        all_keys = defaultdict(dict)
-        for i in range(len(equations)):
-            a, b = equations[i]
-            val = values[i]
-            all_keys[a][b] = val
-            all_keys[b][a] = 1 / val
+        """DFS"""
+        graph = defaultdict(dict)
+        for (a, b), val in zip(equations, values):
+            graph[a][b] = val
+            graph[b][a] = 1.0 / val
 
         def dfs(a: str, b: str, visited: set) -> float:
-            if b in all_keys[a]:
-                return all_keys[a][b]
             if a in visited:
-                return 0
+                return -1.0
+            if b in graph[a]:
+                return graph[a][b]
             visited.add(a)
-            res = 0
-            for divide, val in all_keys[a].items():
+            for divide, val in graph[a].items():
                 tmp = dfs(divide, b, visited)
-                if tmp:
-                    res = val * tmp
-                    break
-            return float(res)
+                if tmp != -1.0:
+                    return val * tmp
+            return -1.0
 
         res = []
         for a, b in queries:
-            if a not in all_keys or b not in all_keys:
+            if a not in graph or b not in graph:
                 res.append(-1.0)
             elif a == b:
                 res.append(1.0)
-            elif b in all_keys[a]:
-                res.append(all_keys[a][b])
             else:
-                visited = set()
-                res.append(dfs(a, b, visited))
+                res.append(dfs(a, b, set()))
+        return res
+
+    def calcEquation_2(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
+        """Floyd 算法。适用于大量查询的情况，避免每次查询都要搜索一次，预先处理好所有结果，之后直接读取即可"""
+        node_cnt = 0
+        node2id = {}
+        # 给每个节点分配一个编号
+        for a, b in equations:
+            if a not in node2id:
+                node2id[a] = node_cnt
+                node_cnt += 1
+            if b not in node2id:
+                node2id[b] = node_cnt
+                node_cnt += 1
+
+        # 1 <= equations.length <= 20，最多40个节点
+        graph = [[-1.0] * node_cnt for _ in range(node_cnt)]
+        # 填表
+        for (a, b), val in zip(equations, values):
+            a_id, b_id = node2id[a], node2id[b]
+            graph[a_id][b_id] = val
+            graph[b_id][a_id] = 1.0 / val
+        # 拓展结果
+        for k in range(node_cnt):
+            for i in range(node_cnt):
+                for j in range(node_cnt):
+                    # 0.0 < values[i] <= 20.0
+                    if graph[i][k] > 0 and graph[k][j] > 0:
+                        # 当 i == j 时，graph[i][j] 会被填为 1.0，因为 graph[i][k] = val，graph[k][j] = 1.0 / val
+                        graph[i][j] = graph[i][k] * graph[k][j]
+
+        res = []
+        for a, b in queries:
+            tmp = -1.0
+            if a in node2id and b in node2id:
+                tmp = graph[node2id[a]][node2id[b]]
+            res.append(tmp)
+        return res
+
+    def calcEquation_3(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
+        """带权并查集"""
+        node_cnt = 0
+        node2id = {}
+        # 给每个节点分配一个编号
+        for a, b in equations:
+            if a not in node2id:
+                node2id[a] = node_cnt
+                node_cnt += 1
+            if b not in node2id:
+                node2id[b] = node_cnt
+                node_cnt += 1
+        # 初始时，认为各个节点的父节点(根节点)为本身
+        father = list(range(node_cnt))
+        # 因为初始时认为各个节点的父节点(根节点)为本身，所以各个节点到根节点(本身)的权重均为 1.0
+        weight = [1.0] * node_cnt
+
+        def union(a_id: int, b_id: int, val: float) -> None:
+            """若a_id、b_id之前不在同一棵树中，则会将两棵树进行合并。合并后，a_root指向b_root"""
+            a_root = find_father(a_id)
+            b_root = find_father(b_id)
+            # a_id、b_id已经在同一棵树中，无需再操作
+            if a_root == b_root:
+                return
+            # 将a_root指向b_root
+            father[a_root] = b_root
+            # weight[a_root] 表示a_root到b_root的权重。
+            # val 为a_id到b_id的权重，weight[b_id] 为b_id到b_root的权重，weight[a_id] 为a_id到a_root的权重
+            # a_id -> a_root -> b_root 的权重 == a_id -> b_id -> b_root 的权重
+            weight[a_root] = val * weight[b_id] / weight[a_id]
+
+        def find_father(node_id: int) -> int:
+            """查找输入节点的根节点编号。在查找过程中，会进行路径压缩。查找结束后，输入节点将会直接指向根节点，并会更新相应的权重"""
+            # 只有根节点的父节点才为本身
+            if node_id != father[node_id]:
+                # 逐步向上查找，直到找到根节点
+                root = find_father(father[node_id])
+                # 在查找的同时，更新当前节点的权重
+                weight[node_id] *= weight[father[node_id]]
+                # 将当前节点的父节点更新为根节点
+                father[node_id] = root
+            return father[node_id]
+
+        for (a, b), val in zip(equations, values):
+            union(node2id[a], node2id[b], val)
+
+        res = []
+        for a, b in queries:
+            tmp = -1.0
+            if a in node2id and b in node2id:
+                a_id, b_id = node2id[a], node2id[b]
+                # 如果这两个节点在同一个图中，也就是说最终指向同一个根节点
+                if find_father(a_id) == find_father(b_id):
+                    tmp = weight[a_id] / weight[b_id]
+            res.append(tmp)
         return res
 
 
 if __name__ == '__main__':
-    print(Solution().calcEquation([["x1", "x2"], ["x2", "x3"], ["x3", "x4"], ["x4", "x5"]], [3.0, 4.0, 5.0, 6.0],
-                                  [["x1", "x5"], ["x5", "x2"], ["x2", "x4"], ["x2", "x2"], ["x2", "x9"], ["x9", "x9"]]))
+    print(Solution().calcEquation_3([["a", "b"], ["c", "d"]],
+                                    [1.0, 1.0],
+                                    [["a", "c"], ["b", "d"], ["b", "a"], ["d", "c"]]))
