@@ -73,7 +73,7 @@ class Solution:
         """Floyd 算法。适用于大量查询的情况，避免每次查询都要搜索一次，预先处理好所有结果，之后直接读取即可"""
         node_cnt = 0
         node2id = {}
-        # 给每个节点分配一个编号
+        # 给每个节点分配一个id
         for a, b in equations:
             if a not in node2id:
                 node2id[a] = node_cnt
@@ -107,10 +107,10 @@ class Solution:
         return res
 
     def calcEquation_3(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
-        """带权并查集"""
+        """带权并查集。并查集 —— 支持合并(union)与查询(find)操作的集合(set)，是一种树型的数据结构，常以森林来表示。"""
         node_cnt = 0
         node2id = {}
-        # 给每个节点分配一个编号
+        # 给每个节点分配一个id
         for a, b in equations:
             if a not in node2id:
                 node2id[a] = node_cnt
@@ -118,13 +118,13 @@ class Solution:
             if b not in node2id:
                 node2id[b] = node_cnt
                 node_cnt += 1
-        # 初始时，认为各个节点的父节点(根节点)为本身
+        # 初始时，认为各个节点的父节点(根节点)为本身。通常命名为 father or parent
         father = list(range(node_cnt))
         # 因为初始时认为各个节点的父节点(根节点)为本身，所以各个节点到根节点(本身)的权重均为 1.0
         weight = [1.0] * node_cnt
 
         def union(a_id: int, b_id: int, val: float) -> None:
-            """若a_id、b_id之前不在同一棵树中，则会将两棵树进行合并。合并后，a_root指向b_root"""
+            """若a_id、b_id之前不在同一棵树(同一个集合)中，则会将两棵树(两个集合)进行合并。合并后，a_root指向b_root"""
             a_root = find_father(a_id)
             b_root = find_father(b_id)
             # a_id、b_id已经在同一棵树中，无需再操作
@@ -150,6 +150,7 @@ class Solution:
             return father[node_id]
 
         for (a, b), val in zip(equations, values):
+            # a, b 两个节点若不在同一个集合，则会进行集合合并
             union(node2id[a], node2id[b], val)
 
         res = []
@@ -157,8 +158,9 @@ class Solution:
             tmp = -1.0
             if a in node2id and b in node2id:
                 a_id, b_id = node2id[a], node2id[b]
-                # 如果这两个节点在同一个图中，也就是说最终指向同一个根节点
+                # 若这两个节点最终指向同一个根节点，则说明它们在同一个集合中
                 if find_father(a_id) == find_father(b_id):
+                    # weight[a_id] 表示节点a到最终根节点的权重；weight[b_id] 表示节点b到最终根节点的权重
                     tmp = weight[a_id] / weight[b_id]
             res.append(tmp)
         return res
