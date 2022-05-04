@@ -26,4 +26,19 @@ from typing import List
 
 class Solution:
     def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
-        pass
+        """单调栈。从后往前遍历"""
+        n = len(temperatures)
+        res = [0] * n
+        stack = [(n - 1, temperatures[-1])]
+        for i in range(n - 2, -1, -1):
+            val = temperatures[i]
+            while stack and stack[-1][1] <= val:
+                stack.pop()
+            if stack:
+                res[i] = stack[-1][0] - i
+            stack.append((i, val))
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().dailyTemperatures(temperatures=[30, 40, 50, 60]))
