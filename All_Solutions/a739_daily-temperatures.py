@@ -26,7 +26,7 @@ from typing import List
 
 class Solution:
     def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
-        """单调栈。从后往前遍历"""
+        """单调栈。反向遍历"""
         n = len(temperatures)
         res = [0] * n
         stack = [(n - 1, temperatures[-1])]
@@ -36,6 +36,19 @@ class Solution:
                 stack.pop()
             if stack:
                 res[i] = stack[-1][0] - i
+            stack.append((i, val))
+        return res
+
+    def dailyTemperatures_2(self, temperatures: List[int]) -> List[int]:
+        """单调栈。正向遍历"""
+        n = len(temperatures)
+        res = [0] * n
+        stack = []
+        for i in range(n):
+            val = temperatures[i]
+            while stack and stack[-1][1] < val:
+                idx, temp = stack.pop()
+                res[idx] = i - idx
             stack.append((i, val))
         return res
 

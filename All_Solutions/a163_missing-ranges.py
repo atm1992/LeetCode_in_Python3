@@ -35,4 +35,51 @@ from typing import List
 
 class Solution:
     def findMissingRanges(self, nums: List[int], lower: int, upper: int) -> List[str]:
-        pass
+        if not nums:
+            if lower == upper:
+                return [str(lower)]
+            else:
+                return [f'{lower}->{upper}']
+        res = []
+        if lower != nums[0]:
+            if nums[0] - 1 > lower:
+                res.append(f'{lower}->{nums[0] - 1}')
+            else:
+                res.append(str(lower))
+        n = len(nums)
+        idx = 0
+        while True:
+            while idx < n - 1 and nums[idx] + 1 == nums[idx + 1]:
+                idx += 1
+            if idx < n - 1:
+                tmp = str(nums[idx] + 1)
+                if nums[idx + 1] - 1 > nums[idx] + 1:
+                    tmp += f'->{nums[idx + 1] - 1}'
+                res.append(tmp)
+                idx += 1
+            else:
+                if nums[-1] != upper:
+                    if nums[-1] + 1 < upper:
+                        res.append(f'{nums[-1] + 1}->{upper}')
+                    else:
+                        res.append(str(upper))
+                break
+        return res
+
+    def findMissingRanges_2(self, nums: List[int], lower: int, upper: int) -> List[str]:
+        """类似双指针的思路"""
+        res = []
+        pre = lower - 1
+        # 添加终止边界，不修改原始数组
+        new_nums = nums + [upper + 1]
+        for num in new_nums:
+            if num - 1 > pre + 1:
+                res.append(f'{pre + 1}->{num - 1}')
+            elif num - 1 == pre + 1:
+                res.append(str(pre + 1))
+            pre = num
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().findMissingRanges(nums=[-1], lower=-1, upper=-1))
