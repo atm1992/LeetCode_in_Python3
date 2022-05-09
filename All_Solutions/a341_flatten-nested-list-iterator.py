@@ -31,12 +31,8 @@ Constraints:
 The values of the integers in the nested list is in the range [-10^6, 10^6].
 """
 
-"""
-This is the interface that allows for creating nested lists.
-You should not implement it, or speculate about its implementation
-"""
-
-
+# This is the interface that allows for creating nested lists.
+# You should not implement it, or speculate about its implementation
 class NestedInteger:
     def isInteger(self) -> bool:
         """
@@ -57,11 +53,28 @@ class NestedInteger:
 
 
 class NestedIterator:
+    """
+    Python可使用生成器
+    注意：迭代器的设计不能在初始化的时候，就事先把所有元素都存储到列表中
+    """
     def __init__(self, nestedList: [NestedInteger]):
+        def get_generator(nestedList: [NestedInteger]):
+            for nest in nestedList:
+                if nest.isInteger():
+                    yield nest.getInteger()
+                else:
+                    yield from get_generator(nest.getList())
+        self.gen = get_generator(nestedList)
+        self.cache = next(self.gen, None)
 
     def next(self) -> int:
+        res = self.cache
+        self.cache = next(self.gen, None)
+        return res
 
     def hasNext(self) -> bool:
+        return self.cache is not None
+
 
 # Your NestedIterator object will be instantiated and called as such:
 # i, v = NestedIterator(nestedList), []
