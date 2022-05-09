@@ -26,9 +26,26 @@ n == matrix[i].length
 1 <= m, n <= 200
 0 <= matrix[i][j] <= 2^31 - 1
 """
+from functools import lru_cache
 from typing import List
 
 
 class Solution:
     def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
-        pass
+        """回溯 + 记忆化"""
+        res = 0
+        m, n = len(matrix), len(matrix[0])
+
+        @lru_cache(maxsize=m * n)
+        def dfs(i: int, j: int) -> int:
+            ret = 1
+            val = matrix[i][j]
+            for x, y in [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]:
+                if 0 <= x < m and 0 <= y < n and matrix[x][y] > val:
+                    ret = max(ret, dfs(x, y) + 1)
+            return ret
+
+        for i in range(m):
+            for j in range(n):
+                res = max(res, dfs(i, j))
+        return res

@@ -66,6 +66,7 @@ class Solution:
             left, right = 0, len(d) - 1
             while left < right:
                 mid = (left + right) >> 1
+                # 查找第一个大于等于当前num的下标i
                 if d[mid] >= num:
                     right = mid
                 else:
