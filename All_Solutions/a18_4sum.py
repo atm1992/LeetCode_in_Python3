@@ -52,6 +52,7 @@ class Solution:
                 while c < d:
                     if nums[c] + nums[d] == target_ab:
                         res.append([nums[a], nums[b], nums[c], nums[d]])
+                    # 这里主要是避免 当nums[c] + nums[d] == target_ab时，重复append相同答案
                     if nums[c] + nums[d] <= target_ab:
                         c0 = c + 1
                         while c0 < d and nums[c0] == nums[c]:

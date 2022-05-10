@@ -31,7 +31,7 @@ Constraints:
 At most 2 * 10^5 calls will be made to insert, remove, and getRandom.
 There will be at least one element in the data structure when getRandom is called.
 """
-from random import randint
+from random import randrange
 
 
 class RandomizedSet:
@@ -62,7 +62,8 @@ class RandomizedSet:
         return True
 
     def getRandom(self) -> int:
-        return self.nums[randint(0, self.size - 1)]
+        # 随机返回 [0, self.size - 1] 之间的一个整数，不包含 self.size
+        return self.nums[randrange(self.size)]
 
 # Your RandomizedSet object will be instantiated and called as such:
 # obj = RandomizedSet()
