@@ -42,5 +42,18 @@ class Solution:
                     max_len = len(res)
                 res = res[res.index(ch) + 1:]
                 res.append(ch)
-        # 以防出现给定s完全不存在重复字符的情况，此时max_len始终为0
+        # 退出上述循环时，res中还会剩余一些字符
         return max(max_len, len(res))
+
+    def lengthOfLongestSubstring_2(self, s: str) -> int:
+        res = 0
+        ch2idx = {}
+        left = 0
+        for idx, ch in enumerate(s):
+            # 如果该字符之前的下标小于left，就可认为该字符在之前已被逻辑删除了。说明该字符在[left, idx-1]范围内没有出现过
+            if ch in ch2idx and ch2idx[ch] >= left:
+                res = max(res, idx - left)
+                left = ch2idx[ch] + 1
+            ch2idx[ch] = idx
+        res = max(res, len(s) - left)
+        return res
