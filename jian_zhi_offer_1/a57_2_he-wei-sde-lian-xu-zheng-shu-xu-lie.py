@@ -22,4 +22,21 @@ from typing import List
 
 class Solution:
     def findContinuousSequence(self, target: int) -> List[List[int]]:
-        pass
+        """双指针"""
+        res = []
+        left, right = 1, 2
+        while left < right:
+            # 等差数列求和公式。若不知道此公式，也可用滑动窗口
+            total = (left + right) * (right - left + 1) // 2
+            if total == target:
+                res.append(list(range(left, right + 1)))
+                left += 1
+            elif total < target:
+                right += 1
+            else:
+                left += 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().findContinuousSequence(15))

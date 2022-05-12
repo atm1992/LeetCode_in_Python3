@@ -57,7 +57,7 @@ class Solution:
 
     def maxSlidingWindow_3(self, nums: List[int], k: int) -> List[int]:
         """
-        单调递减的双端队列。若当前滑动窗口内存在i < j 且 nums[i] <= nums[j]，则在之后的滑动窗口中，只有i存在，j就一定存在，
+        单调递减的双端队列。若当前滑动窗口内存在i < j 且 nums[i] <= nums[j]，则在之后的滑动窗口中，只要i存在，j就一定存在，
         它两同时存在的情况下，i就永远不可能是滑动窗口内的最大值，所以当j出现在滑动窗口内时，i就可以直接从队列里删掉了。
         """
         res = []
