@@ -22,4 +22,29 @@ from typing import List
 
 class Solution:
     def dicesProbability(self, n: int) -> List[float]:
-        pass
+        """
+        动态规划。点数和的范围：[n, 6n]，总共有5n + 1种取值。
+        dp[i][j] 表示前i个骰子的点数和为j的概率。
+        为避免索引越界问题，采用正向递推，即 dp[i][j] 可以转移给 dp[i+1][j+1]、dp[i+1][j+2]、dp[i+1][j+3]、dp[i+1][j+4]、dp[i+1][j+5]、dp[i+1][j+6]
+        而不是采用反向递推的方式：dp[i][j] 需要 dp[i-1][j-1]、dp[i-1][j-2]、dp[i-1][j-3]、dp[i-1][j-4]、dp[i-1][j-5]、dp[i-1][j-6] 转移过来，
+        假设 dp[i][j] 为dp[2][2]，则 dp[i-1][j-2]、dp[i-1][j-3]、dp[i-1][j-4]、dp[i-1][j-5]、dp[i-1][j-6] 都是没有意义的，反向递推需要进行下标判断。
+        另外，由上可知，dp[i] 仅由 dp[i-1] 递推而来，所以可使用滚动数组来优化空间复杂度。只需建立两个一维数组，交替前进即可
+        """
+        # 初始时只有一个骰子的情况，每个点数的概率均为 1/6
+        dp = [1 / 6] * 6
+        # 大循环n-1次
+        for i in range(2, n + 1):
+            # n个骰子，会有5n + 1种不同的点数和
+            tmp = [0] * (5 * i + 1)
+            # 每一个dp[j]都可以向上转移
+            for j in range(len(dp)):
+                for k in range(6):
+                    # 每个dp[j]都可均分6份，向上转移给j+1、j+2、j+3、j+4、j+5、j+6
+                    # 但每次tmp的长度都是比上次dp的长度多5，所以从dp转移到tmp的下标应当为 j+0、j+1、j+2、j+3、j+4、j+5
+                    tmp[j + k] += dp[j] / 6
+            dp = tmp
+        return dp
+
+
+if __name__ == '__main__':
+    print(Solution().dicesProbability(3))

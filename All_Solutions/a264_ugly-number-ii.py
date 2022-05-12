@@ -39,7 +39,7 @@ class Solution:
         return min_heap[0]
 
     def nthUglyNumber_2(self, n: int) -> int:
-        """动态规划。dp[i]表示第i个丑数，dp[1]=1"""
+        """动态规划。dp[i]表示第i个丑数，dp[1]=1。后面的丑数一定是由前面的丑数乘以2，或乘以3，或乘以5得来"""
         dp = [0] * (n + 1)
         dp[1] = 1
         p2 = p3 = p5 = 1
