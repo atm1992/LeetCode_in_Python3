@@ -17,8 +17,8 @@ title: 数组中数字出现的次数 II
 1 <= nums.length <= 10000
 1 <= nums[i] < 2^31
 """
-from typing import List
 from collections import Counter
+from typing import List
 
 
 class Solution:
@@ -31,7 +31,7 @@ class Solution:
     def singleNumber_2(self, nums: List[int]) -> int:
         """
         分别统计每一位上1的个数，然后对3取余。该方法适用于所有的 一个数字出现一次，其余数字出现n次（对n取余）类问题
-        Python不区分 有符号整数类型 和 无符号整数类型，所以对于负数，Python需要特殊处理。不过，注意到1 <= nums[i] < 2^31，意味着无需考虑负数
+        Python不区分 有符号整数类型 和 无符号整数类型，所以Python需要对负数额外处理，而Java、C++不需要
         """
         res = 0
         # 用32位来表示一个int整数，分别统计每一位上1的个数
@@ -39,7 +39,7 @@ class Solution:
             total = sum((num >> i) & 1 for num in nums)
             if total % 3:
                 res |= 1 << i
-        return res
+        return ~(res ^ 0xffffffff) if res >> 31 else res
 
     def singleNumber_3(self, nums: List[int]) -> int:
         """
@@ -62,3 +62,7 @@ class Solution:
             ones = (ones ^ num) & ~twos
             twos = (twos ^ num) & ~ones
         return ones
+
+
+if __name__ == '__main__':
+    print(Solution().singleNumber_2([9, -1, -7, 9, -7, -7, 9]))
