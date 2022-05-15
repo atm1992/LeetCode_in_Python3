@@ -1,20 +1,20 @@
 # -*- coding: UTF-8 -*-
-import string
 
 
 class Solution:
     def largestVariance(self, s: str) -> int:
         """参考LeetCode题53"""
+        ch_list = list(set(s))
         # 字符串s中只有一种字符
-        if len(set(s)) == 1:
+        if len(ch_list) == 1:
             return 0
         res = 0
         # 枚举出现次数最多的字符（记作 a）与出现次数最少的字符（记作 b）。注意：并不是说子字符串中只允许有a/b这两种字符
         # 将 a 视作 1，b 视作 −1，其余字符视作 0。则可将该问题转换为 53.最大子数组和 问题，即 对 [0,1,1,0,-1,1,0] 求最大子数组的和，
         # 其中的0就是除a/b以外的其它各种字符，这些字符的出现次数大于等于b，但小于等于a
         # 这里枚举了所有的a/b组合，所以一定会包含最终答案
-        for a in string.ascii_lowercase:
-            for b in string.ascii_lowercase:
+        for a in ch_list:
+            for b in ch_list:
                 # a/b 不能相同
                 if a == b:
                     continue
