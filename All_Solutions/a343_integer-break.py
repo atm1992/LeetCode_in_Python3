@@ -52,6 +52,37 @@ class Solution:
                 dp[i] = max(dp[i], j * (i - j), j * dp[i - j])
         return dp[n]
 
+    def integerBreak_3(self, n: int) -> int:
+        """
+        贪心。分成尽可能多的长度为3的小段，这样的乘积最大。通过数学推导出每段的最佳长度为自然底数e = 2.71828
+        n == 2时，1 * 1 = 1，返回 n - 1
+        n == 3时，1 * 2 = 2，返回 n - 1
+        n == 4时，2 * 2 = 4
+        n > 4时，分成尽可能多的长度为3的小段，每次循环时，长度n减去3，乘积res乘以3。退出循环后，再乘以小于等于4的最后一小段(此时的n<=4)
+        """
+        if n < 4:
+            return n - 1
+        res = 1
+        # 退出循环时，n的可能取值为：2、3、4
+        while n > 4:
+            res = res * 3
+            n -= 3
+        return res * n
+
+    def integerBreak_4(self, n: int) -> int:
+        """
+        数学。分成尽可能多的长度为3的小段，这样的乘积最大。通过数学推导出每段的最佳长度为自然底数e = 2.71828
+        """
+        if n < 4:
+            return n - 1
+        div, mod = divmod(n, 3)
+        if mod == 0:
+            return 3 ** div
+        elif mod == 1:
+            return 3 ** (div - 1) * 4
+        else:
+            return 3 ** div * 2
+
 
 if __name__ == '__main__':
     print(Solution().integerBreak_2(10))
