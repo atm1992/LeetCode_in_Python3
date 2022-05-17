@@ -41,37 +41,17 @@ class Solution:
     def pathSum(self, root: TreeNode, sum: int) -> List[List[int]]:
         """回溯"""
 
-        def dfs(node: TreeNode = root, target_sum: int = sum) -> None:
-            if not node:
-                return
-            if target_sum == node.val and not node.left and not node.right:
-                path.append(node.val)
-                res.append(path[:])
-                path.pop()
-                return
-            path.append(node.val)
-            dfs(node.left, target_sum - node.val)
-            dfs(node.right, target_sum - node.val)
-            path.pop()
-
-        res, path = [], []
-        dfs()
-        return res
-
-    def pathSum_2(self, root: TreeNode, sum: int) -> List[List[int]]:
-        """回溯"""
-
-        def dfs(node: TreeNode = root, target_sum: int = sum) -> None:
+        def dfs(node: TreeNode, target_sum: int) -> None:
             if not node:
                 return
             path.append(node.val)
             target_sum -= node.val
-            if target_sum == 0 and not node.left and not node.right:
+            if not node.left and not node.right and target_sum == 0:
                 res.append(path[:])
             dfs(node.left, target_sum)
             dfs(node.right, target_sum)
             path.pop()
 
         res, path = [], []
-        dfs()
+        dfs(root, sum)
         return res
