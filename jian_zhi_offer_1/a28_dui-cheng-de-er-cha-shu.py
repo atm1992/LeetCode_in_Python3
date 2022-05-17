@@ -1,23 +1,32 @@
 # -*- coding: UTF-8 -*-
 """
-title: 对称二叉树
-Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+title: 对称的二叉树
+请实现一个函数，用来判断一棵二叉树是不是对称的。如果一棵二叉树和它的镜像一样，那么它是对称的。
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
+    1
+   / \
+  2   2
+   \   \
+   3    3
 
 
-Example 1:
-Input: root = [1,2,2,3,4,4,3]
-Output: true
+示例 1：
+输入：root = [1,2,2,3,4,4,3]
+输出：true
 
-Example 2:
-Input: root = [1,2,2,null,3,null,3]
-Output: false
+示例 2：
+输入：root = [1,2,2,null,3,null,3]
+输出：false
 
 
-Constraints:
-The number of nodes in the tree is in the range [1, 1000].
--100 <= Node.val <= 100
-
-Follow up: Could you solve it both recursively and iteratively?
+限制：
+0 <= 节点个数 <= 1000
 """
 from typing import Optional
 from collections import deque
@@ -25,20 +34,19 @@ from collections import deque
 
 # Definition for a binary tree node.
 class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
 
 
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
-        """递归。使用两个指针p、q，初始时，均指向root，然后同时移动，一个右移时，另一个左移；一个左移时，另一个右移。每次检查这两个指针的值是否相等"""
-
+        """递归"""
         def check(p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
             if not p and not q:
                 return True
-            elif not p or not q or p.val != q.val:
+            if not p or not q or p.val != q.val:
                 return False
             return check(p.left, q.right) and check(p.right, q.left)
 
