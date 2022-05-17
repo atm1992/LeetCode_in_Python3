@@ -58,9 +58,10 @@ class Solution:
             if left_height == -1:
                 return -1
             right_height = height(root.right)
-            if right_height == -1 or abs(left_height - right_height) > 1:
+            if right_height == -1:
                 return -1
-            else:
-                return max(left_height, right_height) + 1
+            if abs(left_height - right_height) > 1:
+                return -1
+            return max(left_height, right_height) + 1
 
         return height(root) != -1
