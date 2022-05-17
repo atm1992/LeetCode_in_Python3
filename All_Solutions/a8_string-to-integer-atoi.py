@@ -89,27 +89,32 @@ s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+
 
 class Solution:
     def myAtoi(self, s: str) -> int:
-        s = s.lstrip()
-        flag = '+'
-        if s and s[0] in ['+', '-']:
-            flag = s[0]
-            s = s[1:]
+        """
+        因为要求取值范围在 [−2^31,  2^31 − 1]，所以在最后一步计算前先判断当前值与2^31 // 10的大小关系。
+        设数字拼接边界 boundary = 2^31 // 10，存在以下两种情况的越界：
+        1、res > boundary；
+        2、res == boundary，lash_ch > '7'。2^31 的尾数为8，2^31 − 1 的尾数为7。因为 2 ^ 10 = 1024, 4 * 4 * 4 * 2 的尾数为8
+        若当前res满足上述两种情况，则直接根据符号位，返回相应的INT_MAX, INT_MIN
+        """
+        INT_MAX, INT_MIN = 2 ** 31 - 1, -2 ** 31
+        boundary = INT_MAX // 10
+        idx, sign, n = 0, 1, len(s)
+        while idx < n and s[idx] == ' ':
+            idx += 1
+        if idx == n:
+            return 0
+        if s[idx] in ['+', '-']:
+            if s[idx] == '-':
+                sign = -1
+            idx += 1
         res = 0
-        # 因为要求取值范围在 [-2147483648, 2147483647]，所以在最后一步计算前先判断当前值与214748364的大小关系
-        MAX_BASE = 214748364
-        # 最后一位数的最大允许值
-        MAX_LAST_NUM = 8 if flag == '-' else 7
-        sign = int(flag + '1')
-        digits = [str(i) for i in range(10)]
-        for char in s:
-            if char in digits:
-                num = int(char)
-                if res > MAX_BASE or (res == MAX_BASE and num >= MAX_LAST_NUM):
-                    # 避免先MAX_BASE * 10 + MAX_LAST_NUM，再 * sign，因为负数时，计算过程中的2147483648已经超出了2147483647
-                    return sign * MAX_BASE * 10 + sign * MAX_LAST_NUM
-                res = res * 10 + num
-            else:
+        for i in range(idx, n):
+            ch = s[i]
+            if not '0' <= ch <= '9':
                 break
+            if res > boundary or (res == boundary and ch > '7'):
+                return INT_MAX if sign == 1 else INT_MIN
+            res = res * 10 + ord(ch) - ord('0')
         return sign * res
 
 
