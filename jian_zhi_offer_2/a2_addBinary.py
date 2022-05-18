@@ -1,22 +1,23 @@
 # -*- coding: UTF-8 -*-
 """
-title: 二进制求和
-Given two binary strings a and b, return their sum as a binary string.
+title: 二进制加法
+给定两个 01 字符串 a 和 b ，请计算它们的和，并以二进制字符串的形式输出。
+输入为 非空 字符串且只包含数字 1 和 0。
 
 
-Example 1:
-Input: a = "11", b = "1"
-Output: "100"
+示例 1:
+输入: a = "11", b = "10"
+输出: "101"
 
-Example 2:
-Input: a = "1010", b = "1011"
-Output: "10101"
+示例 2:
+输入: a = "1010", b = "1011"
+输出: "10101"
 
 
-Constraints:
+提示：
+每个字符串仅由字符 '0' 或 '1' 组成。
 1 <= a.length, b.length <= 10^4
-a and b consist only of '0' or '1' characters.
-Each string does not contain leading zeros except for the zero itself.
+字符串如果不是 "0" ，就都不含前导零。
 """
 
 
@@ -37,12 +38,6 @@ class Solution:
             res.append('1')
         return ''.join(res[::-1])
 
-    def addBinary_2(self, a: str, b: str) -> str:
-        x, y = int(a, 2), int(b, 2)
-        while y:
-            x, y = x ^ y, (x & y) << 1
-        return bin(x)[2:]
-
 
 if __name__ == '__main__':
-    print(Solution().addBinary(a="1010", b="1011"))
+    print(Solution().addBinary(a="1010", b="10111"))
