@@ -1,41 +1,40 @@
 # -*- coding: UTF-8 -*-
 """
-title: 两数相除
-Given two integers dividend and divisor, divide two integers without using multiplication, division, and mod operator.
-Return the quotient after dividing dividend by divisor.
-The integer division should truncate toward zero, which means losing its fractional part. For example, truncate(8.345) = 8 and truncate(-2.7335) = -2.
-Note: Assume we are dealing with an environment that could only store integers within the 32-bit signed integer range: [−2^31, 2^31 − 1]. For this problem, assume that your function returns 2^31 − 1 when the division result overflows.
+title: 整数除法
+给定两个整数 a 和 b ，求它们的除法的商 a/b ，要求不得使用乘号 '*'、除号 '/' 以及求余符号 '%' 。
+注意：
+整数除法的结果应当截去（truncate）其小数部分，例如：truncate(8.345) = 8 以及 truncate(-2.7335) = -2
+假设我们的环境只能存储 32 位有符号整数，其数值范围是 [−2^31, 2^31−1]。本题中，如果除法结果溢出，则返回 2^31 − 1
 
 
-Example 1:
-Input: dividend = 10, divisor = 3
-Output: 3
-Explanation: 10/3 = truncate(3.33333..) = 3.
+示例 1：
+输入：a = 15, b = 2
+输出：7
+解释：15/2 = truncate(7.5) = 7
 
-Example 2:
-Input: dividend = 7, divisor = -3
-Output: -2
-Explanation: 7/-3 = truncate(-2.33333..) = -2.
+示例 2：
+输入：a = 7, b = -3
+输出：-2
+解释：7/-3 = truncate(-2.33333..) = -2
 
-Example 3:
-Input: dividend = 0, divisor = 1
-Output: 0
+示例 3：
+输入：a = 0, b = 1
+输出：0
 
-Example 4:
-Input: dividend = 1, divisor = 1
-Output: 1
- 
+示例 4：
+输入：a = 1, b = 1
+输出：1
 
-Constraints:
--2^31 <= dividend, divisor <= 2^31 - 1
-divisor != 0
+
+提示:
+-2^31 <= a, b <= 2^31 - 1
+b != 0
 """
 
 
 class Solution:
-    def divide(self, dividend: int, divisor: int) -> int:
+    def divide(self, a: int, b: int) -> int:
         """二分查找。把a/b均转成负数，然后进行计算。因为如果都转成正数，那么-2^31转成正数后，会溢出 """
-        a, b = dividend, divisor
         INT_MIN, INT_MAX = -2 ** 31, 2 ** 31 - 1
         # 考虑特殊情况，避免溢出
         if a == INT_MIN:
@@ -101,14 +100,13 @@ class Solution:
                 right = mid - 1
         return sign * res
 
-    def divide_2(self, dividend: int, divisor: int) -> int:
+    def divide_2(self, a: int, b: int) -> int:
         """
         类二分查找。把a/b均转成负数，然后进行计算。因为如果都转成正数，那么-2^31转成正数后，会溢出。
         13的二进制表示为1101，即 13 = 8 + 4 + 1，所以 a = 13b = 8b + 4b + b
         先使用一个数组存储 [b, 2b, 4b, 8b, ……]，数组中的最后一个元素为最后一个小于a的倍数。注意：由于a/b都被转换成了负数，
         所以这里应该是最后一个大于a(负数)的xb。之后逆序遍历这个数组，数组下标i表示需将res的哪位二进制置为1
         """
-        a, b = dividend, divisor
         INT_MIN, INT_MAX = -2 ** 31, 2 ** 31 - 1
         # 考虑特殊情况，避免溢出
         if a == INT_MIN:
@@ -147,4 +145,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().divide(-10, 3))
+    print(Solution().divide_2(a=7, b=-3))
