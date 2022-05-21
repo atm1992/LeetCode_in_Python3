@@ -31,12 +31,12 @@ s and t consist of uppercase and lowercase English letters.
 
 Follow up: Could you find an algorithm that runs in O(m + n) time?
 """
+from collections import Counter, defaultdict
 
 
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
         """滑动窗口"""
-        from collections import Counter, defaultdict
         m, n = len(s), len(t)
         if m < n:
             return ''
