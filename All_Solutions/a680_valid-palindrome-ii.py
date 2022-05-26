@@ -1,26 +1,26 @@
 # -*- coding: UTF-8 -*-
 """
-title: 最多删除一个字符得到回文
-给定一个非空字符串 s，请判断如果 最多 从字符串中删除一个字符能否得到一个回文字符串。
+title: 验证回文字符串 Ⅱ
+Given a string s, return true if the s can be palindrome after deleting at most one character from it.
 
 
-示例 1:
-输入: s = "aba"
-输出: true
+Example 1:
+Input: s = "aba"
+Output: true
 
-示例 2:
-输入: s = "abca"
-输出: true
-解释: 可以删除 "c" 字符 或者 "b" 字符
+Example 2:
+Input: s = "abca"
+Output: true
+Explanation: You could delete the character 'c'.
 
-示例 3:
-输入: s = "abc"
-输出: false
+Example 3:
+Input: s = "abc"
+Output: false
 
 
-提示:
+Constraints:
 1 <= s.length <= 10^5
-s 由小写英文字母组成
+s consists of lowercase English letters.
 """
 
 

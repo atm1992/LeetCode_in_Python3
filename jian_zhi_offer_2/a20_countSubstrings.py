@@ -1,46 +1,43 @@
 # -*- coding: UTF-8 -*-
 """
-title: 回文子串
-Given a string s, return the number of palindromic substrings in it.
-A string is a palindrome when it reads the same backward as forward.
-A substring is a contiguous sequence of characters within the string.
+title: 回文子字符串的个数
+给定一个字符串 s ，请计算这个字符串中有多少个回文子字符串。
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
 
 
-Example 1:
-Input: s = "abc"
-Output: 3
-Explanation: Three palindromic strings: "a", "b", "c".
+示例 1：
+输入：s = "abc"
+输出：3
+解释：三个回文子串: "a", "b", "c"
 
-Example 2:
-Input: s = "aaa"
-Output: 6
-Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+示例 2：
+输入：s = "aaa"
+输出：6
+解释：6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
 
 
-Constraints:
+提示：
 1 <= s.length <= 1000
-s consists of lowercase English letters.
+s 由小写英文字母组成
 """
 
 
 class Solution:
     def countSubstrings(self, s: str) -> int:
         """
-        暴力枚举。中心拓展法
-        回文子串长度为奇数时，回文中心是一个字符；回文子串长度为偶数时，回文中心是两个字符。
-        假设原字符串s的长度为n，则对于下标为 0 ~ n-1 的每个字符都可以是回文中心，单个字符为回文中心的情况有n种，
-        对于回文中心为两个字符的情况，有 n-1 种，分别为 (0,1)、(1,2)、……、(n-2,n-1)
-        所以总共有 2n - 1 种回文中心。
-        第0种，(0,0)
-        第1种，(0,1)
-        第2种，(1,1)
-        第3种，(1,2)
-        第4种，(2,2)
+        暴力枚举 + 中心拓展法。枚举所有的回文中心点
+        回文长度只有两种情况：奇数 或 偶数。若回文长度为奇数，则回文中心点是一个字符，此时存在n种不同的回文中心点；
+        若回文长度为偶数，则回文中心点是两个字符，此时存在n - 1种不同的回文中心点。
+        综合上述两种情况，总共存在 2n - 1 种不同的回文中心点，即：
+        第0种：(0, 0)
+        第1种：(0, 1)
+        第2种：(1, 1)
+        第3种：(1, 2)
         ……
-        第i种，(i // 2, i // 2 + i % 2)
+        第i种：(i//2, i//2 + i%2)
         """
-        n = len(s)
         res = 0
+        n = len(s)
         for i in range(2 * n - 1):
             left, right = i // 2, i // 2 + i % 2
             while left >= 0 and right < n and s[left] == s[right]:
@@ -69,11 +66,9 @@ class Solution:
         # 新字符串t 以'^'开头，以'$'结尾，可确保头尾不匹配，防止中心拓展时，下标越界
         t = ['^', '#']
         for ch in s:
-            t.append(ch)
-            t.append('#')
+            t.extend([ch, '#'])
         t.append('$')
         size = len(t)
-
         f = [1] * size
         i_max, r_max = 0, 0
         res = 0
@@ -83,19 +78,19 @@ class Solution:
                 # i + j == 2 * i_max
                 f[i] = min(f[2 * i_max - i], r_max - i + 1)
             # 初始时，左右端点分别为 i - f(i) + 1、i + f(i) - 1，使用中心拓展法继续向外拓展
-            # 注意：因为f[i]至少为1，所以 i 不能取 0、size - 1，否则会报错越界
+            # 注意：因为f[i]至少为1，所以 i 不能取 0、size - 1，否则会报错越界。
             # 因为头尾字符分别为'^'、'$'，所以不需要先判断下标，再判断是否相等。当遇到'^'或'$'时，会自动退出while循环，因为t中不存在它们的匹配字符
             while t[i - f[i]] == t[i + f[i]]:
                 # f[i]表示的是半径，所以只加1
                 f[i] += 1
             # 并没要求f[i] > r_max - i_max，而是要求i + f[i] - 1 比 r_max更靠右，能覆盖更多右侧的字符
             if i + f[i] - 1 > r_max:
-                r_max = i + f[i] - 1
                 i_max = i
+                r_max = i + f[i] - 1
             # 位置i可以向最终答案贡献 (f(i) - 1) / 2 向上取整 个回文，即 贡献 f(i) // 2 个回文
             res += f[i] // 2
         return res
 
 
 if __name__ == '__main__':
-    print(Solution().countSubstrings_2(s="aaa"))
+    print(Solution().countSubstrings("aaa"))
