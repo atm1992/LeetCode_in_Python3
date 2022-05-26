@@ -122,4 +122,3 @@ class Solution:
 
         dfs(head)
         return head
-
