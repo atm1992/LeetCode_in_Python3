@@ -81,15 +81,17 @@ class Solution:
         return None
 
     def getIntersectionNode_2(self, headA: ListNode, headB: ListNode) -> ListNode:
-        """双指针。
+        """
+        双指针。
         假设A链表的长度为m，B链表的长度为n，两者相交的长度为c，A链表不相交的长度为a，B链表不相交的长度为b，则 m = a + c, n = b + c.
         指针A从headA开始走，走到尾之后，再从headB开始走；指针B从headB开始走，走到尾之后，再从headA开始走。
         若a==b，则指针A和指针B在第一次走的时候就能相遇；若a!=b，则指针A和指针B会在第二次走的时候相遇，因为 a + c + b == b + c + a.
         若两个链表不相交，则a==b时，指针A和指针B会在第一次结束后同时走到None；a!=b时，指针A和指针B指针A和指针B会在第二次结束后同时走到None，因为 a + c + b + c == b + c + a + c.
         即使都为None，指针A和指针B也是相等的
         """
-        nodeA, nodeB = headA, headB
-        while nodeA != nodeB:
-            nodeA = headB if not nodeA else nodeA.next
-            nodeB = headA if not nodeB else nodeB.next
-        return nodeA
+        n1, n2 = headA, headB
+        # n1 == n2时，要么相交了，要么均为None(即 两个链表不相交)
+        while n1 != n2:
+            n1 = n1.next if n1 else headB
+            n2 = n2.next if n2 else headA
+        return n1
