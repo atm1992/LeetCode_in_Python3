@@ -20,7 +20,7 @@ s and t consist of lowercase English letters.
 
 Follow up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?
 """
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 class Solution:
@@ -28,6 +28,19 @@ class Solution:
         if len(s) != len(t):
             return False
         return Counter(s) == Counter(t)
+
+    def isAnagram_2(self, s: str, t: str) -> bool:
+        if len(s) != len(t):
+            return False
+        ch2cnt = defaultdict(int)
+        for s_ch, t_ch in zip(s, t):
+            ch2cnt[s_ch] += 1
+            ch2cnt[t_ch] -= 1
+            if ch2cnt[s_ch] == 0:
+                ch2cnt.pop(s_ch)
+            if t_ch in ch2cnt and ch2cnt[t_ch] == 0:
+                ch2cnt.pop(t_ch)
+        return not ch2cnt
 
 
 if __name__ == '__main__':
