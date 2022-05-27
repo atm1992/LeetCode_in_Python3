@@ -54,10 +54,12 @@ class RandomizedSet:
         if val not in self.num2idx:
             return False
         idx = self.num2idx[val]
+        # 即使 nums[idx] == nums[-1]，也能处理
         self.nums[idx] = self.nums[-1]
-        self.num2idx[self.nums[idx]] = idx
-        self.nums.pop()
+        self.num2idx[self.nums[-1]] = idx
         self.num2idx.pop(val)
+        # 每次pop的都是self.nums中的最后一个元素，所以时间复杂度为O(1)
+        self.nums.pop()
         self.size -= 1
         return True
 
