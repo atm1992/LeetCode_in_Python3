@@ -1,25 +1,25 @@
 # -*- coding: UTF-8 -*-
 """
 title: 每日温度
-Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead.
+请根据每日 气温 列表 temperatures ，重新生成一个列表，要求其对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。如果气温在这之后都不会升高，请在该位置用 0 来代替。
 
 
-Example 1:
-Input: temperatures = [73,74,75,71,69,72,76,73]
-Output: [1,1,4,2,1,1,0,0]
+示例 1:
+输入: temperatures = [73,74,75,71,69,72,76,73]
+输出: [1,1,4,2,1,1,0,0]
 
-Example 2:
-Input: temperatures = [30,40,50,60]
-Output: [1,1,1,0]
+示例 2:
+输入: temperatures = [30,40,50,60]
+输出: [1,1,1,0]
 
-Example 3:
-Input: temperatures = [30,60,90]
-Output: [1,1,0]
+示例 3:
+输入: temperatures = [30,60,90]
+输出: [1,1,0]
 
 
-Constraints:
+提示：
 1 <= temperatures.length <= 10^5
-30 <= temperatures[i] <= 100
+30 <= temperatures[i] <= 100
 """
 from typing import List
 
@@ -54,4 +54,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().dailyTemperatures(temperatures=[89, 62, 70, 58, 47, 47, 46, 76, 100, 70]))
+    print(Solution().dailyTemperatures_2([89, 62, 70, 58, 47, 47, 46, 76, 100, 70]))
