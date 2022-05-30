@@ -31,7 +31,6 @@ circles[i].length == 3
 1 <= xi, yi <= 100
 1 <= ri <= min(xi, yi)
 """
-
 from typing import List
 
 
