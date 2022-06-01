@@ -164,15 +164,13 @@ class Codec_3:
             # queue不为空的情况下，vals一定不为空
             val = vals.popleft()
             if val != '#':
-                left_node = TreeNode(int(val))
-                node.left = left_node
-                queue.append(left_node)
+                queue.append(TreeNode(int(val)))
+                node.left = queue[-1]
 
             val = vals.popleft()
             if val != '#':
-                right_node = TreeNode(int(val))
-                node.right = right_node
-                queue.append(right_node)
+                queue.append(TreeNode(int(val)))
+                node.right = queue[-1]
         return root
 
 # Your Codec object will be instantiated and called as such:
