@@ -36,16 +36,15 @@ class TreeNode:
 class Solution:
     def rightSideView(self, root: TreeNode) -> List[int]:
         """层次遍历"""
-        if not root:
-            return []
         res = []
+        if not root:
+            return res
         queue = deque([root])
         while queue:
+            res.append(queue[-1].val)
             size = len(queue)
-            for i in range(size):
+            for _ in range(size):
                 node = queue.popleft()
-                if i == size - 1:
-                    res.append(node.val)
                 if node.left:
                     queue.append(node.left)
                 if node.right:

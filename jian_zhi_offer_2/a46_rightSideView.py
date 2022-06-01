@@ -1,24 +1,28 @@
 # -*- coding: UTF-8 -*-
 """
-title: 二叉树最底层最左边的值
-给定一个二叉树的 根节点 root，请找出该二叉树的 最底层 最左边 节点的值。
-假设二叉树中至少有一个节点。
+title: 二叉树的右侧视图
+给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
 
 
 示例 1:
-输入: root = [2,1,3]
-输出: 1
+输入: [1,2,3,null,5,null,4]
+输出: [1,3,4]
 
 示例 2:
-输入: [1,2,3,4,null,5,6,null,null,7]
-输出: 7
+输入: [1,null,3]
+输出: [1,3]
+
+示例 3:
+输入: []
+输出: []
 
 
 提示:
-二叉树的节点个数的范围是 [1, 10^4]
--2^31 <= Node.val <= 2^31 - 1 
+二叉树的节点个数的范围是 [0, 100]
+-100 <= Node.val <= 100 
 """
 from collections import deque
+from typing import List
 
 
 # Definition for a binary tree node.
@@ -30,11 +34,13 @@ class TreeNode:
 
 
 class Solution:
-    def findBottomLeftValue(self, root: TreeNode) -> int:
-        res = root.val
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        res = []
+        if not root:
+            return res
         queue = deque([root])
         while queue:
-            res = queue[0].val
+            res.append(queue[-1].val)
             size = len(queue)
             for _ in range(size):
                 node = queue.popleft()
