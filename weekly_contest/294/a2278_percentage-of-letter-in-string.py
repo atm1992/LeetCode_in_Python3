@@ -26,4 +26,9 @@ letter is a lowercase English letter.
 
 class Solution:
     def percentageLetter(self, s: str, letter: str) -> int:
-        pass
+        """模拟"""
+        return s.count(letter) * 100 // len(s)
+
+
+if __name__ == '__main__':
+    print(Solution().percentageLetter(s="jjjj", letter="k"))

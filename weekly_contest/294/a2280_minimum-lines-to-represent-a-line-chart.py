@@ -34,4 +34,18 @@ from typing import List
 
 class Solution:
     def minimumLines(self, stockPrices: List[List[int]]) -> int:
-        pass
+        """枚举，判断三点共线"""
+        n = len(stockPrices)
+        if n < 2:
+            return 0
+        stockPrices.sort()
+        res = 1
+        for i in range(2, n):
+            a, b, c = stockPrices[i - 2:i + 1]
+            if (b[1] - a[1]) * (c[0] - b[0]) != (b[0] - a[0]) * (c[1] - b[1]):
+                res += 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().minimumLines([[3, 4], [1, 2], [7, 8], [2, 3]]))

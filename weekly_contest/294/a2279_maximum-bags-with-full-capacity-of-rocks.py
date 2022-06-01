@@ -40,4 +40,22 @@ from typing import List
 
 class Solution:
     def maximumBags(self, capacity: List[int], rocks: List[int], additionalRocks: int) -> int:
-        pass
+        """贪心"""
+        res = 0
+        diff = []
+        for c, r in zip(capacity, rocks):
+            if c == r:
+                res += 1
+            else:
+                diff.append(c - r)
+        diff.sort()
+        for d in diff:
+            if d > additionalRocks:
+                break
+            additionalRocks -= d
+            res += 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().maximumBags(capacity=[2, 3, 4, 5], rocks=[1, 2, 4, 4], additionalRocks=2))
