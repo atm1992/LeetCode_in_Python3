@@ -31,6 +31,7 @@ title: 从根节点到叶节点的路径数字之和
 0 <= Node.val <= 9
 树的深度不超过 10
 """
+from collections import deque
 
 
 # Definition for a binary tree node.
@@ -43,4 +44,30 @@ class TreeNode:
 
 class Solution:
     def sumNumbers(self, root: TreeNode) -> int:
-        pass
+        """BFS"""
+        if not root:
+            return 0
+        res = 0
+        queue = deque([(root, root.val)])
+        while queue:
+            node, val = queue.popleft()
+            if not node.left and not node.right:
+                res += val
+            else:
+                if node.left:
+                    queue.append((node.left, val * 10 + node.left.val))
+                if node.right:
+                    queue.append((node.right, val * 10 + node.right.val))
+        return res
+
+    def sumNumbers_2(self, root: TreeNode) -> int:
+        """DFS"""
+        def dfs(root: TreeNode, pre_total: int) -> int:
+            if not root:
+                return 0
+            total = pre_total * 10 + root.val
+            if not root.left and not root.right:
+                return total
+            else:
+                return dfs(root.left, total) + dfs(root.right, total)
+        return dfs(root, 0)

@@ -31,6 +31,7 @@ The number of nodes in the tree is in the range [1, 1000].
 0 <= Node.val <= 9
 The depth of the tree will not exceed 10.
 """
+from collections import deque
 from typing import List, Optional
 
 
@@ -44,16 +45,35 @@ class TreeNode:
 
 class Solution:
     def sumNumbers(self, root: TreeNode) -> int:
-        def dfs(node: TreeNode = root, last_total: int = 0) -> int:
-            if not node:
-                return 0
-            total = last_total * 10 + node.val
+        """BFS"""
+        if not root:
+            return 0
+        res = 0
+        queue = deque([(root, root.val)])
+        while queue:
+            node, val = queue.popleft()
             if not node.left and not node.right:
+                res += val
+            else:
+                if node.left:
+                    queue.append((node.left, val * 10 + node.left.val))
+                if node.right:
+                    queue.append((node.right, val * 10 + node.right.val))
+        return res
+
+    def sumNumbers_2(self, root: TreeNode) -> int:
+        """DFS"""
+
+        def dfs(root: TreeNode, pre_total: int) -> int:
+            if not root:
+                return 0
+            total = pre_total * 10 + root.val
+            if not root.left and not root.right:
                 return total
             else:
-                return dfs(node.left, total) + dfs(node.right, total)
+                return dfs(root.left, total) + dfs(root.right, total)
 
-        return dfs()
+        return dfs(root, 0)
 
 
 def build_tree(vals: List[int]) -> Optional[TreeNode]:

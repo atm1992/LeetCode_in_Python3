@@ -56,22 +56,21 @@ class Solution:
         上个方法中存在大量重复计算。可使用前缀和进行优化，计算从根节点root到当前节点cur_node这条路径上所有节点到根节点的前缀和，
         然后计算以当前节点cur_node为路径的终止节点，在前缀和中查找所有的起始节点。
         """
-        pre_sum = defaultdict(int)
+        sum2cnt = defaultdict(int)
         # 空路径的前缀和为0，表示的是从根节点(含)到当前节点(含)的路径和恰好为targetSum
-        pre_sum[0] = 1
+        sum2cnt[0] = 1
 
-        def dfs(node: Optional[TreeNode], cur_sum: int) -> int:
+        def dfs(node: Optional[TreeNode], pre_sum: int) -> int:
             """先序遍历从根节点到叶节点的每一条路径，对每条路径（从根节点到叶节点）而言，问题就简化成了求数组中和为targetSum的连续子数组数量"""
             if not node:
                 return 0
-            res = 0
-            cur_sum += node.val
-            res += pre_sum[cur_sum - targetSum]
-            pre_sum[cur_sum] += 1
-            res += dfs(node.left, cur_sum)
-            res += dfs(node.right, cur_sum)
-            # 撤销对pre_sum的修改。避免左孩子节点路径上对pre_sum的修改，影响到右孩子节点路径上的计算
-            pre_sum[cur_sum] -= 1
-            return res
+            pre_sum += node.val
+            cnt = sum2cnt[pre_sum - targetSum]
+            sum2cnt[pre_sum] += 1
+            cnt += dfs(node.left, pre_sum)
+            cnt += dfs(node.right, pre_sum)
+            # 撤销对sum2cnt的修改。避免左孩子节点路径上对sum2cnt的修改，影响到右孩子节点路径上的计算
+            sum2cnt[pre_sum] -= 1
+            return cnt
 
         return dfs(root, 0)
