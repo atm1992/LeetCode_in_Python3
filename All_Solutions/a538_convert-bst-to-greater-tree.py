@@ -38,35 +38,36 @@ class Solution:
     def convertBST(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         """反序中序遍历。右孩子节点 - 根节点 - 左孩子节点"""
 
-        def dfs(node: Optional[TreeNode], cur_sum: int) -> int:
+        def dfs(node: TreeNode) -> None:
+            nonlocal total
             if not node:
-                return cur_sum
-            node.val += dfs(node.right, cur_sum)
-            return dfs(node.left, node.val)
+                return
+            dfs(node.right)
+            total += node.val
+            node.val = total
+            dfs(node.left)
 
-        dfs(root, 0)
+        total = 0
+        dfs(root)
         return root
 
     def convertBST_2(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         """Morris遍历。将空间复杂度降低为O(1)，没有左子树的节点只会被访问一次，有左子树的节点会被访问两次"""
         total = 0
-        node = root
-        while node:
-            if not node.right:
-                node.val += total
-                total = node.val
-                node = node.left
-            else:
-                successor = node.right
-                while successor.left and successor.left != node:
+        cur_node = root
+        while cur_node:
+            if cur_node.right:
+                successor = cur_node.right
+                while successor.left and successor.left != cur_node:
                     successor = successor.left
                 if not successor.left:
-                    successor.left = node
-                    node = node.right
+                    successor.left = cur_node
+                    cur_node = cur_node.right
+                    continue
                 else:
                     successor.left = None
-                    node.val += total
-                    total = node.val
-                    node = node.left
+            total += cur_node.val
+            cur_node.val = total
+            cur_node = cur_node.left
         return root
 
