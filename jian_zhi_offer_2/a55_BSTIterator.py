@@ -47,12 +47,51 @@ class TreeNode:
 
 
 class BSTIterator:
+    """使用栈来通过迭代的方式对二叉搜索树做中序遍历，无需预先计算出中序遍历的全部结果，只需实时维护当前栈的情况即可。
+        初始化和hasNext()的时间复杂度为O(1)，next()的均摊时间复杂度为O(1)。空间复杂度为O(h)"""
 
     def __init__(self, root: TreeNode):
+        self.cur_node = root
+        self.stack = []
 
     def next(self) -> int:
+        while self.cur_node:
+            self.stack.append(self.cur_node)
+            self.cur_node = self.cur_node.left
+        # 可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 的中序遍历中至少存在一个下一个数字。
+        self.cur_node = self.stack.pop()
+        res = self.cur_node.val
+        self.cur_node = self.cur_node.right
+        return res
 
     def hasNext(self) -> bool:
+        return bool(self.cur_node) or bool(self.stack)
+
+
+class BSTIterator2:
+    """使用Morris遍历进行中序遍历。初始化和hasNext()的时间复杂度为O(1)，next()的均摊时间复杂度为O(1)。空间复杂度为O(1)"""
+
+    def __init__(self, root: TreeNode):
+        self.cur_node = root
+
+    def next(self) -> int:
+        # 可以假设 next() 调用总是有效的，也就是说，当调用 next() 时，BST 的中序遍历中至少存在一个下一个数字。
+        while self.cur_node.left:
+            node = self.cur_node.left
+            while node.right and node.right != self.cur_node:
+                node = node.right
+            if node.right == self.cur_node:
+                node.right = None
+                break
+            else:
+                node.right = self.cur_node
+                self.cur_node = self.cur_node.left
+        res = self.cur_node.val
+        self.cur_node = self.cur_node.right
+        return res
+
+    def hasNext(self) -> bool:
+        return bool(self.cur_node)
 
 # Your BSTIterator object will be instantiated and called as such:
 # obj = BSTIterator(root)
