@@ -1,24 +1,25 @@
 # -*- coding: UTF-8 -*-
 """
-title: 存在重复元素 III
-Given an integer array nums and two integers k and t, return true if there are two distinct indices i and j in the array such that abs(nums[i] - nums[j]) <= t and abs(i - j) <= k.
+title: 值和下标之差都在给定的范围内
+给你一个整数数组 nums 和两个整数 k 和 t 。请你判断是否存在 两个不同下标 i 和 j，使得 abs(nums[i] - nums[j]) <= t ，同时又满足 abs(i - j) <= k 。
+如果存在则返回 true，不存在返回 false。
 
 
-Example 1:
-Input: nums = [1,2,3,1], k = 3, t = 0
-Output: true
+示例 1：
+输入：nums = [1,2,3,1], k = 3, t = 0
+输出：true
 
-Example 2:
-Input: nums = [1,0,1,1], k = 1, t = 2
-Output: true
+示例 2：
+输入：nums = [1,0,1,1], k = 1, t = 2
+输出：true
 
-Example 3:
-Input: nums = [1,5,9,1,5,9], k = 2, t = 3
-Output: false
+示例 3：
+输入：nums = [1,5,9,1,5,9], k = 2, t = 3
+输出：false
 
 
-Constraints:
-1 <= nums.length <= 2 * 10^4
+提示：
+0 <= nums.length <= 2 * 10^4
 -2^31 <= nums[i] <= 2^31 - 1
 0 <= k <= 10^4
 0 <= t <= 2^31 - 1
@@ -28,7 +29,7 @@ from typing import List
 
 class Solution:
     def containsNearbyAlmostDuplicate(self, nums: List[int], k: int, t: int) -> bool:
-        """
+        """"
         利用桶排序的思想，对元素按大小进行分桶。
         桶ID为：nums[i] // (t + 1)
         假设t=9，则 0 ~ 9 会被分配到id为 0 的桶； -10 ~ -1 会被分配到id为 -1 的桶 …… 。abs(-10 - -1) == 9 <= t
@@ -58,9 +59,10 @@ class Solution:
             """
             return num // (t + 1)
 
+        if len(nums) < 2 or k == 0:
+            return False
         id2num = {}
-        for i in range(len(nums)):
-            num = nums[i]
+        for idx, num in enumerate(nums):
             id = get_id(num)
             if id in id2num:
                 return True
@@ -69,10 +71,6 @@ class Solution:
             if id + 1 in id2num and abs(id2num[id + 1] - num) <= t:
                 return True
             id2num[id] = num
-            if i >= k:
-                id2num.pop(get_id(nums[i - k]))
+            if idx >= k:
+                id2num.pop(get_id(nums[idx - k]))
         return False
-
-
-if __name__ == '__main__':
-    print(Solution().containsNearbyAlmostDuplicate(nums=[1, 5, 9, 1, 5, 9], k=2, t=3))
