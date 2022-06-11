@@ -18,11 +18,11 @@ Constraints:
 k is in the range [1, the number of unique elements in the array].
 It is guaranteed that the answer is unique.
 
-Follow up: Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+Follow up: Your algorithm's time complexity must be better than O(nlogn), where n is the array's size.
 """
+import heapq
 from collections import Counter
 from typing import List
-import heapq
 
 
 class Solution:
@@ -56,4 +56,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().topKFrequent_2(nums=[4,1,-1,2,-1,2,3], k=2))
+    print(Solution().topKFrequent_2(nums=[4, 1, -1, 2, -1, 2, 3], k=2))
