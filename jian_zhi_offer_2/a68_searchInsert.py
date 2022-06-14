@@ -37,4 +37,33 @@ from typing import List
 
 class Solution:
     def searchInsert(self, nums: List[int], target: int) -> int:
-        pass
+        """二分查找第一个大于等于target的元素下标"""
+        n = len(nums)
+        res = n
+        left, right = 0, n - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] >= target:
+                res = mid
+                right = mid - 1
+            else:
+                left = mid + 1
+        return res
+
+    def searchInsert_2(self, nums: List[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] > target:
+                right = mid - 1
+            else:
+                left = mid + 1
+        # 不确定是返回left还是right，可以使用特例验证下。例如：nums = [1,3,5,6], target = 2
+        # 通常二分查找中，若问第一个，则返回left；若问最后一个，则返回right。
+        return left
+
+
+if __name__ == '__main__':
+    print(Solution().searchInsert(nums=[1, 3, 5, 6], target=7))
