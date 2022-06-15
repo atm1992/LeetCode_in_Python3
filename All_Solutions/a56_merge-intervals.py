@@ -25,15 +25,12 @@ from typing import List
 
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        """原始的intervals数组并非有序，所以要先按区间的左端点升序"""
+        intervals.sort()
         res = []
-        intervals.sort(key=lambda x: x[0])
         for interval in intervals:
-            # 若当前的res数组为空 或 当前区间interval与上一个区间不重合，则直接append
             if not res or res[-1][1] < interval[0]:
                 res.append(interval)
             else:
-                # 否则将当前区间interval合并到上一个区间
                 res[-1][1] = max(res[-1][1], interval[1])
         return res
 
