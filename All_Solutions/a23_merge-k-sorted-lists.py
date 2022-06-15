@@ -34,8 +34,8 @@ k == lists.length
 lists[i] is sorted in ascending order.
 The sum of lists[i].length won't exceed 10^4.
 """
-from typing import List
 import heapq
+from typing import List
 
 
 # Definition for singly-linked list.
@@ -61,35 +61,34 @@ class Solution:
     def merge_two_lists(self, a: ListNode, b: ListNode) -> ListNode:
         if not a or not b:
             return a if a else b
-        dummy_node = ListNode(-1)
-        cur = dummy_node
+        dummy_head = ListNode()
+        pre = dummy_head
         while a and b:
             if a.val <= b.val:
-                cur.next = a
+                pre.next = a
                 a = a.next
             else:
-                cur.next = b
+                pre.next = b
                 b = b.next
-            cur = cur.next
-        cur.next = a if a else b
-        return dummy_node.next
+            pre = pre.next
+        pre.next = a if a else b
+        return dummy_head.next
 
 
 class Solution2:
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        """使用优先队列合并"""
-        heap = []
+        """优先队列(小根堆)"""
+        queue = []
         for idx, node in enumerate(lists):
             if node:
-                # heapq 构建的是 最小堆。node.val相等的情况下，会再去比较谁的idx更小，因此得到了一个稳定的堆排序
-                heapq.heappush(heap, (node.val, idx, node))
-        dummy_node = ListNode(-1)
-        cur = dummy_node
-        while heap:
-            item = heapq.heappop(heap)
-            node = item[2]
-            cur.next = node
-            cur = cur.next
+                # node.val相等的情况下，会再去比较谁的idx更小，因此得到一个稳定性排序
+                heapq.heappush(queue, (node.val, idx, node))
+        dummy_head = ListNode()
+        pre = dummy_head
+        while queue:
+            _, idx, node = heapq.heappop(queue)
             if node.next:
-                heapq.heappush(heap, (node.next.val, item[1], node.next))
-        return dummy_node.next
+                heapq.heappush(queue, (node.next.val, idx, node.next))
+            pre.next = node
+            pre = pre.next
+        return dummy_head.next
