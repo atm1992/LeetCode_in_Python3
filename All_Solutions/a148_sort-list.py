@@ -80,7 +80,7 @@ class Solution:
             pre, cur = res, res.next
             # cur指针一直在向后移。移动到整个链表的最末尾时跳出循环
             while cur:
-                # h1为前一段待合并链表的头结点，h2为后一段待合并链表的头结点
+                # h1为前一段待合并链表的头节点，h2为后一段待合并链表的头节点
                 h1 = cur
                 i = intv
                 # 退出循环时，i==0 或 cur为None
@@ -99,7 +99,6 @@ class Solution:
                 # 接下来，合并两段有序链表
                 # 前一段待合并链表的长度肯定为intv，而后一段待合并链表的长度可能不足intv
                 l1, l2 = intv, intv - i
-                # 跳出循环时，l1、l2中至少一个为0
                 while l1 > 0 and l2 > 0:
                     if h1.val <= h2.val:
                         pre.next = h1
@@ -110,12 +109,12 @@ class Solution:
                         h2 = h2.next
                         l2 -= 1
                     pre = pre.next
-                # 在pre的后面接上剩余部分
+                # 在pre的后面接上剩余部分。注意：判断的是 if l1 > 0，而不是 if h1
                 pre.next = h1 if l1 > 0 else h2
-                # 将pre指针移动到已合并链表的最后一个节点上
+                # 将pre移动到已合并链表中的最后一个节点。此时的l1、l2中，有一个为0
                 for _ in range(l1 + l2):
                     pre = pre.next
-                # cur当前指向的是下一次待合并链表的第一个节点
+                # 加上这行代码的原因：如果之后的链表长度不足intv(只有待合并链表中的前一个)，那么就会break出去，最后这一小段链表就不会被连接到pre的后边
                 pre.next = cur
             intv *= 2
         return res.next
