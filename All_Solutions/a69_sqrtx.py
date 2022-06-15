@@ -23,18 +23,16 @@ Constraints:
 
 class Solution:
     def mySqrt(self, x: int) -> int:
-        """二分查找。在0~x之间查找小于等于res的最后一个int"""
+        """二分查找"""
         left, right = 0, x
-        while left <= right:
-            mid = (left + right) // 2
-            tmp = mid * mid
-            if tmp == x:
-                return mid
-            elif tmp < x:
-                left = mid + 1
-            else:
+        while left < right:
+            mid = left + (right - left + 1) // 2
+            # 防止 mid * mid 溢出
+            if mid > x / mid:
                 right = mid - 1
-        return right
+            else:
+                left = mid
+        return left
 
 
 if __name__ == '__main__':
