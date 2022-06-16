@@ -27,60 +27,18 @@ from typing import List
 
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        """回溯。会超时"""
-        n = len(nums)
-        res = 0
-
-        def dfs(idx: int = 0, path: list = []) -> None:
-            nonlocal res
-            if idx >= n:
-                res = max(res, sum(path))
-            for i in range(idx, n):
-                path.append(nums[i])
-                dfs(i + 2)
-                path.pop()
-
-        dfs()
-        return res
-
-    def rob_2(self, nums: List[int]) -> int:
         """
         动态规划。
-        dp[i] 表示前 i 间房屋能偷窃到的最高总金额。状态转移方程为：dp[i] = max(dp[i-2] + nums[i], dp[i-1])
-        边界条件：
-        dp[0] = nums[0]      # 只有一间房
-        dp[1] = max(nums[0], nums[1])           # 只有两间房
+        dp[i] 表示偷窃前i间房屋所能获得的最高金额，状态转移方程：dp[i] = max(dp[i-2] + nums[i], dp[i-1])
+        边界条件：dp[0] = nums[0], dp[1] = max(nums[0], nums[1])
+        由于dp[i]仅与 dp[i-1]、dp[i-2] 有关，所以可使用滚动数组的思想，将空间复杂度优化到 O(1)
         """
-        n = len(nums)
-        if n == 0:
-            return 0
-        elif n == 1:
-            return nums[0]
-        elif n == 2:
-            return max(nums)
-        dp = [0] * n
-        dp[0] = nums[0]
-        dp[1] = max(nums[:2])
-        for i in range(2, n):
-            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1])
-        return dp[n - 1]
-
-    def rob_3(self, nums: List[int]) -> int:
-        """
-        动态规划。使用滚动数组降低空间复杂度
-        """
-        n = len(nums)
-        if n == 0:
-            return 0
-        elif n == 1:
-            return nums[0]
-        elif n == 2:
-            return max(nums)
-        first, second = nums[0], max(nums[0], nums[1])
-        for i in range(2, n):
-            first, second = second, max(first + nums[i], second)
-        return second
+        # 1 <= nums.length
+        pre_2, pre_1 = 0, nums[0]
+        for i in range(1, len(nums)):
+            pre_2, pre_1 = pre_1, max(pre_2 + nums[i], pre_1)
+        return pre_1
 
 
 if __name__ == '__main__':
-    print(Solution().rob_2([2, 7, 9, 3, 1]))
+    print(Solution().rob([2, 7, 9, 3, 1]))
