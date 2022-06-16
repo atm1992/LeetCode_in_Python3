@@ -38,33 +38,30 @@ from typing import List
 
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        """递归回溯"""
+        """回溯"""
 
-        def dfs(target: int, combination: List[int], idx: int) -> None:
-            if target == 0:
-                res.append(combination)
+        def dfs(i: int, path: List[int], total: int) -> None:
+            if total == target:
+                # 因为每次传入的path都是一个新的path，回溯时不会再修改这个path，所以无需 append(path[:])
+                res.append(path)
                 return
-            # 对idx == n的判断必须放在target == 0的判断之后，考虑特殊情况：把最后一个元素(n-1)加入combination之后，idx将变为n，
-            # 如果最后一个元素(n-1)刚好是符合条件的，idx == n的判断会直接return，从而丢弃了该结果。
-            # 使用target < candidates[idx]，相比使用target < 0，可以大大减少运行时间。要多注意剪枝
-            if idx == n or target < candidates[idx]:
+            if i == n or total + candidates[i] > target:
                 return
-            # 对于任意一个元素，最多可以加入max_times次到combination中
-            number = candidates[idx]
-            max_times = target // number
-            # 最先考虑加入max_times次的情况，最后再考虑不加入的情况。这样做的好处是：最终返回结果是升序的（先按返回结果数组的第一个值升序，再按第二个值升序 ……）
-            for i in range(max_times, -1, -1):
-                # 因为这里没有直接修改combination，所以无需在回溯前记录combination长度，回溯后再恢复combination长度
-                dfs(target - number * i, combination + [number] * i, idx + 1)
+            num = candidates[i]
+            # 对于任意一个元素，最多可以加入max_cnt次到path中
+            max_cnt = (target - total) // num
+            # 最先考虑加入max_cnt次的情况，最后再考虑不加入的情况。这样做的好处是：最终返回结果是升序的（先按返回结果数组的第一个值升序，再按第二个值升序 ……）
+            for cnt in range(max_cnt, -1, -1):
+                dfs(i + 1, path + [num] * cnt, total + num * cnt)
 
+        res = []
         candidates.sort()
         n = len(candidates)
-        res = []
-        # 从第0个元素开始选择。对于任意一个元素，都只有两种情况：加入到某个combination or 不加入某个combination
-        dfs(target, [], 0)
+        dfs(0, [], 0)
         return res
 
     def combinationSum_2(self, candidates: List[int], target: int) -> List[List[int]]:
+        """回溯"""
 
         def dfs(i: int, path: List[int], total: int) -> None:
             if total == target:
