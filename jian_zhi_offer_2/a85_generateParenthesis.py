@@ -1,19 +1,19 @@
 # -*- coding: UTF-8 -*-
 """
-title: 括号生成。
-Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+title: 生成匹配的括号
+正整数 n 代表生成括号的对数，请设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
 
 
-Example 1:
-Input: n = 3
-Output: ["((()))","(()())","(())()","()(())","()()()"]
+示例 1：
+输入：n = 3
+输出：["((()))","(()())","(())()","()(())","()()()"]
 
-Example 2:
-Input: n = 1
-Output: ["()"]
+示例 2：
+输入：n = 1
+输出：["()"]
 
 
-Constraints:
+提示：
 1 <= n <= 8
 """
 from typing import List
@@ -60,6 +60,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    s = Solution()
-    for n in range(1, 9):
-        print(n, s.generateParenthesis(n))
+    print(Solution().generateParenthesis(3))

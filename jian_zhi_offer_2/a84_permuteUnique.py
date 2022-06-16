@@ -25,6 +25,7 @@ from typing import List
 
 class Solution:
     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        """回溯"""
         def dfs(path: List[int], visited: int) -> None:
             if len(path) == n:
                 res.append(path[:])
