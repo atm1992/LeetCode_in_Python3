@@ -1,13 +1,12 @@
 # -*- coding: UTF-8 -*-
 """
-title: 组合
-Given two integers n and k, return all possible combinations of k numbers out of the range [1, n].
-You may return the answer in any order.
+title: 含有 k 个元素的组合
+给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
 
 
-Example 1:
-Input: n = 4, k = 2
-Output:
+示例 1:
+输入: n = 4, k = 2
+输出:
 [
   [2,4],
   [3,4],
@@ -17,12 +16,12 @@ Output:
   [1,4],
 ]
 
-Example 2:
-Input: n = 1, k = 1
-Output: [[1]]
+示例 2:
+输入: n = 1, k = 1
+输出: [[1]]
 
 
-Constraints:
+提示:
 1 <= n <= 20
 1 <= k <= n
 """
@@ -79,4 +78,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().combine(n=20, k=5))
+    print(Solution().combine_2(n=5, k=3))
