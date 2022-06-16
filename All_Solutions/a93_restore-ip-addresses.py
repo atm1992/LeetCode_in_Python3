@@ -35,36 +35,28 @@ from typing import List
 
 class Solution:
     def restoreIpAddresses(self, s: str) -> List[str]:
-        """回溯"""
+        """回溯 + 剪枝"""
 
-        def dfs(idx: int = 0, seg_id: int = 0, path: list = []):
-            # 若已找到4段IP地址，并且刚好遍历完整个字符串，则表示找到了一种答案
-            if seg_id == SEG_COUNT:
-                if idx == n:
+        def dfs(i: int, path: List[str], cnt: int) -> None:
+            if cnt == 4:
+                if i == n:
                     res.append('.'.join(path))
-                # 无论是否刚好遍历完整个字符串，此时都回溯
                 return
-            # 字符串剩余长度不符合要求
-            if not SEG_COUNT - seg_id <= n - idx <= (SEG_COUNT - seg_id) * 3:
+            # 剪枝
+            if not 4 - cnt <= n - i <= (4 - cnt) * 3:
                 return
-            # 若当前字符为0，则只能单独成一段
-            if s[idx] == '0':
-                path.append('0')
-                dfs(idx + 1, seg_id + 1, path)
+            for j in range(i, n):
+                if int(s[i:j + 1]) > 255:
+                    break
+                path.append(s[i:j + 1])
+                dfs(j + 1, path, cnt + 1)
                 path.pop()
-            # 一般情况
-            for end in range(idx + 1, n + 1):
-                if 0 < int(s[idx:end]) <= 255:
-                    path.append(s[idx:end])
-                    dfs(end, seg_id + 1, path)
-                    path.pop()
-                else:
+                if j == i and s[j] == '0':
                     break
 
-        n = len(s)
-        SEG_COUNT = 4
         res = []
-        dfs()
+        n = len(s)
+        dfs(0, [], 0)
         return res
 
 
