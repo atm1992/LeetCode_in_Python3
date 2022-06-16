@@ -1,40 +1,36 @@
 # -*- coding: UTF-8 -*-
 """
-title: 组合总和
-Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
-The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different.
-It is guaranteed that the number of unique combinations that sum up to target is less than 150 combinations for the given input.
+title: 允许重复选择元素的组合
+给定一个无重复元素的正整数数组 candidates 和一个正整数 target ，找出 candidates 中所有可以使数字和为目标数 target 的唯一组合。
+candidates 中的数字可以无限制重复被选取。如果至少一个所选数字数量不同，则两种组合是不同的。 
+对于给定的输入，保证和为 target 的唯一组合数少于 150 个。
 
 
-Example 1:
-Input: candidates = [2,3,6,7], target = 7
-Output: [[2,2,3],[7]]
-Explanation:
-2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
-7 is a candidate, and 7 = 7.
-These are the only two combinations.
+示例 1：
+输入: candidates = [2,3,6,7], target = 7
+输出: [[7],[2,2,3]]
 
-Example 2:
-Input: candidates = [2,3,5], target = 8
-Output: [[2,2,2,2],[2,3,3],[3,5]]
+示例 2：
+输入: candidates = [2,3,5], target = 8
+输出: [[2,2,2,2],[2,3,3],[3,5]]
 
-Example 3:
-Input: candidates = [2], target = 1
-Output: []
+示例 3：
+输入: candidates = [2], target = 1
+输出: []
 
-Example 4:
-Input: candidates = [1], target = 1
-Output: [[1]]
+示例 4：
+输入: candidates = [1], target = 1
+输出: [[1]]
 
-Example 5:
-Input: candidates = [1], target = 2
-Output: [[1,1]]
+示例 5：
+输入: candidates = [1], target = 2
+输出: [[1,1]]
 
 
-Constraints:
+提示：
 1 <= candidates.length <= 30
 1 <= candidates[i] <= 200
-All elements of candidates are distinct.
+candidate 中的每个元素都是独一无二的。
 1 <= target <= 500
 """
 from typing import List
@@ -93,4 +89,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().combinationSum(candidates=[2, 3, 6, 7], target=7))
+    print(Solution().combinationSum(candidates=[2, 3, 5], target=8))
