@@ -1,27 +1,27 @@
 # -*- coding: UTF-8 -*-
 """
-title: 分割回文串 II
-Given a string s, partition s such that every substring of the partition is a palindrome.
-Return the minimum cuts needed for a palindrome partitioning of s.
+title: 最少回文分割
+给定一个字符串 s，请将 s 分割成一些子串，使每个子串都是回文串。
+返回符合要求的 最少分割次数 。
 
 
-Example 1:
-Input: s = "aab"
-Output: 1
-Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+示例 1：
+输入：s = "aab"
+输出：1
+解释：只需一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
 
-Example 2:
-Input: s = "a"
-Output: 0
+示例 2：
+输入：s = "a"
+输出：0
 
-Example 3:
-Input: s = "ab"
-Output: 1
+示例 3：
+输入：s = "ab"
+输出：1
 
 
-Constraints:
+提示：
 1 <= s.length <= 2000
-s consists of lowercase English letters only.
+s 仅由小写英文字母组成
 """
 
 
