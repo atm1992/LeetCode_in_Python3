@@ -42,5 +42,49 @@ from typing import List
 
 class Solution:
     def sellingWood(self, m: int, n: int, prices: List[List[int]]) -> int:
-        pass
+        """
+        动态规划
+        dp[i][j] 表示将一块高i、宽j的木块，切割后能得到的最多钱数。最终答案为dp[m][n]
+        分为3种切割方式：
+        1、不切割，直接售卖，如果prices中存在的话，不存在的话，价格算作0
+        2、水平切割，将高i切分为k和i-k，此时 dp[i][j] = max(dp[k][j] + dp[i-k][j])，1 <= k <= i-1
+        3、垂直切割，将宽j切分为k和j-k，此时 dp[i][j] = max(dp[i][k] + dp[i][j-k])，1 <= k <= j-1
+        上述3种情况取最大值，即为最终的 dp[i][j]
+        """
+        shape2price = {(h, w): p for h, w, p in prices}
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                r1 = shape2price.get((i, j), 0)
+                r2 = 0
+                for k in range(1, i):
+                    r2 = max(r2, dp[k][j] + dp[i - k][j])
+                r3 = 0
+                for k in range(1, j):
+                    r3 = max(r3, dp[i][k] + dp[i][j - k])
+                dp[i][j] = max(r1, r2, r3)
+        return dp[-1][-1]
 
+    def sellingWood_2(self, m: int, n: int, prices: List[List[int]]) -> int:
+        """
+        动态规划。优化方法一
+        1、1 <= k <= i-1、1 <= k <= j-1，根据对称性，可以只枚举一半，即 1 <= k <= i//2、1 <= k <= j//2
+        2、shape2price 可以直接记录到dp二维数组中，不需要单独使用一个dict
+        """
+        dp = [[0] * (n + 1) for _ in range(m + 1)]
+        for h, w, p in prices:
+            dp[h][w] = p
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                r2 = 0
+                for k in range(1, i // 2 + 1):
+                    r2 = max(r2, dp[k][j] + dp[i - k][j])
+                r3 = 0
+                for k in range(1, j // 2 + 1):
+                    r3 = max(r3, dp[i][k] + dp[i][j - k])
+                dp[i][j] = max(dp[i][j], r2, r3)
+        return dp[-1][-1]
+
+
+if __name__ == '__main__':
+    print(Solution().sellingWood(m=4, n=6, prices=[[3, 2, 10], [1, 4, 2], [4, 1, 3]]))

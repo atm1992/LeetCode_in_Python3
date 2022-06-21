@@ -32,4 +32,21 @@ s[i] is either '0' or '1'.
 
 class Solution:
     def longestSubsequence(self, s: str, k: int) -> int:
-        pass
+        """
+        贪心
+        先在字符串s的右侧中找到小于等于k的最长后缀，然后在这个最长后缀的前面拼接尽可能多的前导0
+        分为以下3种情况：   假设字符串s的长度为m，数字k对应的二进制字符串的长度为n
+        1、若 m < n，则小于等于 k 的最长二进制子序列就是字符串s本身，即 答案为 m
+        2、若 字符串s的右侧n个字符对应的数值小于等于k，则 答案为 n + 前面所有0的个数
+        3、若 字符串s的右侧n个字符对应的数值大于k，则可取右侧n-1个字符(此时右侧第n个字符一定为1)，然后再拼接前面所有的0
+        """
+        m, n = len(s), len(bin(k)) - 2
+        if m < n:
+            return m
+        res = n if int(s[-n:], 2) <= k else n - 1
+        # [start, end)
+        return res + s.count('0', 0, m - n)
+
+
+if __name__ == '__main__':
+    print(Solution().longestSubsequence(s="00101001", k=1))

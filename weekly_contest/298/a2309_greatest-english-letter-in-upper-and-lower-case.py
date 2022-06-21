@@ -33,4 +33,21 @@ s consists of lowercase and uppercase English letters.
 
 class Solution:
     def greatestLetter(self, s: str) -> str:
-        pass
+        res = ''
+        ch_set = set()
+        for ch in s:
+            # 注意：小写字母是大于大写字母的，如果写成 if ch <= res，则所有的小写字母都会继续走下去，因为res是大写字母，
+            # 从而有可能将res改成了更小的大写字母。例如："BTtAb"，若使用if ch <= res，则最终返回'B'，原本应该返回'T'
+            if ch.upper() <= res:
+                continue
+            if (ch.islower() and ch.upper() in ch_set) or (ch.isupper() and ch.lower() in ch_set):
+                res = ch.upper()
+                if res == 'Z':
+                    break
+            else:
+                ch_set.add(ch)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().greatestLetter(s="nzmguNAEtJHkQaWDVSKxRCUivXpGLBcsjeobYPFwTZqrhlyOIfdM"))

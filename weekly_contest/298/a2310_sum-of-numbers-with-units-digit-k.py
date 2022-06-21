@@ -37,4 +37,15 @@ Constraints:
 
 class Solution:
     def minimumNumbers(self, num: int, k: int) -> int:
-        pass
+        if num == 0:
+            return 0
+        for mul in range(1, 11):
+            if num < mul * k:
+                break
+            if num % 10 == mul * k % 10:
+                return mul
+        return -1
+
+
+if __name__ == '__main__':
+    print(Solution().minimumNumbers(num=58, k=9))
