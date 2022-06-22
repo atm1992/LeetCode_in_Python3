@@ -26,21 +26,23 @@ from typing import List
 
 class Solution:
     def minPathSum(self, grid: List[List[int]]) -> int:
-        """二维动态规划"""
-        rows, cols = len(grid), len(grid[0])
-        dp = [[0] * cols for _ in range(rows)]
-        # 从最后一行开始填写dp数组
-        for i in range(rows - 1, -1, -1):
-            for j in range(cols - 1, -1, -1):
-                if i == rows - 1 and j == cols - 1:
-                    dp[i][j] = grid[i][j]
-                elif i == rows - 1 and j < cols - 1:
-                    dp[i][j] = grid[i][j] + dp[i][j + 1]
-                elif i < rows - 1 and j == cols - 1:
-                    dp[i][j] = grid[i][j] + dp[i + 1][j]
+        """
+        动态规划
+        dp[i][j] 表示从(0, 0)到达(i, j)的最小路径之和。因为只能向下或向右移动，所以 dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+        """
+        m, n = len(grid), len(grid[0])
+        dp = [0] * n
+        for i in range(m):
+            for j in range(n):
+                if i > 0 and j > 0:
+                    dp[j] = min(dp[j], dp[j - 1]) + grid[i][j]
+                elif i > 0:
+                    dp[j] = dp[j] + grid[i][j]
+                elif j > 0:
+                    dp[j] = dp[j - 1] + grid[i][j]
                 else:
-                    dp[i][j] = grid[i][j] + min(dp[i + 1][j], dp[i][j + 1])
-        return dp[0][0]
+                    dp[j] = grid[i][j]
+        return dp[-1]
 
     def minPathSum_2(self, grid: List[List[int]]) -> int:
         """二维动态规划（直接在原矩阵中修改，不需要使用额外存储空间）。从左上角走到右下角，最终返回右下角位置的值"""
