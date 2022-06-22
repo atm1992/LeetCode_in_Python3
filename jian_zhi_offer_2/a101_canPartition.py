@@ -1,21 +1,21 @@
 # -*- coding: UTF-8 -*-
 """
 title: 分割等和子集
-Given a non-empty array nums containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+给定一个非空的正整数数组 nums ，请判断能否将这些数字分成元素和相等的两部分。
 
 
-Example 1:
-Input: nums = [1,5,11,5]
-Output: true
-Explanation: The array can be partitioned as [1, 5, 5] and [11].
+示例 1：
+输入：nums = [1,5,11,5]
+输出：true
+解释：nums 可以分割成 [1, 5, 5] 和 [11] 。
 
-Example 2:
-Input: nums = [1,2,3,5]
-Output: false
-Explanation: The array cannot be partitioned into equal sum subsets.
+示例 2：
+输入：nums = [1,2,3,5]
+输出：false
+解释：nums 不可以分为和相等的两部分
 
 
-Constraints:
+提示：
 1 <= nums.length <= 200
 1 <= nums[i] <= 100
 """
@@ -91,4 +91,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().canPartition_2([1, 2, 3, 5]))
+    print(Solution().canPartition_2([1, 5, 11, 5]))
