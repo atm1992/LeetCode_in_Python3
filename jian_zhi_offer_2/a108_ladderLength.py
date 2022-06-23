@@ -1,32 +1,33 @@
 # -*- coding: UTF-8 -*-
 """
-title: 单词接龙
-A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
-    Every adjacent pair of words differs by a single letter.
-    Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
-    sk == endWord
-Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.
+title: 单词演变
+在字典（单词列表） wordList 中，从单词 beginWord 和 endWord 的 转换序列 是一个按下述规格形成的序列：
+    序列中第一个单词是 beginWord 。
+    序列中最后一个单词是 endWord 。
+    每次转换只能改变一个字母。
+    转换过程中的中间单词必须是字典 wordList 中的单词。
+给定两个长度相同但内容不同的单词 beginWord 和 endWord 和一个字典 wordList ，找到从 beginWord 到 endWord 的 最短转换序列 中的 单词数目 。如果不存在这样的转换序列，返回 0。
 
 
-Example 1:
-Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
-Output: 5
-Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
+示例 1：
+输入：beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+输出：5
+解释：一个最短转换序列是 "hit" -> "hot" -> "dot" -> "dog" -> "cog", 返回它的长度 5。
 
-Example 2:
-Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
-Output: 0
-Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+示例 2：
+输入：beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
+输出：0
+解释：endWord "cog" 不在字典中，所以无法进行转换。
 
 
-Constraints:
+提示：
 1 <= beginWord.length <= 10
 endWord.length == beginWord.length
 1 <= wordList.length <= 5000
 wordList[i].length == beginWord.length
-beginWord, endWord, and wordList[i] consist of lowercase English letters.
+beginWord、endWord 和 wordList[i] 由小写英文字母组成
 beginWord != endWord
-All the words in wordList are unique.
+wordList 中的所有字符串 互不相同
 """
 import string
 from typing import List
@@ -62,7 +63,3 @@ class Solution:
             forward_set = tmp_set
             cnt += 1
         return 0
-
-
-if __name__ == '__main__':
-    print(Solution().ladderLength(beginWord="hit", endWord="cog", wordList=["hot", "dot", "dog", "lot", "log", "cog"]))

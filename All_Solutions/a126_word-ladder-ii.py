@@ -37,7 +37,7 @@ from typing import List
 
 class Solution:
     def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
-        """先使用广度优先遍历构建图，构建过程中，可以知道是否存在最短路径。若存在，则再使用回溯(深度优先遍历)得到所有的最短路径"""
+        """先使用BFS构建图，构建过程中，可以知道是否存在最短路径。若存在，则再使用回溯(DFS)得到所有的最短路径"""
         word_set = set(wordList)
         res = []
         if endWord not in word_set:
@@ -50,7 +50,7 @@ class Solution:
         return res
 
     def __bfs(self, begin_word: str, end_word: str, word_set: set, successors: dict) -> bool:
-        """使用广度优先遍历构建图，得到后继节点列表successors"""
+        """使用BFS构建图，得到后继节点列表successors"""
         queue = deque([begin_word])
         # 当前及以上所有层访问过或将要访问到的word列表
         visited = {begin_word}
@@ -98,20 +98,20 @@ class Solution:
         return found
 
     def __dfs(self, begin_word: str, end_word: str, successors: dict, path: list, res: list) -> None:
-        """使用深度优先遍历得到所有的最短路径"""
+        """使用DFS得到所有的最短路径"""
         if begin_word == end_word:
             res.append(path[:])
             return
-        if begin_word not in successors:
-            return
+        # if begin_word not in successors:
+        #     return
         for next_word in successors[begin_word]:
             path.append(next_word)
             self.__dfs(next_word, end_word, successors, path, res)
             path.pop()
 
     def findLadders_2(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
-        """DFS + BFS 双向搜索。先使用beginword向下扩展，扩展后得到的节点数为m，再使用endWord向上扩展，扩展后得到的节点数为n。
-        若m<n，则继续向下扩展；若m>n，则继续向上扩展。双向扩展可以降低时间复杂度"""
+        """DFS + 双向BFS。先使用beginword向下扩展，扩展后得到的节点数为m，再使用endWord向上扩展，扩展后得到的节点数为n。
+        若m<n，则继续向下扩展；若m>n，则继续向上扩展。双向扩展可以降低时间复杂度。最后使用DFS拼接路径"""
         word_set = set(wordList)
         if endWord not in word_set:
             return []
@@ -139,7 +139,7 @@ class Solution:
                                 successors[tmp_word].add(word)
                             else:
                                 successors[word].add(tmp_word)
-            # 若当前层的下一层与反方向的最新层有交集，则表示最短路径已产生
+            # 若当前层的下一层与反方向的最新层有交集，则表示最短路径已产生。使用DFS拼接路径
             if tmp_set & backward_set:
                 res = [[endWord]]
                 # 注意：这里不能从beginWord拼接路径到endWord，只能是从endWord拼接到beginWord。
