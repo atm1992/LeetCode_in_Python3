@@ -1,26 +1,26 @@
 # -*- coding: UTF-8 -*-
 """
-title: 矩阵中的距离
-给定一个由 0 和 1 组成的矩阵 mat ，请输出一个大小相同的矩阵，其中每一个格子是 mat 中对应位置元素到最近的 0 的距离。
-两个相邻元素间的距离为 1 。
+title: 01 矩阵
+Given an m x n binary matrix mat, return the distance of the nearest 0 for each cell.
+The distance between two adjacent cells is 1.
 
 
-示例 1：
-输入：mat = [[0,0,0],[0,1,0],[0,0,0]]
-输出：[[0,0,0],[0,1,0],[0,0,0]]
+Example 1:
+Input: mat = [[0,0,0],[0,1,0],[0,0,0]]
+Output: [[0,0,0],[0,1,0],[0,0,0]]
 
-示例 2：
-输入：mat = [[0,0,0],[0,1,0],[1,1,1]]
-输出：[[0,0,0],[0,1,0],[1,2,1]]
+Example 2:
+Input: mat = [[0,0,0],[0,1,0],[1,1,1]]
+Output: [[0,0,0],[0,1,0],[1,2,1]]
 
 
-提示：
+Constraints:
 m == mat.length
 n == mat[i].length
 1 <= m, n <= 10^4
 1 <= m * n <= 10^4
 mat[i][j] is either 0 or 1.
-mat 中至少有一个 0 
+There is at least one 0 in mat.
 """
 from collections import deque
 from typing import List
