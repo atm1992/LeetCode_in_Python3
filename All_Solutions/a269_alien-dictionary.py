@@ -33,7 +33,7 @@ from typing import List
 class Solution:
     def alienOrder(self, words: List[str]) -> str:
         """
-        拓扑排序
+        拓扑排序 + DFS
         假设 words = ["wrt","wrf"]，从中可以确定 't' 在 'f' 前面，但是无法确定 'w'、'r' 与它俩之间的顺序。
         所以最终结果只需确保't'、'f'之间的顺序正确即可，至于'w'、'r'，可在任意位置插入。即 'wrtf'、'wtrf'、'rtfw'、…… 都是正确结果。
         """

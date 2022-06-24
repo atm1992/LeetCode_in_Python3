@@ -38,28 +38,7 @@ from typing import List
 
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        """拓扑排序 + BFS。推荐此方法"""
-        res = []
-        # 记录所有的有向边，pre -> [curs]
-        edges = defaultdict(list)
-        in_degree = [0] * numCourses
-        # 计算所有课程(顶点)的入度。然后将所有入度为0的课程(顶点)加入队列，作为BFS的起点
-        for cur, pre in prerequisites:
-            edges[pre].append(cur)
-            in_degree[cur] += 1
-        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
-        while queue:
-            u = queue.popleft()
-            res.append(u)
-            for v in edges[u]:
-                in_degree[v] -= 1
-                if in_degree[v] == 0:
-                    queue.append(v)
-        return res if len(res) == numCourses else []
-
-    def findOrder_2(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        """拓扑排序 + DFS"""
-        res = []
+        """拓扑排序 + DFS。得到反向拓扑序列"""
         # 记录所有的有向边，pre -> [curs]
         edges = defaultdict(list)
         for cur, pre in prerequisites:
@@ -95,3 +74,23 @@ class Solution:
                     break
         # return stack[::-1] if len(stack) == numCourses else []
         return [] if has_loop else stack[::-1]
+
+    def findOrder_2(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        """拓扑排序 + BFS。得到正向拓扑序列，推荐此方法"""
+        res = []
+        # 记录所有的有向边，pre -> [curs]
+        edges = defaultdict(list)
+        in_degree = [0] * numCourses
+        # 计算所有课程(顶点)的入度。然后将所有入度为0的课程(顶点)加入队列，作为BFS的起点
+        for cur, pre in prerequisites:
+            edges[pre].append(cur)
+            in_degree[cur] += 1
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        while queue:
+            u = queue.popleft()
+            res.append(u)
+            for v in edges[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.append(v)
+        return res if len(res) == numCourses else []
