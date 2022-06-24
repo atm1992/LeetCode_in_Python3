@@ -36,7 +36,7 @@ from typing import List
 
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        """拓扑排序 + BFS"""
+        """拓扑排序 + BFS。推荐此方法"""
         res = []
         # 记录所有的有向边，pre -> [curs]
         edges = defaultdict(list)
