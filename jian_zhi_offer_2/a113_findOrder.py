@@ -32,7 +32,7 @@ prerequisites[i].length == 2
 ai != bi
 prerequisites 中不存在重复元素
 """
-from collections import defaultdict, deque
+from collections import defaultdict
 from typing import List
 
 
@@ -63,7 +63,7 @@ class Solution:
                 elif visited[v] == 1:
                     has_loop = True
                     return
-                    # 只有当当前课程(顶点)的所有后继节点都搜索完成(加入stack)后，当前课程(顶点)才算搜索完成(加入stack)
+            # 只有当当前课程(顶点)的所有后继节点都搜索完成(加入stack)后，当前课程(顶点)才算搜索完成(加入stack)
             visited[u] = 2
             stack.append(u)
 
@@ -77,7 +77,6 @@ class Solution:
 
     def findOrder_2(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         """拓扑排序 + BFS。得到正向拓扑序列，推荐此方法"""
-        res = []
         # 记录所有的有向边，pre -> [curs]
         edges = defaultdict(list)
         in_degree = [0] * numCourses
@@ -85,12 +84,11 @@ class Solution:
         for cur, pre in prerequisites:
             edges[pre].append(cur)
             in_degree[cur] += 1
-        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
-        while queue:
-            u = queue.popleft()
-            res.append(u)
+        queue = [i for i in range(numCourses) if in_degree[i] == 0]
+        for u in queue:
             for v in edges[u]:
                 in_degree[v] -= 1
                 if in_degree[v] == 0:
                     queue.append(v)
-        return res if len(res) == numCourses else []
+        # 若存在环路，则环路中的所有顶点都无法将入度降到0，也就不会加入到队列了
+        return queue if len(queue) == numCourses else []

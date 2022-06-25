@@ -33,71 +33,88 @@ from typing import List
 class Solution:
     def alienOrder(self, words: List[str]) -> str:
         """
-        拓扑排序 + DFS
+        拓扑排序 + DFS。得到反向拓扑序列
         假设 words = ["wrt","wrf"]，从中可以确定 't' 在 'f' 前面，但是无法确定 'w'、'r' 与它俩之间的顺序。
         所以最终结果只需确保't'、'f'之间的顺序正确即可，至于'w'、'r'，可在任意位置插入。即 'wrtf'、'wtrf'、'rtfw'、…… 都是正确结果。
         """
-        # 构建字符集
-        char_set = set()
+        # 记录所有的字母，由于有些字母可能不存在后继节点(即 后继节点为空数组)，所以graph中的key集合会小于等于all_ch
+        all_ch = set()
         for word in words:
-            char_set.update(word)
-        char_set_size = len(char_set)
-
-        # 构建有向图。位置在前的字符为key，位置在其后的所有字符组成列表作为value
+            all_ch.update(word)
+        # 记录所有的有向边，pre -> [curs]
         graph = defaultdict(list)
-        n = len(words)
-        for i in range(n - 1):
+        for i in range(len(words) - 1):
             w1, w2 = words[i], words[i + 1]
-            len1, len2 = len(w1), len(w2)
-            for j in range(max(len1, len2)):
-                # 不合法，即使是j同时到达len1、len2，即 w1 与 w2完全相同，那也是不合法的
-                if j == len2:
+            for c1, c2 in zip(w1, w2):
+                if c1 != c2:
+                    graph[c1].append(c2)
+                    break
+            else:
+                # words中允许存在重复单词
+                if len(w1) > len(w2):
                     return ""
-                # 表示通过w1 与 w2无法确定字符间的顺序，因为w1恰好是w2的前缀
-                if j == len1:
-                    break
-                if w1[j] != w2[j]:
-                    graph[w1[j]].append(w2[j])
-                    break
+        # 记录各个字母(顶点)的当前访问状态。0 - 未搜索过；1 - 搜索中，回溯结束时，将字母(顶点)加入stack；2 - 搜索完成，字母(顶点)已加入stack。
+        visited = defaultdict(int)
+        # 最终返回stack的逆序。因为是cur节点先加入，当pre指向的所有cur节点都加入stack后，才会将pre节点加入stack
+        stack = []
+        # 记录是否存在环路
+        has_loop = False
 
-        # 拓扑排序
-        # 记录有向图中是否存在环，若存在环，则表示不合法
-        has_cycle = False
-        cur_visited = set()
-        all_visited = set()
-        # 记录排序结果
-        res = []
-
-        def dfs(ch: str) -> None:
-            nonlocal has_cycle
-            if ch in cur_visited:
-                has_cycle = True
-                return
-            if ch in all_visited:
-                return
-            all_visited.add(ch)
-            cur_visited.add(ch)
-            for next_ch in graph[ch]:
-                dfs(next_ch)
-                # 剪枝
-                if has_cycle:
+        def dfs(u: str) -> None:
+            nonlocal has_loop
+            # 将当前字母(顶点)的状态更新为 搜索中
+            visited[u] = 1
+            for v in graph[u]:
+                if visited[v] == 0:
+                    dfs(v)
+                    # 剪枝。一旦发现存在环路，立刻停止搜索
+                    if has_loop:
+                        return
+                elif visited[v] == 1:
+                    has_loop = True
                     return
-            # 注意：res中的字符是最终结果的逆序
-            res.append(ch)
-            cur_visited.remove(ch)
+            # 只有当当前字母(顶点)的所有后继节点都搜索完成(加入stack)后，当前字母(顶点)才算搜索完成(加入stack)
+            visited[u] = 2
+            stack.append(u)
 
-        for ch in list(graph.keys()):
-            dfs(ch)
-            if has_cycle:
-                return ""
-            # 已经确定了所有字符间的顺序，没必要继续循环了
-            if len(res) == char_set_size:
-                break
+        for u in all_ch:
+            if visited[u] == 0:
+                dfs(u)
+                if has_loop:
+                    break
+        # return "".join(stack[::-1]) if len(stack) == len(all_ch) else ""
+        return "" if has_loop else "".join(stack[::-1])
 
-        # 整理最终结果
-        if len(res) < char_set_size:
-            res.extend(list(char_set - set(res)))
-        return ''.join(res[::-1])
+    def alienOrder_2(self, words: List[str]) -> str:
+        """拓扑排序 + BFS。得到正向拓扑序列，推荐此方法"""
+        # 记录所有的字母，由于有些字母可能不存在后继节点(即 后继节点为空数组)，所以graph中的key集合会小于等于all_ch
+        all_ch = set()
+        for word in words:
+            all_ch.update(word)
+        # 记录所有的有向边，pre -> [curs]
+        graph = defaultdict(list)
+        in_degree = defaultdict(int)
+        # 计算所有字母(顶点)的入度。之后将所有入度为0的字母(顶点)加入队列，作为BFS的起点
+        for i in range(len(words) - 1):
+            w1, w2 = words[i], words[i + 1]
+            for c1, c2 in zip(w1, w2):
+                if c1 != c2:
+                    graph[c1].append(c2)
+                    in_degree[c2] += 1
+                    break
+            else:
+                # words中允许存在重复单词
+                if len(w1) > len(w2):
+                    return ""
+        # in_degree中的key不一定是完整的，因为有些字母可能不存在前驱节点，所以遍历的是all_ch
+        queue = [ch for ch in all_ch if in_degree[ch] == 0]
+        for u in queue:
+            for v in graph[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
+                    queue.append(v)
+        # 若存在环路，则环路中的所有顶点都无法将入度降到0，也就不会加入到队列了
+        return "".join(queue) if len(queue) == len(all_ch) else ""
 
 
 if __name__ == '__main__':
