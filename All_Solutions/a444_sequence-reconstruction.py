@@ -60,12 +60,14 @@ class Solution:
                 graph[pre].append(cur)
                 in_degree[cur] += 1
                 pre = cur
+        # 若nums中的元素个数比sequences中出现的元素个数多，则多出来的那些元素，它们的入度为0。若存在多个入度为0的节点，则下面会返回False
         queue = [i for i in range(1, n + 1) if in_degree[i] == 0]
         # BFS的起始节点有且只能有一个，否则拓扑序列就不是唯一的
         if len(queue) != 1:
             return False
         idx = 0
         for u in queue:
+            # 若nums中的元素个数比sequences中出现的元素个数少，则这里会返回False
             if not (idx < n and nums[idx] == u):
                 return False
             idx += 1
