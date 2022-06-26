@@ -30,8 +30,8 @@ class Solution:
         num_set = set(nums)
         n = len(nums)
         # 每个元素最多被访问2次，因此时间复杂度为O(2n)，也属于O(n)
-        # 特例：[3,7,2,5,8,4,6,1,0]，除了0，其余元素都会被访问2次
         for num in num_set:
+            # 只有当元素是连续序列的起始值时，才会进入当前条件
             if num - 1 not in num_set:
                 tmp_res = 1
                 while num + 1 in num_set:
