@@ -39,6 +39,31 @@ class Solution:
                 return i
         return -1
 
+    def strStr_3(self, haystack: str, needle: str) -> int:
+        """KMP算法"""
+        n, m = len(haystack), len(needle)
+        if m == 0:
+            return 0
+        nxt = [0] * m
+        cur = 0
+        # 基于模式串needle计算前缀函数(即 next数组)
+        for i in range(1, m):
+            while cur > 0 and needle[cur] != needle[i]:
+                cur = nxt[cur - 1]
+            if needle[cur] == needle[i]:
+                cur += 1
+                nxt[i] = cur
+        cur = 0
+        # 利用next数组在主串haystack中匹配模式串needle
+        for i in range(n):
+            while cur > 0 and needle[cur] != haystack[i]:
+                cur = nxt[cur - 1]
+            if needle[cur] == haystack[i]:
+                cur += 1
+                if cur == m:
+                    return i - m + 1
+        return -1
+
 
 if __name__ == '__main__':
-    print(Solution().strStr_2("aaaaa", "bba"))
+    print(Solution().strStr_3(haystack="hello", needle="ll"))
