@@ -58,7 +58,7 @@ class Solution:
             idx = 0
             ignore = False
             # 初始值为mask最低bit位的值
-            pre_bit = mask % 2
+            pre_bit = mask & 1
             while mask > 0:
                 cur_bit = mask & 1
                 if cur_bit:

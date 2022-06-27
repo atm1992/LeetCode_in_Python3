@@ -76,10 +76,10 @@ class Solution:
                     # i - j <= 2 时，不需要使用上一次的状态，直接判定为True
                     # i - j > 2 时，根据上一次的状态来确定当前状态
                     dp[i][j] = (i - j <= 2) or dp[i - 1][j + 1]
-                if dp[i][j]:
-                    cur_len = i - j + 1
-                    if cur_len > max_len:
-                        max_len = cur_len
-                        max_start = j
+                    if dp[i][j]:
+                        cur_len = i - j + 1
+                        if cur_len > max_len:
+                            max_len = cur_len
+                            max_start = j
         return s[max_start:max_start + max_len]
 
