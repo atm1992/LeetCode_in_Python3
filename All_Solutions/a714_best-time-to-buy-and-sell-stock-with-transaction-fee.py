@@ -31,27 +31,34 @@ from typing import List
 
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
-        """动态规划"""
-        n = len(prices)
-        if n < 2:
-            return 0
-        dp = [[0] * 2 for _ in range(n)]
+        """
+        动态规划
+        dp[i][0] 表示第 i 天交易完后手里没有股票的最大利润；dp[i][1] 表示第 i 天交易完后手里持有一支股票的最大利润(i从0开始)。
+        dp[i][0] 的状态转移方程：dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i] - fee)
+        dp[i][1] 的状态转移方程：dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i])
+        初始值：
         dp[0][0] = 0
         dp[0][1] = -prices[0]
-        for i in range(1, n):
-            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i] - fee)
-            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
-        return dp[-1][0]
+        由状态转移方程可知，dp[i] 仅与 dp[i-1]有关，所以可使用滚动数组的思想来降低空间复杂度
+        """
+        # sell -- dp[*][0]；buy -- dp[*][1]
+        sell, buy = 0, -prices[0]
+        for price in prices[1:]:
+            sell, buy = max(sell, buy + price - fee), max(buy, sell - price)
+        return sell
 
     def maxProfit_2(self, prices: List[int], fee: int) -> int:
-        """空间复杂度降为O(1)"""
-        n = len(prices)
-        if n < 2:
-            return 0
-        dp_i0 = 0
-        dp_i1 = -prices[0]
-        for i in range(1, n):
-            tmp = dp_i0
-            dp_i0 = max(dp_i0, dp_i1 + prices[i] - fee)
-            dp_i1 = max(dp_i1, tmp - prices[i])
-        return dp_i0
+        """贪心。将手续费fee算进买入股票时的花费(buy = prices[i] + fee)"""
+        buy = prices[0] + fee
+        res = 0
+        # 通过下面这两种操作，可以总是在极小值点买入，然后在极大值点卖出，从而获得最大的利润。
+        for price in prices[1:]:
+            # 若某天的股票价格price + fee小于之前买入时的花费buy，则选择在这天买入，放弃之前的买入
+            if price + fee < buy:
+                buy = price + fee
+            # 若某天的股票价格price大于之前买入时的花费buy，则选择在这天卖出。不过这个选择未必是全局最优，所以提供了一个反悔的操作，
+            # 即 buy = price，如果之后遇到更高的股票价格price，则可认为是在那天卖出的。例如：a < b < c，(c - b) + (b - a) == c - a
+            elif price > buy:
+                res += price - buy
+                buy = price
+        return res
