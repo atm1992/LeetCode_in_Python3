@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: Z 字形变换。
+title: Z 字形变换
 The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
 P   A   H   N
 A P L S I I G
@@ -71,4 +71,3 @@ if __name__ == '__main__':
     s = "PAYPALISHIRING"
     numRows = 3
     print(Solution().convert_2(s, numRows) == 'PAHNAPLSIIGYIR')
-

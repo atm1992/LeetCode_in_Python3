@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title：两数之和。
+title：两数之和
 Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 You can return the answer in any order.
@@ -31,9 +31,9 @@ from typing import List
 
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        temp = {}
+        """哈希表"""
+        num2idx = {}
         for idx, num in enumerate(nums):
-            if num in temp:
-                return [temp[num], idx]
-            else:
-                temp[target - num] = idx
+            if target - num in num2idx:
+                return [num2idx[target - num], idx]
+            num2idx[num] = idx

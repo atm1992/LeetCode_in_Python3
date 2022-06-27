@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 删除链表的倒数第 N 个结点。
+title: 删除链表的倒数第 N 个结点
 Given the head of a linked list, remove the nth node from the end of the list and return its head.
 
 

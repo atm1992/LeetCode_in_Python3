@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 合并K个升序链表。
+title: 合并K个升序链表
 You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
 Merge all the linked-lists into one sorted linked-list and return it.
 

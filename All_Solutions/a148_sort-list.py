@@ -1,13 +1,28 @@
 # -*- coding: UTF-8 -*-
 """
-title：排序链表。
-在 O(nlogn) 时间复杂度和常数级空间复杂度下，对链表进行排序。
-示例 1:
-输入: 4->2->1->3
-输出: 1->2->3->4
-示例 2:
-输入: -1->5->3->4->0
-输出: -1->0->3->4->5
+title：排序链表
+Given the head of a linked list, return the list after sorting it in ascending order.
+
+
+Example 1:
+Input: head = [4,2,1,3]
+Output: [1,2,3,4]
+
+Example 2:
+Input: head = [-1,5,3,4,0]
+Output: [-1,0,3,4,5]
+
+Example 3:
+Input: head = []
+Output: []
+
+
+Constraints:
+The number of nodes in the list is in the range [0, 5 * 10^4].
+-10^5 <= Node.val <= 10^5
+
+Follow up: Can you sort the linked list in O(n logn) time and O(1) memory (i.e. constant space)?
+
 
 解题思路：归并排序。
 对数组做归并排序的空间复杂度为 O(n)，分别由新开辟数组O(n)和递归函数调用O(logn)组成，而根据链表特性：

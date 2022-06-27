@@ -26,4 +26,32 @@ Constraints:
 1 <= prices[i] < 5 * 10^4
 0 <= fee < 5 * 10^4
 """
+from typing import List
 
+
+class Solution:
+    def maxProfit(self, prices: List[int], fee: int) -> int:
+        """动态规划"""
+        n = len(prices)
+        if n < 2:
+            return 0
+        dp = [[0] * 2 for _ in range(n)]
+        dp[0][0] = 0
+        dp[0][1] = -prices[0]
+        for i in range(1, n):
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] + prices[i] - fee)
+            dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+        return dp[-1][0]
+
+    def maxProfit_2(self, prices: List[int], fee: int) -> int:
+        """空间复杂度降为O(1)"""
+        n = len(prices)
+        if n < 2:
+            return 0
+        dp_i0 = 0
+        dp_i1 = -prices[0]
+        for i in range(1, n):
+            tmp = dp_i0
+            dp_i0 = max(dp_i0, dp_i1 + prices[i] - fee)
+            dp_i1 = max(dp_i1, tmp - prices[i])
+        return dp_i0

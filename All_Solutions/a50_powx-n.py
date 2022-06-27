@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title:  Pow(x, n)
+title: Pow(x, n)
 Implement pow(x, n), which calculates x raised to the power n (i.e., xn).
 
 

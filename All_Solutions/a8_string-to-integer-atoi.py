@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 字符串转换整数 (atoi)。
+title: 字符串转换整数 (atoi)
 Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer (similar to C/C++'s atoi function).
 The algorithm for myAtoi(string s) is as follows:
 Read in and ignore any leading whitespace.

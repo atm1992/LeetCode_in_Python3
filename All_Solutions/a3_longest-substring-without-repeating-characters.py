@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 无重复字符的最长子串。
+title: 无重复字符的最长子串
 Given a string s, find the length of the longest substring without repeating characters.
 
 Example 1:

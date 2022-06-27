@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 整数转罗马数字。
+title: 整数转罗马数字
 Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
 Symbol       Value
 I             1

@@ -1,44 +1,46 @@
 # -*- coding: UTF-8 -*-
 """
-title：稀疏矩阵的乘法。需要升级力扣 Plus 会员解锁题目
-Example:
-A = [
-  [ 1, 0, 0],
-  [-1, 0, 3]
-]
+title：稀疏矩阵的乘法
+Given two sparse matrices mat1 of size m x k and mat2 of size k x n, return the result of mat1 x mat2. You may assume that multiplication is always possible.
 
-B = [
-  [ 7, 0, 0 ],
-  [ 0, 0, 0 ],
-  [ 0, 0, 1 ]
-]
 
-     |  1 0 0 |   | 7 0 0 |   |  7 0 0 |
-AB = | -1 0 3 | x | 0 0 0 | = | -7 0 3 |
-                  | 0 0 1 |
+Example 1:
+Input: mat1 = [[1,0,0],[-1,0,3]], mat2 = [[7,0,0],[0,0,0],[0,0,1]]
+Output: [[7,0,0],[-7,0,3]]
 
-输入两个二维数组，输出一个二维数组。稀疏矩阵的特点是矩阵中绝大多数的元素为0，要避免大量的重复计算0乘0
-C[i][j] = A[i][0]*B[0][j] + A[i][1]*B[1][j] + ... + A[i][k]*B[k][j]
-只有当A[i][k]不为0时，才继续计算
+Example 2:
+Input: mat1 = [[0]], mat2 = [[0]]
+Output: [[0]]
+
+
+Constraints:
+m == mat1.length
+k == mat1[i].length == mat2.length
+n == mat2[i].length
+1 <= m, n, k <= 100
+-100 <= mat1[i][j], mat2[i][j] <= 100
 """
+from typing import List
 
 
-def sparse_matrix_multiplication(A, B):
-    a_row = len(A)
-    # A的列数就等于B的行数
-    a_col = len(A[0])
-    b_col = len(B[0])
-    res = [[0] * b_col] * a_row
-    for i in range(a_row):
-        for j in range(a_col):
-            if A[i][j] != 0:
-                for k in range(b_col):
-                    if B[j][k] != 0:
-                        res[i][k] += A[i][j] * B[j][k]
-    return res
+class Solution:
+    def multiply(self, mat1: List[List[int]], mat2: List[List[int]]) -> List[List[int]]:
+        """
+        稀疏矩阵的特点就是矩阵中绝大多数的元素均为0，当mat1[i][j]或mat2[j][k]为0时，可以跳过这些计算
+        res[i][j] = mat1[i][0] * mat2[0][j] + mat1[i][1] * mat2[1][j] + ... + mat1[i][k] * mat2[k][j]
+        """
+        m, l, n = len(mat1), len(mat1[0]), len(mat2[0])
+        res = [[0] * n for _ in range(m)]
+        for i in range(m):
+            for j in range(l):
+                if mat1[i][j] == 0:
+                    continue
+                for k in range(n):
+                    if mat2[j][k] == 0:
+                        continue
+                    res[i][k] += mat1[i][j] * mat2[j][k]
+        return res
 
 
 if __name__ == '__main__':
-    A = [[1, 0, 0], [-1, 0, 3]]
-    B = [[7, 0, 0], [0, 0, 0], [0, 0, 1]]
-    print(sparse_matrix_multiplication(A, B))
+    print(Solution().multiply(mat1=[[1, 0, 0], [-1, 0, 3]], mat2=[[7, 0, 0], [0, 0, 0], [0, 0, 1]]))

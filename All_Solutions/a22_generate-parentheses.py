@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 括号生成。
+title: 括号生成
 Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
 
 
