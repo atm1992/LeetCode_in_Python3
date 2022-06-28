@@ -40,4 +40,32 @@ class TreeNode:
 
 class Solution:
     def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
-        pass
+        """BFS"""
+        queue = [(root, 0, 0)]
+        cur_depth = leftmost = res = 0
+        for node, depth, pos in queue:
+            if node:
+                queue.append((node.left, depth + 1, pos * 2))
+                queue.append((node.right, depth + 1, pos * 2 + 1))
+                if depth != cur_depth:
+                    cur_depth = depth
+                    leftmost = pos
+                res = max(res, pos - leftmost + 1)
+        return res
+
+    def widthOfBinaryTree_2(self, root: Optional[TreeNode]) -> int:
+        """DFS"""
+        depth2leftmost = {}
+        res = 0
+
+        def dfs(node: TreeNode, depth: int, pos: int) -> None:
+            nonlocal res
+            if node:
+                if depth not in depth2leftmost:
+                    depth2leftmost[depth] = pos
+                res = max(res, pos - depth2leftmost[depth] + 1)
+                dfs(node.left, depth + 1, pos * 2)
+                dfs(node.right, depth + 1, pos * 2 + 1)
+
+        dfs(root, 0, 0)
+        return res
