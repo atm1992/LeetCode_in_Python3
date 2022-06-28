@@ -61,10 +61,11 @@ class Solution:
         def dfs(node: TreeNode, depth: int, pos: int) -> None:
             nonlocal res
             if node:
+                dfs(node.left, depth + 1, pos * 2)
+                # 注意：设置depth2leftmost[depth]必须写在dfs(node.right)之前，与dfs(node.left)谁先谁后无所谓
                 if depth not in depth2leftmost:
                     depth2leftmost[depth] = pos
                 res = max(res, pos - depth2leftmost[depth] + 1)
-                dfs(node.left, depth + 1, pos * 2)
                 dfs(node.right, depth + 1, pos * 2 + 1)
 
         dfs(root, 0, 0)
