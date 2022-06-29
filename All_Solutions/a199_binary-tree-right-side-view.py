@@ -35,18 +35,32 @@ class TreeNode:
 
 class Solution:
     def rightSideView(self, root: TreeNode) -> List[int]:
-        """层次遍历"""
+        """BFS"""
         res = []
         if not root:
             return res
         queue = deque([root])
         while queue:
             res.append(queue[-1].val)
-            size = len(queue)
-            for _ in range(size):
+            for _ in range(len(queue)):
                 node = queue.popleft()
                 if node.left:
                     queue.append(node.left)
                 if node.right:
                     queue.append(node.right)
+        return res
+
+    def rightSideView_2(self, root: TreeNode) -> List[int]:
+        """DFS"""
+
+        def dfs(root: TreeNode, depth: int) -> None:
+            if not root:
+                return
+            if len(res) == depth:
+                res.append(root.val)
+            dfs(root.right, depth + 1)
+            dfs(root.left, depth + 1)
+
+        res = []
+        dfs(root, 0)
         return res
