@@ -29,20 +29,42 @@ n == rectangles.length
 rectangles[i].length == 2
 1 <= widthi, heighti <= 10^5
 """
+from collections import defaultdict
 from typing import List
 
 
 class Solution:
     def interchangeableRectangles(self, rectangles: List[List[int]]) -> int:
-        tmp = {}
-        for item in rectangles:
-            key = item[0] / item[1]
-            tmp[key] = tmp.get(key, 0) + 1
+        def gcd(a: int, b: int) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+
+        ratio2cnt = defaultdict(int)
+        for w, h in rectangles:
+            g = gcd(w, h)
+            ratio2cnt[(w // g, h // g)] += 1
         res = 0
-        for item in tmp.values():
-            res += sum(range(item))
+        for cnt in ratio2cnt.values():
+            # 组合数 cnt个矩形中任选2个进行互换
+            res += cnt * (cnt - 1) // 2
+        return res
+
+    def interchangeableRectangles_2(self, rectangles: List[List[int]]) -> int:
+        def gcd(a: int, b: int) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+
+        ratio2cnt = defaultdict(int)
+        res = 0
+        for w, h in rectangles:
+            g = gcd(w, h)
+            # cnt * (cnt - 1) // 2 = 0 + 1 + 2 + …… + cnt-1 = sum(range(cnt))
+            res += ratio2cnt[(w // g, h // g)]
+            ratio2cnt[(w // g, h // g)] += 1
         return res
 
 
 if __name__ == '__main__':
-    print(Solution().interchangeableRectangles([[4, 5], [7, 8]]))
+    print(Solution().interchangeableRectangles_2(rectangles=[[4, 8], [3, 6], [10, 20], [15, 30]]))
