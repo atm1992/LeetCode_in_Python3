@@ -58,6 +58,8 @@ class ListNode:
 
 
 class LRUCache:
+    """哈希表 + 双向链表"""
+
     def __init__(self, capacity: int):
         self.capacity = capacity
         self.hashmap = {}
