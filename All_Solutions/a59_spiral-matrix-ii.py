@@ -30,10 +30,9 @@ class Solution:
         for i in range(1, n * n + 1):
             res[row][col] = i
             next_row, next_col = row + directions[direction_idx][0], col + directions[direction_idx][1]
-            if min(next_row, next_col) < 0 or max(next_row, next_col) >= n or res[next_row][next_col]:
+            if not (0 <= next_row < n) or not (0 <= next_col < n) or res[next_row][next_col]:
                 direction_idx = (direction_idx + 1) % 4
-            row += directions[direction_idx][0]
-            col += directions[direction_idx][1]
+            row, col = row + directions[direction_idx][0], col + directions[direction_idx][1]
         return res
 
     def generateMatrix_2(self, n: int) -> List[List[int]]:
