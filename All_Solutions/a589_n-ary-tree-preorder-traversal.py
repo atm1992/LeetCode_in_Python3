@@ -33,4 +33,27 @@ class Node:
 
 class Solution:
     def preorder(self, root: 'Node') -> List[int]:
-        pass
+        """递归"""
+
+        def dfs(node: Node) -> None:
+            if not node:
+                return
+            res.append(node.val)
+            for child in node.children:
+                dfs(child)
+
+        res = []
+        dfs(root)
+        return res
+
+    def preorder_2(self, root: 'Node') -> List[int]:
+        """迭代"""
+        res = []
+        if not root:
+            return res
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            res.append(node.val)
+            stack.extend(node.children[::-1])
+        return res
