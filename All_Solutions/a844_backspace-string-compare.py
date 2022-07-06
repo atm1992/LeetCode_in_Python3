@@ -31,4 +31,38 @@ Follow up: Can you solve it in O(n) time and O(1) space?
 
 class Solution:
     def backspaceCompare(self, s: str, t: str) -> bool:
-        pass
+        """栈"""
+        stack_s, stack_t = [], []
+        for ch in s:
+            if ch != '#':
+                stack_s.append(ch)
+            elif stack_s:
+                stack_s.pop()
+        for ch in t:
+            if ch != '#':
+                stack_t.append(ch)
+            elif stack_t:
+                stack_t.pop()
+        return stack_s == stack_t
+
+    def backspaceCompare_2(self, s: str, t: str) -> bool:
+        """双指针"""
+        i, j = len(s) - 1, len(t) - 1
+        # 记录#的数量
+        i_cnt, j_cnt = 0, 0
+        while i >= 0 or j >= 0:
+            while i >= 0 and (s[i] == '#' or i_cnt > 0):
+                i_cnt += 1 if s[i] == '#' else -1
+                i -= 1
+            while j >= 0 and (t[j] == '#' or j_cnt > 0):
+                j_cnt += 1 if t[j] == '#' else -1
+                j -= 1
+            if (i >= 0 and j >= 0 and s[i] != t[j]) or (i >= 0 and j < 0) or (i < 0 and j >= 0):
+                return False
+            i -= 1
+            j -= 1
+        return True
+
+
+if __name__ == '__main__':
+    print(Solution().backspaceCompare(s="a#c", t="b"))
