@@ -31,9 +31,31 @@ Constraints:
 words[i].length == 2
 words[i] consists of lowercase English letters.
 """
+from collections import Counter
 from typing import List
 
 
 class Solution:
     def longestPalindrome(self, words: List[str]) -> int:
-        pass
+        """贪心 + 哈希表"""
+        word2cnt = Counter(words)
+        res = 0
+        add_center = False
+        for word, cnt in word2cnt.items():
+            # 叠词
+            if word[0] == word[1]:
+                # 因为每个word的长度均为2，所以最后需要乘以2
+                res += (cnt // 2 * 2) * 2
+                # 可以从奇数个的叠词中任选一个作为回文中心
+                if not add_center and cnt & 1:
+                    res += 2
+                    add_center = True
+            # 存在对称的非叠词
+            elif word[1] + word[0] in word2cnt:
+                # 之后遍历遇到word[1] + word[0]时，会再加一次。假设word都放在左侧，而word[1] + word[0]都放在右侧
+                res += min(cnt, word2cnt[word[1] + word[0]]) * 2
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().longestPalindrome(words=["lc", "cl", "gg"]))
