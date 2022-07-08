@@ -29,6 +29,8 @@ class Solution:
         使用两个数组left_max、right_max来分别存储左右两侧的最高柱子，left_max[i]表示下标为i柱子左侧的最高柱子，right_max[i]表示下标为i柱子右侧的最高柱子。
         """
         n = len(height)
+        if n < 3:
+            return 0
         # 千万不能写成left_max = right_max = [0] * n，否则修改right_max的同时也会修改left_max
         left_max, right_max = [0] * n, [0] * n
         for i in range(1, n):
@@ -44,6 +46,8 @@ class Solution:
 
     def trap_2(self, height: List[int]) -> int:
         """递减单调栈。时间复杂度为O(n)，空间复杂度为O(n)"""
+        if len(height) < 3:
+            return 0
         stack = []
         res = 0
         for i, h in enumerate(height):
@@ -65,7 +69,10 @@ class Solution:
         如果i_left_max < j_right_max，那么i_left_max一定会小于i_right_max，所以此时应该计算柱子i上的盛水量，然后i向右移动
         柱子i上的盛水量为：min(i_left_max, i_right_max) - height[i] = i_left_max - height[i]
         """
-        left, right = 0, len(height) - 1
+        n = len(height)
+        if n < 3:
+            return 0
+        left, right = 0, n - 1
         left_max = right_max = 0
         res = 0
         # 当left==right时，无需计算盛水量，因为这个柱子是所有柱子中的最高柱子，上面不会有雨水
