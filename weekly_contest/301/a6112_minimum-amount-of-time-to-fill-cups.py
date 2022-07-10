@@ -37,34 +37,25 @@ Constraints:
 amount.length == 3
 0 <= amount[i] <= 100
 """
-import heapq
 from typing import List
 
 
 class Solution:
     def fillCups(self, amount: List[int]) -> int:
-        nums = []
-        for num in amount:
-            if num > 0:
-                nums.append(-num)
-        heapq.heapify(nums)
-        res = 0
-        while nums:
-            res += 1
-            n1 = heapq.heappop(nums)
-            if nums:
-                n2 = heapq.heappop(nums)
-                n1 += 1
-                n2 += 1
-                if n1 < 0:
-                    heapq.heappush(nums, n1)
-                if n2 < 0:
-                    heapq.heappush(nums, n2)
+        """贪心"""
+        amount.sort()
+        a, b, c = amount
+        if c >= a + b:
+            return c
+        # c < a + b，每次都让c与a/b中的一个各减1，当c减到0时，b >= a >= 0
+        for _ in range(c):
+            # 始终保持 a <= b
+            if a < b:
+                b -= 1
             else:
-                n1 += 1
-                if n1 < 0:
-                    heapq.heappush(nums, n1)
-        return res
+                a -= 1
+        # 最后剩下的a、b，一定是a先消耗完，然后b再慢慢减1。所以减完c次后，还需再减剩余的b次
+        return c + b
 
 
 if __name__ == '__main__':

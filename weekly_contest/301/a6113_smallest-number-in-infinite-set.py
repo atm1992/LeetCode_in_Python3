@@ -34,14 +34,15 @@ At most 1000 calls will be made in total to popSmallest and addBack.
 
 
 class SmallestInfiniteSet:
+    """哈希表"""
 
     def __init__(self):
         self.pop_nums = set()
         self.min_num = 1
 
     def popSmallest(self) -> int:
-        self.pop_nums.add(self.min_num)
         res = self.min_num
+        self.pop_nums.add(self.min_num)
         while self.min_num in self.pop_nums:
             self.min_num += 1
         return res
