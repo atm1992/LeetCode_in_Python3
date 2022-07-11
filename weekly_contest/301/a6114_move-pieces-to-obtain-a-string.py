@@ -37,24 +37,27 @@ start and target consist of the characters 'L', 'R', and '_'.
 
 class Solution:
     def canChange(self, start: str, target: str) -> bool:
-        start_L, start_R = 0, 0
-        target_L, target_R = 0, 0
-        for s_ch, t_ch in zip(start, target):
-            if s_ch in ['L', 'R']:
-                if s_ch == 'L':
-                    start_L += 1
-                else:
-                    start_R += 1
-            if t_ch in ['L', 'R']:
-                if t_ch == 'L':
-                    target_L += 1
-                else:
-                    target_R += 1
-            if start_L > target_L or start_R < target_R:
+        """双指针。参考LeetCode题777"""
+        n = len(start)
+        i = j = 0
+        while i < n or j < n:
+            while i < n and start[i] == '_':
+                i += 1
+            while j < n and target[j] == '_':
+                j += 1
+            # i、j要么同时到达终点，要么都没到达终点
+            if (i == n) ^ (j == n):
                 return False
-            if (s_ch == 'L' or t_ch == 'L') and start_R != target_R:
+            if i == j == n:
+                return True
+            if start[i] != target[j]:
                 return False
-        return start_L == target_L and start_R == target_R
+            if start[i] == 'L' and i < j:
+                return False
+            if start[i] == 'R' and i > j:
+                return False
+            i, j = i + 1, j + 1
+        return True
 
 
 if __name__ == '__main__':
