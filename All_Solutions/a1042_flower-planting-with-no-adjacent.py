@@ -33,9 +33,22 @@ paths[i].length == 2
 xi != yi
 Every garden has at most 3 paths coming into or leaving it.
 """
+from collections import defaultdict
 from typing import List
 
 
 class Solution:
     def gardenNoAdj(self, n: int, paths: List[List[int]]) -> List[int]:
-        pass
+        """贪心。因为所有花园最多有 3 条路径可以进入或离开，也就意味着每个花园最多只有3个相邻花园，但有4种花可以选择。
+        所以对于任一花园，只需从相邻花园没种过的花中任选一种即可，它的选择并不会对它的非相邻花园有任何影响，所以之后也不会出现矛盾点，因此不需要回溯"""
+        edges = defaultdict(list)
+        for u, v in paths:
+            edges[u].append(v)
+            edges[v].append(u)
+        all_options = {1, 2, 3, 4}
+        res = [0] * n
+        for u in range(1, n + 1):
+            options = all_options - set(res[v - 1] for v in edges[u])
+            # 从相邻花园没种过的花中任选一种
+            res[u - 1] = options.pop()
+        return res
