@@ -27,4 +27,49 @@ from typing import List
 
 class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
-        pass
+        """双指针"""
+        n = len(nums)
+        # 查找nums中最接近0的负数下标。若nums中不存在负数，则max_neg为默认值-1
+        max_neg = -1
+        for idx, num in enumerate(nums):
+            if num < 0:
+                max_neg = idx
+            else:
+                break
+        res = []
+        left, right = max_neg, max_neg + 1
+        while left >= 0 or right < n:
+            if left == -1:
+                res.append(nums[right] * nums[right])
+                right += 1
+            elif right == n:
+                res.append(nums[left] * nums[left])
+                left -= 1
+            elif nums[left] * nums[left] <= nums[right] * nums[right]:
+                res.append(nums[left] * nums[left])
+                left -= 1
+            else:
+                res.append(nums[right] * nums[right])
+                right += 1
+        return res
+
+    def sortedSquares_2(self, nums: List[int]) -> List[int]:
+        """双指针"""
+        n = len(nums)
+        res = [0] * n
+        left, right = 0, n - 1
+        # 逆序写入res
+        idx = n - 1
+        while left <= right:
+            if nums[left] * nums[left] >= nums[right] * nums[right]:
+                res[idx] = nums[left] * nums[left]
+                left += 1
+            else:
+                res[idx] = nums[right] * nums[right]
+                right -= 1
+            idx -= 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().sortedSquares(nums=[-7, -3, 2, 3, 11]))

@@ -24,6 +24,7 @@ All the words in s are separated by a single space.
 
 class Solution:
     def reverseWords(self, s: str) -> str:
+        """栈"""
         stack = []
         res = ''
         for ch in s:
