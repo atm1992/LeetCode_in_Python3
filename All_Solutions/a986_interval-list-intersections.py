@@ -29,4 +29,18 @@ from typing import List
 
 class Solution:
     def intervalIntersection(self, firstList: List[List[int]], secondList: List[List[int]]) -> List[List[int]]:
-        pass
+        """双指针。假设firstList中的第一个区间会和secondList中的第一个、第二个区间都相交，那么会产生两个交集区间，
+        但是这两个交集区间肯定不相交，因为endi < start(i+1)、endj < start(j+1)。所以可以逐个生成交集区间"""
+        res = []
+        m, n = len(firstList), len(secondList)
+        i = j = 0
+        while i < m and j < n:
+            low = max(firstList[i][0], secondList[j][0])
+            high = min(firstList[i][1], secondList[j][1])
+            if low <= high:
+                res.append([low, high])
+            if firstList[i][1] < secondList[j][1]:
+                i += 1
+            else:
+                j += 1
+        return res
