@@ -26,4 +26,23 @@ from typing import List
 
 class Solution:
     def numberOfArithmeticSlices(self, nums: List[int]) -> int:
-        pass
+        """
+        动态规划
+        dp[i] 表示以第i个元素结尾的等差数列的个数，其中的每个等差数列都要包含第i个元素。
+        """
+        n = len(nums)
+        if n < 3:
+            return 0
+        res = 0
+        pre = 0
+        for i in range(2, n):
+            if nums[i - 1] - nums[i - 2] == nums[i] - nums[i - 1]:
+                pre += 1
+                res += pre
+            else:
+                pre = 0
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().numberOfArithmeticSlices(nums=[1, 2, 3, 4]))
