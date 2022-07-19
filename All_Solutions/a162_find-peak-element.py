@@ -37,19 +37,18 @@ class Solution:
         因此，若 nums[mid] < nums[mid + 1]，则向右走；否则向左走。
         """
         left, right = 0, len(nums) - 1
+        # 退出循环时，left == right，也就确定了最终的峰值所在列
         while left < right:
             mid = (left + right) // 2
-            # 此时的nums[mid]不可能为峰值
+            # mid 取不到 right，即 mid < len(nums) - 1，所以 mid+1 < len(nums)
             if nums[mid] < nums[mid + 1]:
+                # 此时的mid不可能是峰值所在列
                 left = mid + 1
-            # 题目已说明 nums[i] != nums[i + 1]，所以这里一定是 nums[mid] > nums[mid + 1]，此时的nums[mid]有可能为峰值
             else:
-                # 剪枝。mid 始终大于等于 0
-                if mid == 0 or nums[mid - 1] < nums[mid]:
-                    return mid
-                # mid 不可能等于 right，因为left不会等于right，所以这里不会进入死循环
-                right = mid - 1
-        # 退出while循环时，left == right。注意：是返回index，而不是返回元素值
+                # 此时 nums[mid] > nums[mid + 1]，因为 nums[i] != nums[i + 1] for all valid i.
+                # 此时的mid有可能是峰值所在列
+                right = mid
+        # 注意：是返回下标，而不是返回元素值
         return left
 
 
