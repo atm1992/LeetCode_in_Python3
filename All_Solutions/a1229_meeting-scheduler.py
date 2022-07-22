@@ -29,4 +29,23 @@ from typing import List
 
 class Solution:
     def minAvailableDuration(self, slots1: List[List[int]], slots2: List[List[int]], duration: int) -> List[int]:
-        pass
+        """排序 + 双指针"""
+        slots1.sort()
+        slots2.sort()
+        n1, n2 = len(slots1), len(slots2)
+        idx1, idx2 = 0, 0
+        while idx1 < n1 and idx2 < n2:
+            max_start = max(slots1[idx1][0], slots2[idx2][0])
+            min_end = min(slots1[idx1][1], slots2[idx2][1])
+            if min_end - max_start >= duration:
+                return [max_start, max_start + duration]
+            if slots1[idx1][1] < slots2[idx2][1]:
+                idx1 += 1
+            else:
+                idx2 += 1
+        return []
+
+
+if __name__ == '__main__':
+    print(Solution().minAvailableDuration(slots1=[[10, 50], [60, 120], [140, 210]], slots2=[[0, 15], [60, 70]],
+                                          duration=8))
