@@ -38,4 +38,36 @@ from typing import List
 
 class Solution:
     def findRLEArray(self, encoded1: List[List[int]], encoded2: List[List[int]]) -> List[List[int]]:
-        pass
+        """双指针模拟"""
+        res = []
+        n1, n2 = len(encoded1), len(encoded2)
+        p1 = p2 = 0
+        remain1 = remain2 = 0
+        # p1、p2必然是同时到达n1、n2，因为 The full arrays that encoded1 and encoded2 represent are the same length.
+        # 所以也可以只判断其中任意一个
+        while p1 < n1 and p2 < n2:
+            freq1 = remain1 if remain1 > 0 else encoded1[p1][1]
+            freq2 = remain2 if remain2 > 0 else encoded2[p2][1]
+            min_freq = min(freq1, freq2)
+            mul = encoded1[p1][0] * encoded2[p2][0]
+            if res and res[-1][0] == mul:
+                res[-1][1] += min_freq
+            else:
+                res.append([mul, min_freq])
+            if freq1 > freq2:
+                remain1 = freq1 - freq2
+                remain2 = 0
+                p2 += 1
+            elif freq1 < freq2:
+                remain1 = 0
+                remain2 = freq2 - freq1
+                p1 += 1
+            else:
+                remain1 = remain2 = 0
+                p1 += 1
+                p2 += 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().findRLEArray(encoded1=[[1, 3], [2, 1], [3, 2]], encoded2=[[2, 3], [3, 3]]))
