@@ -23,4 +23,26 @@ s consists of English letters.
 
 class Solution:
     def lengthOfLongestSubstringTwoDistinct(self, s: str) -> int:
-        pass
+        """
+        滑动窗口。
+        滑动窗口 .vs. 双指针
+        1、滑动窗口：两个指针的移动方向相同
+        2、双指针：两个指针的移动方向相反
+        """
+        n = len(s)
+        left = right = 0
+        ch2lastidx = {}
+        res = 0
+        while right < n:
+            ch2lastidx[s[right]] = right
+            if len(ch2lastidx) == 3:
+                min_idx = min(ch2lastidx.values())
+                ch2lastidx.pop(s[min_idx])
+                left = min_idx + 1
+            right += 1
+            res = max(res, right - left)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().lengthOfLongestSubstringTwoDistinct(s="abcabcabc"))
