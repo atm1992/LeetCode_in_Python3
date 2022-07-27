@@ -96,4 +96,4 @@ class Solution:
 
 
 if __name__ == '__main__':
-    print(Solution().longestOnes_3(nums = [0,0,0,0], k = 0))
+    print(Solution().longestOnes_3(nums=[0, 0, 0, 0], k=0))
