@@ -31,6 +31,7 @@ n == rooms[i].length
 1 <= m, n <= 250
 rooms[i][j] is -1, 0, or 2^31 - 1.
 """
+from collections import deque
 from typing import List
 
 
@@ -40,4 +41,15 @@ class Solution:
         Do not return anything, modify rooms in-place instead.
         BFS
         """
-        pass
+        queue = deque()
+        m, n = len(rooms), len(rooms[0])
+        for i in range(m):
+            for j in range(n):
+                if rooms[i][j] == 0:
+                    queue.append((i, j))
+        while queue:
+            i, j = queue.popleft()
+            for x, y in [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]:
+                if 0 <= x < m and 0 <= y < n and rooms[x][y] == 2147483647:
+                    rooms[x][y] = rooms[i][j] + 1
+                    queue.append((x, y))
