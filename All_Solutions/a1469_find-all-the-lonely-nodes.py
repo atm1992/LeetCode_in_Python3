@@ -42,4 +42,19 @@ class TreeNode:
 
 class Solution:
     def getLonelyNodes(self, root: Optional[TreeNode]) -> List[int]:
-        pass
+        """DFS"""
+
+        def dfs(node: TreeNode) -> None:
+            if not node.left and node.right:
+                res.append(node.right.val)
+                dfs(node.right)
+            elif not node.right and node.left:
+                res.append(node.left.val)
+                dfs(node.left)
+            elif node.right and node.left:
+                dfs(node.left)
+                dfs(node.right)
+
+        res = []
+        dfs(root)
+        return res
