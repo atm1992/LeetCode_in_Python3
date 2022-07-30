@@ -20,6 +20,10 @@ Input: n = 6, connections = [[0,1],[0,2],[0,3],[1,2]]
 Output: -1
 Explanation: There are not enough cables.
 
+Example 4:
+Input: n = 5, connections = [[0,1],[0,2],[3,4],[2,3]]
+Output: 0
+
 
 Constraints:
 1 <= n <= 10^5
@@ -35,4 +39,28 @@ from typing import List
 
 class Solution:
     def makeConnected(self, n: int, connections: List[List[int]]) -> int:
-        pass
+        """
+        并查集。连接n个顶点，至少需要n-1条线缆。若线缆数量小于n-1，则直接返回-1。
+        然后再用并查集统计当前的集合(连通分量)个数m，使所有计算机都连通所需的最少操作次数为m-1
+        """
+
+        def find(i: int) -> int:
+            if i != parent[i]:
+                parent[i] = find(parent[i])
+            return parent[i]
+
+        def union(i: int, j: int) -> None:
+            parent[find(i)] = find(j)
+
+        if len(connections) < n - 1:
+            return -1
+
+        parent = list(range(n))
+        for i, j in connections:
+            union(i, j)
+
+        return sum(i == parent[i] for i in range(n)) - 1
+
+
+if __name__ == '__main__':
+    print(Solution().makeConnected(n=5, connections=[[0, 1], [0, 2], [3, 4], [2, 3]]))
