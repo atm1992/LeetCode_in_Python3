@@ -28,4 +28,21 @@ from typing import List
 
 class Solution:
     def getFactors(self, n: int) -> List[List[int]]:
-        pass
+        """回溯"""
+
+        def dfs(num: int, start: int) -> List[List[int]]:
+            res = []
+            # 从start开始拆分num
+            for factor in range(start, int(num ** 0.5) + 1):
+                if num % factor == 0:
+                    res.append([factor, num // factor])
+                    # 从当前factor开始，继续拆分num // factor。从而保证每个组合中的factor都是递增的，因此实现了去重
+                    for sub_res in dfs(num // factor, factor):
+                        res.append([factor] + sub_res)
+            return res
+
+        return dfs(n, 2)
+
+
+if __name__ == '__main__':
+    print(Solution().getFactors(12))
