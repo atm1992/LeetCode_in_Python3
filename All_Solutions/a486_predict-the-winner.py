@@ -30,4 +30,39 @@ from typing import List
 
 class Solution:
     def PredictTheWinner(self, nums: List[int]) -> bool:
-        pass
+        """
+        动态规划
+        dp[i][j] 表示在下标[i, j]范围内，当前玩家与另一个玩家的分数之差的最大值，注意：当前玩家不一定是先手。
+        1、i > j时，表示当前剩余数组为空，此时 dp[i][j] = 0
+        2、i == j时，表示当前剩余数组只有一个元素，此时 dp[i][j] = nums[i]
+        3、i < j时，当前玩家可选nums[i]或nums[j]，从中选择可以让分数之差达到最大的那个元素：
+        3.1、若当前玩家选择了nums[i]，则另一玩家能获得的最大分数之差就是dp[i+1][j]，因此当前玩家能获得的最大分数之差就是nums[i] - dp[i+1][j]；
+        3.2、若当前玩家选择了nums[j]，则另一玩家能获得的最大分数之差就是dp[i][j-1]，因此当前玩家能获得的最大分数之差就是nums[j] - dp[i][j-1]；
+        对上述两种情况取最大值，就是当前玩家最终能获得的最大分数之差，即 dp[i][j] = max(nums[i] - dp[i+1][j], nums[j] - dp[i][j-1])
+        最终的dp[0][n-1]就表示玩家1能获得的最大分数之差，若 dp[0][n-1] >= 0，则返回True
+        """
+        n = len(nums)
+        dp = [[0] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            for j in range(i, n):
+                if i == j:
+                    dp[i][j] = nums[i]
+                else:
+                    dp[i][j] = max(nums[i] - dp[i + 1][j], nums[j] - dp[i][j - 1])
+        return dp[0][n - 1] >= 0
+
+    def PredictTheWinner_2(self, nums: List[int]) -> bool:
+        """动态规划。使用滚动数组降低方法一的空间复杂度"""
+        n = len(nums)
+        dp = [0] * n
+        for i in range(n - 1, -1, -1):
+            for j in range(i, n):
+                if i == j:
+                    dp[j] = nums[i]
+                else:
+                    dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])
+        return dp[-1] >= 0
+
+
+if __name__ == '__main__':
+    print(Solution().PredictTheWinner([1, 5, 233, 7]))
