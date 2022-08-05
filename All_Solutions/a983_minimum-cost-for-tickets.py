@@ -41,4 +41,26 @@ from typing import List
 
 class Solution:
     def mincostTickets(self, days: List[int], costs: List[int]) -> int:
-        pass
+        """动态规划 + 二分查找。只存储days中每个日期所对应的最低票价"""
+
+        def binary_search(left, right, target) -> int:
+            if days[left] > target:
+                return 0
+            while left < right:
+                mid = (left + right + 1) // 2
+                if days[mid] > target:
+                    right = mid - 1
+                else:
+                    left = mid
+            return day2cost[days[left]]
+
+        day2cost = {}
+        for idx, day in enumerate(days):
+            day2cost[day] = min(binary_search(0, idx - 1, day - 1) + costs[0],
+                                binary_search(0, idx - 1, day - 7) + costs[1],
+                                binary_search(0, idx - 1, day - 30) + costs[2])
+        return day2cost[days[-1]]
+
+
+if __name__ == '__main__':
+    print(Solution().mincostTickets(days=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31], costs=[2, 7, 15]))
