@@ -27,9 +27,30 @@ relations[i].length == 2
 prevCoursei != nextCoursei
 All the pairs [prevCoursei, nextCoursei] are unique.
 """
+from collections import defaultdict, deque
 from typing import List
 
 
 class Solution:
     def minimumSemesters(self, n: int, relations: List[List[int]]) -> int:
-        pass
+        """拓扑排序 + BFS"""
+        graph = defaultdict(list)
+        in_degree = [0] * (n + 1)
+        for pre, nxt in relations:
+            graph[pre].append(nxt)
+            in_degree[nxt] += 1
+        queue = deque([i for i in range(1, n + 1) if in_degree[i] == 0])
+        res = 0
+        while queue:
+            res += 1
+            for _ in range(len(queue)):
+                cur = queue.popleft()
+                for nxt in graph[cur]:
+                    in_degree[nxt] -= 1
+                    if in_degree[nxt] == 0:
+                        queue.append(nxt)
+        return res if sum(in_degree) == 0 else -1
+
+
+if __name__ == '__main__':
+    print(Solution().minimumSemesters(n=3, relations=[[1, 3], [2, 3]]))
