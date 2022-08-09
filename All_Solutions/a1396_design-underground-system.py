@@ -63,24 +63,37 @@ All strings consist of uppercase and lowercase English letters and digits.
 There will be at most 2 * 10^4 calls in total to checkIn, checkOut, and getAverageTime.
 Answers within 10^-5 of the actual value will be accepted.
 """
+from collections import defaultdict
+from typing import DefaultDict, Tuple
 
 
 class UndergroundSystem:
 
     def __init__(self):
-        pass
+        self.id2start = defaultdict(Tuple[str, int])
+        self.start2end = defaultdict(DefaultDict[str, Tuple[int, int]])
 
     def checkIn(self, id: int, stationName: str, t: int) -> None:
-        pass
+        self.id2start[id] = (stationName, t)
 
     def checkOut(self, id: int, stationName: str, t: int) -> None:
-        pass
+        start_name, start_t = self.id2start[id]
+        total_t, cnt = self.start2end[start_name].get(stationName, (0, 0))
+        self.start2end[start_name][stationName] = (total_t + t - start_t, cnt + 1)
 
     def getAverageTime(self, startStation: str, endStation: str) -> float:
-        pass
+        total_t, cnt = self.start2end[startStation][endStation]
+        return round(total_t / cnt, 5)
 
-# Your UndergroundSystem object will be instantiated and called as such:
-# obj = UndergroundSystem()
-# obj.checkIn(id,stationName,t)
-# obj.checkOut(id,stationName,t)
-# param_3 = obj.getAverageTime(startStation,endStation)
+
+if __name__ == '__main__':
+    obj = UndergroundSystem()
+    obj.checkIn(10, "Leyton", 3)
+    obj.checkOut(10, "Paradise", 8)
+    print(obj.getAverageTime("Leyton", "Paradise"))
+    obj.checkIn(5, "Leyton", 10)
+    obj.checkOut(5, "Paradise", 16)
+    print(obj.getAverageTime("Leyton", "Paradise"))
+    obj.checkIn(2, "Leyton", 21)
+    obj.checkOut(2, "Paradise", 30)
+    print(obj.getAverageTime("Leyton", "Paradise"))
