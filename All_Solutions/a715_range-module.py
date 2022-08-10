@@ -32,21 +32,82 @@ At most 10^4 calls will be made to addRange, queryRange, and removeRange.
 
 
 class RangeModule:
+    """有序字典 + 二分查找"""
 
     def __init__(self):
-        pass
+        from sortedcontainers import SortedDict
+        self.intervals = SortedDict()
 
     def addRange(self, left: int, right: int) -> None:
-        pass
+        # bisect_left 左侧严格小于查找值，即 all(val < x for val in a[lo:i]) and all(val >= x for val in a[i:hi])，大于等于查找值的第一个下标
+        # bisect_right 查找值严格小于右侧，即 all(val <= x for val in a[lo:i]) and all(val > x for val in a[i:hi])，大于查找值的第一个下标
+        # bisect 默认为 bisect_right
+        idx = self.intervals.bisect_right(left)
+        if idx > 0:
+            start = idx - 1
+            cur_left, cur_right = self.intervals.keys()[start], self.intervals.values()[start]
+            # [left, right) 完全属于 [cur_left, cur_right)，因此无需任何操作
+            if cur_right >= right:
+                return
+            # [cur_left, cur_right)的右半部分属于[left, right)，所以将[cur_left, cur_right) 与 [left, right) 合并
+            if cur_right >= left:
+                left = cur_left
+                self.intervals.popitem(start)
+                # 因为start位于idx前面，前面的start被pop掉了，所以idx要向前移1位
+                idx -= 1
+        # 从idx开始向后遍历，若[self.intervals.keys()[idx], self.intervals.values()[idx]) 与 [left, right) 存在交集，则进行合并
+        # 合并过程中，不断pop掉当前idx，所以idx的值保持不变，但len(self.intervals)会逐渐减1，相当于后面的区间会不断前移
+        while idx < len(self.intervals) and self.intervals.keys()[idx] <= right:
+            right = max(right, self.intervals.values()[idx])
+            self.intervals.popitem(idx)
+        # 将最终确定的left、right，作为一个区间[left, right)，加入到self.intervals
+        self.intervals[left] = right
 
     def queryRange(self, left: int, right: int) -> bool:
-        pass
+        idx = self.intervals.bisect_right(left)
+        if idx == 0:
+            return False
+        return right <= self.intervals.values()[idx - 1]
 
     def removeRange(self, left: int, right: int) -> None:
-        pass
+        idx = self.intervals.bisect_right(left)
+        if idx > 0:
+            start = idx - 1
+            cur_left, cur_right = self.intervals.keys()[start], self.intervals.values()[start]
+            # 若当前区间[cur_left, cur_right)完全包含[left, right)，则只需对[cur_left, cur_right)进行处理，与其它区间无关，处理完[cur_left, cur_right)，就可直接return
+            if cur_right >= right:
+                if cur_left == left:
+                    self.intervals.popitem(start)
+                else:
+                    self.intervals[cur_left] = left
+                if cur_right > right:
+                    self.intervals[right] = cur_right
+                return
+            # 若当前区间[cur_left, cur_right)中的一部分属于[left, right)，则需把[cur_left, cur_right)中的这部分删除掉
+            elif cur_right > left:
+                if cur_left == left:
+                    self.intervals.popitem(start)
+                    idx -= 1
+                else:
+                    self.intervals[cur_left] = left
+        # 从idx开始向后遍历，若[self.intervals.keys()[idx], self.intervals.values()[idx]) 与 [left, right) 存在交集，则需把相交的部分删除掉。
+        # 删除过程中，不断pop掉当前idx，所以idx的值保持不变，但len(self.intervals)会逐渐减1，相当于后面的区间会不断前移
+        while idx < len(self.intervals) and self.intervals.keys()[idx] < right:
+            # [self.intervals.keys()[idx], self.intervals.values()[idx]) 完全属于 [left, right)
+            if self.intervals.values()[idx] <= right:
+                self.intervals.popitem(idx)
+            # [self.intervals.keys()[idx], self.intervals.values()[idx])中的左半部分属于[left, right)，
+            # 之后的区间都不会与[left, right)存在交集，所以可以break退出
+            else:
+                self.intervals[right] = self.intervals.values()[idx]
+                self.intervals.popitem(idx)
+                break
 
-# Your RangeModule object will be instantiated and called as such:
-# obj = RangeModule()
-# obj.addRange(left,right)
-# param_2 = obj.queryRange(left,right)
-# obj.removeRange(left,right)
+
+if __name__ == '__main__':
+    obj = RangeModule()
+    obj.addRange(10, 20)
+    obj.removeRange(14, 16)
+    print(obj.queryRange(10, 14))
+    print(obj.queryRange(13, 15))
+    print(obj.queryRange(16, 17))

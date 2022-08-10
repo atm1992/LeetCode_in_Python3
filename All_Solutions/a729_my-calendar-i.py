@@ -81,8 +81,8 @@ class MyCalendar2:
         self.calendar = SortedList()
 
     def book(self, start: int, end: int) -> bool:
-        # bisect_left 左侧严格小于查找值，即 all(val < x for val in a[lo:i]) and all(val >= x for val in a[i:hi])
-        # bisect_right 查找值严格小于右侧，即 all(val <= x for val in a[lo:i]) and all(val > x for val in a[i:hi])
+        # bisect_left 左侧严格小于查找值，即 all(val < x for val in a[lo:i]) and all(val >= x for val in a[i:hi])，大于等于查找值的第一个下标
+        # bisect_right 查找值严格小于右侧，即 all(val <= x for val in a[lo:i]) and all(val > x for val in a[i:hi])，大于查找值的第一个下标
         # bisect 默认为 bisect_right
         idx = self.calendar.bisect_right(start)
         if idx == len(self.calendar) or (idx % 2 == 0 and end <= self.calendar[idx]):
