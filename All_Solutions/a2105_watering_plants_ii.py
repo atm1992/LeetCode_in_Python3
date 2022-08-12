@@ -50,4 +50,23 @@ from typing import List
 
 class Solution:
     def minimumRefill(self, plants: List[int], capacityA: int, capacityB: int) -> int:
-        pass
+        """双指针模拟"""
+        res = 0
+        a_pos, b_pos = 0, len(plants) - 1
+        a_remain, b_remain = capacityA, capacityB
+        while a_pos < b_pos:
+            if a_remain < plants[a_pos]:
+                res += 1
+                a_remain = capacityA
+            if b_remain < plants[b_pos]:
+                res += 1
+                b_remain = capacityB
+            a_remain -= plants[a_pos]
+            b_remain -= plants[b_pos]
+            a_pos += 1
+            b_pos -= 1
+        return res + 1 if a_pos == b_pos and max(a_remain, b_remain) < plants[a_pos] else res
+
+
+if __name__ == '__main__':
+    print(Solution().minimumRefill(plants=[5], capacityA=10, capacityB=8))
