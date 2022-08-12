@@ -130,3 +130,4 @@ querydsl/
 
 *node_modules
 
+/test.py
