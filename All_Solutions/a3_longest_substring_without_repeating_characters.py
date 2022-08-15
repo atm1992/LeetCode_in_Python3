@@ -32,28 +32,14 @@ s consists of English letters, digits, symbols and spaces.
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        max_len = 0
-        res = []
-        for ch in s:
-            if ch not in res:
-                res.append(ch)
-            else:
-                if max_len < len(res):
-                    max_len = len(res)
-                res = res[res.index(ch) + 1:]
-                res.append(ch)
-        # 退出上述循环时，res中还会剩余一些字符
-        return max(max_len, len(res))
-
-    def lengthOfLongestSubstring_2(self, s: str) -> int:
+        """哈希表"""
         res = 0
-        ch2idx = {}
         left = 0
+        ch2idx = {}
         for idx, ch in enumerate(s):
-            # 如果该字符之前的下标小于left，就可认为该字符在之前已被逻辑删除了。说明该字符在[left, idx-1]范围内没有出现过
-            if ch in ch2idx and ch2idx[ch] >= left:
+            # 若该字符之前的下标小于left，则认为该字符在之前已被逻辑删除了。说明该字符在[left, idx-1]范围内没有出现过
+            if ch2idx.get(ch, -1) >= left:
                 res = max(res, idx - left)
                 left = ch2idx[ch] + 1
             ch2idx[ch] = idx
-        res = max(res, len(s) - left)
-        return res
+        return max(res, len(s) - left)
