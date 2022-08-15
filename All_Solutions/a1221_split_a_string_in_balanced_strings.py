@@ -33,4 +33,14 @@ s is a balanced string.
 
 class Solution:
     def balancedStringSplit(self, s: str) -> int:
-        pass
+        """贪心"""
+        res = diff_cnt = 0
+        for ch in s:
+            diff_cnt += 1 if ch == 'L' else -1
+            if diff_cnt == 0:
+                res += 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().balancedStringSplit("RLLLLRRRLR"))
