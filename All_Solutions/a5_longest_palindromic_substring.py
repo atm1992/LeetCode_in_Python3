@@ -29,11 +29,9 @@ class Solution:
         初始状态：left==right，此时的df[left][right]肯定为True
         状态转移方程：若df[left][right] == True 以及left-1 与 right+1位置上的字符相同，则df[left-1][right+1]为True
         """
-        if not s or len(s) < 2:
-            return s
         n = len(s)
-        # 不能使用 [[False]*n]*n 这种方式创建二维数组，因为如果修改dp[0][1]的值，也将会修改dp[1][1]、dp[2][1]……
-        # [[False]*n]*n 等价于 temp_list = [False]*n; dp = [temp_list,temp_list,……]
+        if n < 2:
+            return s
         dp = [[False] * n for _ in range(n)]
         max_len = 1
         max_start = 0
@@ -62,9 +60,9 @@ class Solution:
         2、然后，左右两侧同时遍历，判断left指向的字符与right指向的字符是否相同，若相同，则继续遍历；若不同，则停止遍历
         3、以下一个字符为中心，重复上述过程
         """
-        if not s or len(s) < 2:
-            return s
         n = len(s)
+        if n < 2:
+            return s
         max_len = 1
         max_start = 0
         for i in range(n):
