@@ -48,4 +48,23 @@ class PolyNode:
 
 class Solution:
     def addPoly(self, poly1: 'PolyNode', poly2: 'PolyNode') -> 'PolyNode':
-        pass
+        dummy_head = PolyNode()
+        pre_node = dummy_head
+        while poly1 and poly2:
+            if poly1.power > poly2.power:
+                pre_node.next = poly1
+                pre_node = pre_node.next
+                poly1 = poly1.next
+            elif poly1.power < poly2.power:
+                pre_node.next = poly2
+                pre_node = pre_node.next
+                poly2 = poly2.next
+            else:
+                poly1.coefficient += poly2.coefficient
+                if poly1.coefficient != 0:
+                    pre_node.next = poly1
+                    pre_node = pre_node.next
+                poly1 = poly1.next
+                poly2 = poly2.next
+        pre_node.next = poly1 if poly1 else poly2
+        return dummy_head.next
