@@ -30,4 +30,43 @@ class ListNode:
 
 class Solution:
     def plusOne(self, head: ListNode) -> ListNode:
-        pass
+        """链表反转，加1，然后再反转回去"""
+
+        def reverse(head: ListNode) -> ListNode:
+            pre, cur = None, head
+            while cur:
+                nxt = cur.next
+                cur.next = pre
+                pre = cur
+                cur = nxt
+            return pre
+
+        tail = reverse(head)
+        pre, cur = None, tail
+        carry = 1
+        while cur and carry:
+            carry, cur.val = divmod(cur.val + carry, 10)
+            pre = cur
+            cur = cur.next
+        if carry:
+            pre.next = ListNode(carry)
+        return reverse(tail)
+
+    def plusOne_2(self, head: ListNode) -> ListNode:
+        """
+        哨兵头节点。
+        找到最靠右的不是9的节点，该节点之后的所有节点均为9，然后将该节点加1，其后的所有节点均变为0。
+        为避免给定链表的所有节点均为9，可在head的前面添加一个哨兵头节点
+        """
+        dummy_head = ListNode(0, head)
+        pre, cur = dummy_head, head
+        while cur:
+            if cur.val != 9:
+                pre = cur
+            cur = cur.next
+        pre.val += 1
+        pre = pre.next
+        while pre:
+            pre.val = 0
+            pre = pre.next
+        return dummy_head if dummy_head.val else dummy_head.next
