@@ -37,31 +37,41 @@ s consists of English letters (lower-case and upper-case), ',' and '.'.
 
 class Solution:
     def convert(self, s: str, numRows: int) -> str:
-        """使用二维数组"""
-        if numRows == 1:
+        """
+        使用二维数组
+        找规律，Z 字形变换可看作是以下形状的循环
+        P
+        A   L
+        Y A
+        P
+        每个循环体内的元素个数mod = 2 * (numRows - 1)
+        所以可通过s中的元素下标i对mod取模，来得到元素在循环体内的下标idx
+        若idx < numRows，则元素位于第idx行；若idx >= numRows，则元素位于第mod - idx行。行数从0开始
+        """
+        # 若只有一行或只有一列，则直接返回s
+        if numRows == 1 or numRows >= len(s):
             return s
-        # 当len(s)小于numRows时，下面几行是空的
-        tmp = [[] for _ in range(min(numRows, len(s)))]
+        mat = [[] for _ in range(numRows)]
         mod = 2 * (numRows - 1)
-        for idx, char in enumerate(s):
-            i = idx % mod
-            i = i if i < numRows else mod - i
-            tmp[i].append(char)
-        return ''.join([''.join(row) for row in tmp])
+        for i, ch in enumerate(s):
+            idx = i % mod
+            idx = idx if idx < numRows else mod - idx
+            mat[idx].append(ch)
+        return ''.join(''.join(row) for row in mat)
 
     def convert_2(self, s: str, numRows: int) -> str:
-        """使用一维数组"""
-        if numRows == 1:
+        """模拟。使用一维数组"""
+        # 若只有一行或只有一列，则直接返回s
+        if numRows == 1 or numRows >= len(s):
             return s
-        # 当len(s)小于numRows时，下面几行是空的
-        tmp = ['' for _ in range(min(numRows, len(s)))]
+        tmp = ['' for _ in range(numRows)]
         idx = 0
         go_down = False
-        for char in s:
-            tmp[idx] += char
+        for ch in s:
+            tmp[idx] += ch
             if idx == 0:
                 go_down = True
-            if idx == numRows - 1:
+            elif idx == numRows - 1:
                 go_down = False
             idx += 1 if go_down else -1
         return ''.join(tmp)
