@@ -25,6 +25,7 @@ Constraints:
 The number of nodes in the list is in the range [1, 10^5]
 1 <= Node.val <= 10^5
 """
+from collections import defaultdict
 
 
 # Definition for singly-linked list.
@@ -36,4 +37,19 @@ class ListNode:
 
 class Solution:
     def deleteDuplicatesUnsorted(self, head: ListNode) -> ListNode:
-        pass
+        """哈希表"""
+        node2cnt = defaultdict(int)
+        cur = head
+        while cur:
+            node2cnt[cur.val] += 1
+            cur = cur.next
+        dummy_head = ListNode()
+        pre, cur = dummy_head, head
+        while cur:
+            if node2cnt[cur.val] == 1:
+                pre.next = cur
+                pre = pre.next
+            cur = cur.next
+        # 注意：最后别忘了截断pre后面的节点
+        pre.next = None
+        return dummy_head.next
