@@ -34,4 +34,25 @@ class Node:
 
 class Solution:
     def treeToDoublyList(self, root: 'Optional[Node]') -> 'Optional[Node]':
-        pass
+        """二叉搜索树的中序遍历"""
+        if not root:
+            return root
+
+        def dfs(node: 'Optional[Node]') -> None:
+            nonlocal pre, head
+            if not node:
+                return
+            dfs(node.left)
+            if not head:
+                head = node
+            if pre:
+                pre.right = node
+                node.left = pre
+            pre = node
+            dfs(node.right)
+
+        pre, head = None, None
+        dfs(root)
+        head.left = pre
+        pre.right = head
+        return head
