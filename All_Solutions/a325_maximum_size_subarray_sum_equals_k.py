@@ -25,4 +25,17 @@ from typing import List
 
 class Solution:
     def maxSubArrayLen(self, nums: List[int], k: int) -> int:
-        pass
+        """前缀和 + 哈希表"""
+        sum2idx = {0: 0}
+        res = pre = 0
+        for idx, num in enumerate(nums, 1):
+            pre += num
+            if pre - k in sum2idx:
+                res = max(res, idx - sum2idx[pre - k])
+            if pre not in sum2idx:
+                sum2idx[pre] = idx
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().maxSubArrayLen(nums=[1, -1, 5, -2, 3], k=3))
