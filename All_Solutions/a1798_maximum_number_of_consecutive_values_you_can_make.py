@@ -43,4 +43,20 @@ from typing import List
 
 class Solution:
     def getMaximumConsecutive(self, coins: List[int]) -> int:
-        pass
+        """
+        排序 + 贪心
+        假设数组中的若干个元素可以构造出 [0, x] 内的所有整数，此时再从剩余元素中选择一个y，则可构造出 [y, x + y] 内的所有整数。
+        要使构造出的区间尽量大，就意味着要尽量让 [0, x] 与 [y, x + y] 可以连上，由题意可知，1 <= y，所以 x+1 <= x+y
+        要使两个区间相连，就需要 y <= x+1，如果y > x+1，就意味着这个y对答案没有影响，所以需要从剩余元素中选择尽量小的元素y
+        """
+        coins.sort()
+        pre_end = 0
+        for coin in coins:
+            if coin > pre_end + 1:
+                break
+            pre_end += coin
+        return pre_end + 1
+
+
+if __name__ == '__main__':
+    print(Solution().getMaximumConsecutive(coins=[1, 1, 1, 4]))
