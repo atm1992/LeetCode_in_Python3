@@ -93,21 +93,20 @@ class Solution:
         因为要求取值范围在 [−2^31,  2^31 − 1]，所以在最后一步计算前先判断当前值与2^31 // 10的大小关系。
         设数字拼接边界 boundary = 2^31 // 10，存在以下两种情况的越界：
         1、res > boundary；
-        2、res == boundary，lash_ch > '7'。2^31 的尾数为8，2^31 − 1 的尾数为7。因为 2 ^ 10 = 1024, 4 * 4 * 4 * 2 的尾数为8
+        2、res == boundary，last_ch > '7'。2^31 的尾数为8，2^31 − 1 的尾数为7。因为 2 ^ 10 = 1024, 4 * 4 * 4 * 2 的尾数为8
         若当前res满足上述两种情况，则直接根据符号位，返回相应的INT_MAX, INT_MIN
         """
         INT_MAX, INT_MIN = 2 ** 31 - 1, -2 ** 31
         boundary = INT_MAX // 10
-        idx, sign, n = 0, 1, len(s)
+        idx, sign, n, res = 0, 1, len(s), 0
         while idx < n and s[idx] == ' ':
             idx += 1
         if idx == n:
-            return 0
+            return res
         if s[idx] in ['+', '-']:
             if s[idx] == '-':
                 sign = -1
             idx += 1
-        res = 0
         for i in range(idx, n):
             ch = s[i]
             if not '0' <= ch <= '9':
