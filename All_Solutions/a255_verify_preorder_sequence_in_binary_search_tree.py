@@ -25,4 +25,22 @@ from typing import List
 
 class Solution:
     def verifyPreorder(self, preorder: List[int]) -> bool:
-        pass
+        """单调栈"""
+        if len(preorder) <= 2:
+            return True
+        # 维护一个单调递减栈
+        stack = []
+        # 1 <= preorder[i] <= 10^4
+        pre_num = 0
+        # 遍历左子树时，不断入栈。遍历右子树时，不断出栈，并将pre_num更新为当前右子树的父节点，这棵右子树中的所有节点都必须大于父节点
+        for num in preorder:
+            if num < pre_num:
+                return False
+            while stack and stack[-1] < num:
+                pre_num = stack.pop()
+            stack.append(num)
+        return True
+
+
+if __name__ == '__main__':
+    print(Solution().verifyPreorder([5, 2, 6, 1, 3]))
