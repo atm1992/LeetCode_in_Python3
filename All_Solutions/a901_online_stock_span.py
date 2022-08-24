@@ -33,13 +33,25 @@ At most 10^4 calls will be made to next.
 
 
 class StockSpanner:
+    """单调栈"""
 
     def __init__(self):
-        pass
+        self.stack = []
 
     def next(self, price: int) -> int:
-        pass
+        cnt = 1
+        while self.stack and self.stack[-1][0] <= price:
+            cnt += self.stack.pop()[1]
+        self.stack.append((price, cnt))
+        return cnt
 
-# Your StockSpanner object will be instantiated and called as such:
-# obj = StockSpanner()
-# param_1 = obj.next(price)
+
+if __name__ == '__main__':
+    obj = StockSpanner()
+    print(obj.next(100))
+    print(obj.next(80))
+    print(obj.next(60))
+    print(obj.next(70))
+    print(obj.next(60))
+    print(obj.next(75))
+    print(obj.next(85))
