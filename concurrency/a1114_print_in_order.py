@@ -29,6 +29,8 @@ nums is a permutation of [1, 2, 3].
 
 
 class Foo:
+    """交替锁"""
+
     def __init__(self):
         from threading import Lock
         self.first_job_done = Lock()

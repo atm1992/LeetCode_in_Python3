@@ -49,7 +49,6 @@ class FooBar:
         self.bar_lock.acquire()
 
     def foo(self, printFoo: 'Callable[[], None]') -> None:
-
         for i in range(self.n):
             self.foo_lock.acquire()
             # printFoo() outputs "foo". Do not change or remove this line.
@@ -57,7 +56,6 @@ class FooBar:
             self.bar_lock.release()
 
     def bar(self, printBar: 'Callable[[], None]') -> None:
-
         for i in range(self.n):
             self.bar_lock.acquire()
             # printBar() outputs "bar". Do not change or remove this line.
@@ -75,7 +73,6 @@ class FooBar2:
         self.bar_sema = Semaphore(0)
 
     def foo(self, printFoo: 'Callable[[], None]') -> None:
-
         for i in range(self.n):
             self.foo_sema.acquire()
             # printFoo() outputs "foo". Do not change or remove this line.
@@ -83,7 +80,6 @@ class FooBar2:
             self.bar_sema.release()
 
     def bar(self, printBar: 'Callable[[], None]') -> None:
-
         for i in range(self.n):
             self.bar_sema.acquire()
             # printBar() outputs "bar". Do not change or remove this line.
