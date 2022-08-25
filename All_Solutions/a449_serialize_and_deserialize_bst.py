@@ -20,6 +20,8 @@ The number of nodes in the tree is in the range [0, 10^4].
 0 <= Node.val <= 10^4
 The input tree is guaranteed to be a binary search tree.
 """
+from collections import deque
+from typing import List, Optional
 
 
 # Definition for a binary tree node.
@@ -31,16 +33,72 @@ class TreeNode:
 
 
 class Codec:
+    """DFS - 先序遍历。参考LeetCode题297"""
 
     def serialize(self, root: TreeNode) -> str:
         """Encodes a tree to a single string.
         """
-        pass
+        if not root:
+            return '#'
+        left = self.serialize(root.left)
+        right = self.serialize(root.right)
+        return f'{str(root.val)},{left},{right}'
 
-    def deserialize(self, data: str) -> TreeNode:
+    def deserialize(self, data: str) -> Optional[TreeNode]:
         """Decodes your encoded data to tree.
         """
-        pass
+
+        def make_tree(vals: List[str]) -> Optional[TreeNode]:
+            val = vals.pop(0)
+            if val == '#':
+                return None
+            root = TreeNode(int(val))
+            root.left = make_tree(vals)
+            root.right = make_tree(vals)
+            return root
+
+        return make_tree(data.split(','))
+
+
+class Codec2:
+    """BFS。运行速度最快"""
+
+    def serialize(self, root: TreeNode) -> str:
+        """Encodes a tree to a single string.
+        """
+        if not root:
+            return '#'
+        queue = deque([root])
+        res = []
+        while queue:
+            node = queue.popleft()
+            if node:
+                queue.extend([node.left, node.right])
+                res.append(str(node.val))
+            else:
+                res.append('#')
+        return ','.join(res)
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree.
+        """
+        if data == '#':
+            return None
+        vals = deque(data.split(','))
+        root = TreeNode(int(vals.popleft()))
+        queue = deque([root])
+        while queue:
+            node = queue.popleft()
+            # queue不为空的情况下，vals一定不为空
+            val = vals.popleft()
+            if val != '#':
+                queue.append(TreeNode(int(val)))
+                node.left = queue[-1]
+            val = vals.popleft()
+            if val != '#':
+                queue.append(TreeNode(int(val)))
+                node.right = queue[-1]
+        return root
 
 # Your Codec object will be instantiated and called as such:
 # Your Codec object will be instantiated and called as such:
