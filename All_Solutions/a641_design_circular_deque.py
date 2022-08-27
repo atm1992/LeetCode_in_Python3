@@ -40,34 +40,77 @@ At most 2000 calls will be made to insertFront, insertLast, deleteFront, deleteL
 """
 
 
+class ListNode:
+    __slots__ = ('pre', 'nxt', 'val')
+
+    def __init__(self, val: int = 0, pre: 'ListNode' = None, nxt: 'ListNode' = None):
+        self.val = val
+        self.pre = pre
+        self.nxt = nxt
+
+
 class MyCircularDeque:
+    """双链表"""
 
     def __init__(self, k: int):
-        pass
+        self.cnt = 0
+        self.k = k
+        self.head = ListNode()
+        self.tail = ListNode()
+        self.head.nxt = self.tail
+        self.tail.pre = self.head
+        self.head.pre = self.tail
+        self.tail.nxt = self.head
 
     def insertFront(self, value: int) -> bool:
-        pass
+        if self.isFull():
+            return False
+        node = ListNode(value)
+        node.nxt = self.head.nxt
+        node.nxt.pre = node
+        self.head.nxt = node
+        node.pre = self.head
+        self.cnt += 1
+        return True
 
     def insertLast(self, value: int) -> bool:
-        pass
+        if self.isFull():
+            return False
+        node = ListNode(value)
+        node.pre = self.tail.pre
+        node.pre.nxt = node
+        self.tail.pre = node
+        node.nxt = self.tail
+        self.cnt += 1
+        return True
 
     def deleteFront(self) -> bool:
-        pass
+        if self.isEmpty():
+            return False
+        self.head.nxt = self.head.nxt.nxt
+        self.head.nxt.pre = self.head
+        self.cnt -= 1
+        return True
 
     def deleteLast(self) -> bool:
-        pass
+        if self.isEmpty():
+            return False
+        self.tail.pre = self.tail.pre.pre
+        self.tail.pre.nxt = self.tail
+        self.cnt -= 1
+        return True
 
     def getFront(self) -> int:
-        pass
+        return -1 if self.isEmpty() else self.head.nxt.val
 
     def getRear(self) -> int:
-        pass
+        return -1 if self.isEmpty() else self.tail.pre.val
 
     def isEmpty(self) -> bool:
-        pass
+        return self.cnt == 0
 
     def isFull(self) -> bool:
-        pass
+        return self.cnt == self.k
 
 # Your MyCircularDeque object will be instantiated and called as such:
 # obj = MyCircularDeque(k)
