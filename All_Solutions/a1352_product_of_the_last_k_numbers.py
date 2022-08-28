@@ -38,17 +38,53 @@ The product of the stream at any point in time will fit in a 32-bit integer.
 
 
 class ProductOfNumbers:
+    """前缀积。记录最后一个0出现的下标"""
 
     def __init__(self):
-        pass
+        self.pre_product = [1]
+        self.last_0 = 0
 
     def add(self, num: int) -> None:
-        pass
+        if num == 0:
+            self.last_0 = len(self.pre_product)
+            num = 1
+        self.pre_product.append(self.pre_product[-1] * num)
 
     def getProduct(self, k: int) -> int:
-        pass
+        n = len(self.pre_product)
+        if n - k <= self.last_0:
+            return 0
+        return self.pre_product[n - 1] // self.pre_product[n - k - 1]
 
-# Your ProductOfNumbers object will be instantiated and called as such:
-# obj = ProductOfNumbers()
-# obj.add(num)
-# param_2 = obj.getProduct(k)
+
+class ProductOfNumbers2:
+    """前缀积。遇到0就清空前缀积数组，最后根据k与数组长度之间的大小关系来判断是否返回0"""
+
+    def __init__(self):
+        self.pre_product = [1]
+
+    def add(self, num: int) -> None:
+        if num == 0:
+            self.pre_product = [1]
+        else:
+            self.pre_product.append(self.pre_product[-1] * num)
+
+    def getProduct(self, k: int) -> int:
+        n = len(self.pre_product)
+        if n <= k:
+            return 0
+        return self.pre_product[n - 1] // self.pre_product[n - k - 1]
+
+
+if __name__ == '__main__':
+    obj = ProductOfNumbers2()
+    obj.add(3)
+    obj.add(0)
+    obj.add(2)
+    obj.add(5)
+    obj.add(4)
+    print(obj.getProduct(2))
+    print(obj.getProduct(3))
+    print(obj.getProduct(4))
+    obj.add(8)
+    print(obj.getProduct(2))

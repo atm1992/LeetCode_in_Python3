@@ -24,7 +24,7 @@ from typing import List
 class Solution:
     def shortestPalindrome(self, s: str) -> str:
         """
-        问题可转化为查找字符串s的最长回文前缀。参考题5
+        问题可转化为查找字符串s的最长回文前缀。参考LeetCode题5
         暴力枚举的时间复杂度为O(n^2)
         动态规划的时间复杂度为O(n^2)
         中心扩展算法的时间复杂度为O(n^2)
