@@ -45,4 +45,37 @@ class Node(object):
 
 class Solution:
     def expTree(self, s: str) -> 'Node':
-        pass
+        """栈。参考LeetCode题772"""
+        stack_opt, stack_num = [], []
+        i, n = 0, len(s)
+        # ')' 不会入栈stack_opt
+        priority = {'(': 0, '+': 1, '-': 1, '*': 2, '/': 2}
+        while i < n:
+            ch = s[i]
+            if ch.isdigit():
+                # Operands in s are exactly 1 digit.
+                stack_num.append(Node(ch))
+            elif ch == '(':
+                stack_opt.append(Node(ch))
+            elif ch == ')':
+                while stack_opt[-1].val != '(':
+                    opt = stack_opt.pop()
+                    opt.right = stack_num.pop()
+                    opt.left = stack_num.pop()
+                    stack_num.append(opt)
+                # 退出上述while循环时，stack_opt[-1].val == '('
+                stack_opt.pop()
+            else:
+                while stack_opt and priority[stack_opt[-1].val] >= priority[ch]:
+                    opt = stack_opt.pop()
+                    opt.right = stack_num.pop()
+                    opt.left = stack_num.pop()
+                    stack_num.append(opt)
+                stack_opt.append(Node(ch))
+            i += 1
+        while stack_opt:
+            opt = stack_opt.pop()
+            opt.right = stack_num.pop()
+            opt.left = stack_num.pop()
+            stack_num.append(opt)
+        return stack_num[0]
