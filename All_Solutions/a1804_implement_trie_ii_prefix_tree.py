@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title: 实现 Trie （前缀树） II
+title: 实现 Trie （前缀树）II
 A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
 Implement the Trie class:
     Trie() Initializes the trie object.
@@ -40,23 +40,60 @@ It is guaranteed that for any function call to erase, the string word will exist
 class Trie:
 
     def __init__(self):
-        pass
+        # 26叉树
+        self.children = [None] * 26
+        # 注意：需要区分 以某字符结尾的单词数 和 以某字符为前缀的单词数，不能单纯地使用 self.is_end = True 和 self.as_prefix 来记录以某字符结尾的单词数，
+        # 因为即使该字符是某单词的结尾，以该字符结尾的单词数 和 以该字符为前缀的单词数 之间也不一定相等关系，也可能是小于关系。
+        self.as_word = 0
+        self.as_prefix = 0
 
     def insert(self, word: str) -> None:
-        pass
+        node = self
+        for ch in word:
+            idx = ord(ch) - ord('a')
+            if not node.children[idx]:
+                # 将对应字符所在下标的元素赋值为一个Trie节点
+                node.children[idx] = Trie()
+            node = node.children[idx]
+            node.as_prefix += 1
+        node.as_word += 1
 
     def countWordsEqualTo(self, word: str) -> int:
-        pass
+        node = self
+        for ch in word:
+            idx = ord(ch) - ord('a')
+            if not node.children[idx]:
+                return 0
+            node = node.children[idx]
+        return node.as_word
 
     def countWordsStartingWith(self, prefix: str) -> int:
-        pass
+        node = self
+        for ch in prefix:
+            idx = ord(ch) - ord('a')
+            if not node.children[idx]:
+                return 0
+            node = node.children[idx]
+        return node.as_prefix
 
     def erase(self, word: str) -> None:
-        pass
+        node = self
+        for ch in word:
+            idx = ord(ch) - ord('a')
+            # It is guaranteed that for any function call to erase, the string word will exist in the trie.
+            node = node.children[idx]
+            node.as_prefix -= 1
+        node.as_word -= 1
 
-# Your Trie object will be instantiated and called as such:
-# obj = Trie()
-# obj.insert(word)
-# param_2 = obj.countWordsEqualTo(word)
-# param_3 = obj.countWordsStartingWith(prefix)
-# obj.erase(word)
+
+if __name__ == '__main__':
+    obj = Trie()
+    obj.insert("apple")
+    obj.insert("apple")
+    print(obj.countWordsEqualTo("apple"))
+    print(obj.countWordsStartingWith("app"))
+    obj.erase("apple")
+    print(obj.countWordsEqualTo("apple"))
+    print(obj.countWordsStartingWith("app"))
+    obj.erase("apple")
+    print(obj.countWordsStartingWith("app"))
