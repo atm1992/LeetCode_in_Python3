@@ -41,17 +41,69 @@ Each tested sentence will have a length in the range [1, 200].
 The words in each input sentence are separated by single spaces.
 At most 5000 calls will be made to input.
 """
+from collections import defaultdict
 from typing import List
 
 
+class Trie:
+    def __init__(self):
+        self.children = defaultdict(Trie)
+        self.sentence = ""
+        self.times = 0
+
+    def insert(self, sentence: str, times: int) -> None:
+        node = self
+        for ch in sentence:
+            if ch not in node.children:
+                node.children[ch] = Trie()
+            node = node.children[ch]
+        node.sentence = sentence
+        node.times += times
+
+    def lookup(self, sentence: str) -> List['Trie']:
+        res = []
+        node = self
+        for ch in sentence:
+            if ch not in node.children:
+                return res
+            node = node.children[ch]
+
+        def dfs(node: Trie, path: List[Trie]) -> None:
+            if node.times > 0:
+                path.append(node)
+            for next_node in node.children.values():
+                dfs(next_node, path)
+
+        dfs(node, res)
+        return res
+
+
 class AutocompleteSystem:
+    """字典树 + DFS"""
 
     def __init__(self, sentences: List[str], times: List[int]):
-        pass
+        self.root = Trie()
+        self.cur_sentence = ""
+        for s, t in zip(sentences, times):
+            self.root.insert(s, t)
 
     def input(self, c: str) -> List[str]:
-        pass
+        res = []
+        if c == '#':
+            self.root.insert(self.cur_sentence, 1)
+            self.cur_sentence = ""
+        else:
+            self.cur_sentence += c
+            nodes = self.root.lookup(self.cur_sentence)
+            nodes.sort(key=lambda node: (-node.times, node.sentence))
+            for node in nodes[:3]:
+                res.append(node.sentence)
+        return res
 
-# Your AutocompleteSystem object will be instantiated and called as such:
-# obj = AutocompleteSystem(sentences, times)
-# param_1 = obj.input(c)
+
+if __name__ == '__main__':
+    obj = AutocompleteSystem(["i love you", "island", "iroman", "i love leetcode"], [5, 3, 2, 2])
+    print(obj.input("i"))
+    print(obj.input(" "))
+    print(obj.input("a"))
+    print(obj.input("#"))
