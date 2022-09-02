@@ -39,15 +39,33 @@ from typing import List
 
 
 class ZigzagIterator:
+    """双指针"""
+
     def __init__(self, v1: List[int], v2: List[int]):
-        pass
+        # nums 是个二维数组
+        self.nums = [v1, v2]
+        self.max_col = max(len(v1), len(v2))
+        self.col = 0
+        # 因为 0 <= v1.length, v2.length，且 1 <= v1.length + v2.length，所以v1、v2至少有一个不为空
+        # 若v1为空，则从第2行(row == 1)开始遍历
+        self.row = 0 if v1 else 1
 
     def next(self) -> int:
-        pass
+        res = self.nums[self.row][self.col]
+        while self.col < self.max_col:
+            self.row += 1
+            if self.row == len(self.nums):
+                self.row = 0
+                self.col += 1
+            if self.col < len(self.nums[self.row]):
+                break
+        return res
 
     def hasNext(self) -> bool:
-        pass
+        return self.col < self.max_col
 
-# Your ZigzagIterator object will be instantiated and called as such:
-# i, v = ZigzagIterator(v1, v2), []
-# while i.hasNext(): v.append(i.next())
+
+if __name__ == '__main__':
+    obj = ZigzagIterator(v1=[1, 2], v2=[3, 4, 5, 6])
+    while obj.hasNext():
+        print(obj.next())
