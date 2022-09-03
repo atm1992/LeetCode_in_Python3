@@ -39,20 +39,68 @@ The number of calls to the two functions is less than or equal to 10^4 in tota
 2 <= path.length <= 100
 1 <= value <= 10^9
 """
+from collections import defaultdict
+from typing import List
+
+
+class Trie:
+    def __init__(self, val: int = 0):
+        self.children = defaultdict(Trie)
+        self.val = val
+
+    def insert(self, path: List[str], val: int) -> bool:
+        node = self
+        for cur in path[:-1]:
+            if cur not in node.children:
+                return False
+            node = node.children[cur]
+        if path[-1] in node.children:
+            return False
+        node.children[path[-1]] = Trie(val)
+        return True
+
+    def get_val(self, path: List[str]) -> int:
+        node = self
+        for cur in path:
+            if cur not in node.children:
+                return -1
+            node = node.children[cur]
+        return node.val
 
 
 class FileSystem:
+    """字典树"""
 
     def __init__(self):
-        pass
+        self.root = Trie()
 
     def createPath(self, path: str, value: int) -> bool:
-        pass
+        return self.root.insert(path.lstrip('/').split('/'), value)
 
     def get(self, path: str) -> int:
-        pass
+        return self.root.get_val(path.lstrip('/').split('/'))
 
-# Your FileSystem object will be instantiated and called as such:
-# obj = FileSystem()
-# param_1 = obj.createPath(path,value)
-# param_2 = obj.get(path)
+
+class FileSystem2:
+    """哈希表"""
+
+    def __init__(self):
+        self.path2val = {"": -1}
+
+    def createPath(self, path: str, value: int) -> bool:
+        if path in self.path2val or path[:path.rfind('/')] not in self.path2val:
+            return False
+        self.path2val[path] = value
+        return True
+
+    def get(self, path: str) -> int:
+        return self.path2val.get(path, -1)
+
+
+if __name__ == '__main__':
+    obj = FileSystem2()
+    print(obj.createPath("/leet", 1))
+    print(obj.createPath("/leet/code", 2))
+    print(obj.get("/leet/code"))
+    print(obj.createPath("/c/d", 1))
+    print(obj.get("/c"))
