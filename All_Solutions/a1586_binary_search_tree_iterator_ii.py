@@ -41,6 +41,7 @@ At most 10^5 calls will be made to hasNext, next, hasPrev, and prev.
 
 Follow up: Could you solve the problem without precalculating the values of the tree?
 """
+from typing import Optional
 
 
 # Definition for a binary tree node.
@@ -52,21 +53,41 @@ class TreeNode:
 
 
 class BSTIterator:
-
+    """双栈 + 查找二叉搜索树中的中序后继"""
     def __init__(self, root: TreeNode):
-        pass
+        self.root = root
+        # 0 <= Node.val
+        self.cur_val = -1
+        self.prev_vals = []
+        self.next_vals = []
 
     def hasNext(self) -> bool:
-        pass
+        return bool(self.next_vals) or bool(self.get_next_node())
+
+    def get_next_node(self) -> Optional[TreeNode]:
+        """参考LeetCode题285，二叉搜索树中的中序后继"""
+        next_node = None
+        node = self.root
+        while node:
+            if node.val > self.cur_val:
+                next_node = node
+                node = node.left
+            else:
+                node = node.right
+        return next_node
 
     def next(self) -> int:
-        pass
+        self.prev_vals.append(self.cur_val)
+        self.cur_val = self.next_vals.pop() if self.next_vals else self.get_next_node().val
+        return self.cur_val
 
     def hasPrev(self) -> bool:
-        pass
+        return bool(self.prev_vals) and self.prev_vals[-1] != -1
 
     def prev(self) -> int:
-        pass
+        self.next_vals.append(self.cur_val)
+        self.cur_val = self.prev_vals.pop()
+        return self.cur_val
 
 # Your BSTIterator object will be instantiated and called as such:
 # obj = BSTIterator(root)
