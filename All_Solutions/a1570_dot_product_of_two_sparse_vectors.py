@@ -35,14 +35,22 @@ from typing import List
 
 
 class SparseVector:
+    """哈希表"""
+
     def __init__(self, nums: List[int]):
-        pass
+        self.idx2num = {}
+        for idx, num in enumerate(nums):
+            if num != 0:
+                self.idx2num[idx] = num
 
     # Return the dotProduct of two sparse vectors
     def dotProduct(self, vec: 'SparseVector') -> int:
-        pass
-
-# Your SparseVector object will be instantiated and called as such:
-# v1 = SparseVector(nums1)
-# v2 = SparseVector(nums2)
-# ans = v1.dotProduct(v2)
+        res = 0
+        if len(self.idx2num) > len(vec.idx2num):
+            longer, shorter = self.idx2num, vec.idx2num
+        else:
+            longer, shorter = vec.idx2num, self.idx2num
+        for idx, num in shorter.items():
+            if idx in longer:
+                res += num * longer[idx]
+        return res
