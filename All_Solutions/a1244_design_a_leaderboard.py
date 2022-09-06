@@ -34,24 +34,41 @@ It's guaranteed that K is less than or equal to the current number of players.
 1 <= score <= 100
 There will be at most 1000 function calls.
 """
+from sortedcontainers import SortedList
 
 
 class Leaderboard:
+    """有序列表 + 哈希表"""
 
     def __init__(self):
-        pass
+        self.scores = SortedList()
+        self.id2score = {}
 
     def addScore(self, playerId: int, score: int) -> None:
-        pass
+        if playerId in self.id2score:
+            self.scores.remove(self.id2score[playerId])
+            self.id2score[playerId] += score
+            self.scores.add(self.id2score[playerId])
+        else:
+            self.id2score[playerId] = score
+            self.scores.add(self.id2score[playerId])
 
     def top(self, K: int) -> int:
-        pass
+        return sum(self.scores[-K:])
 
     def reset(self, playerId: int) -> None:
-        pass
+        self.scores.remove(self.id2score.pop(playerId))
 
-# Your Leaderboard object will be instantiated and called as such:
-# obj = Leaderboard()
-# obj.addScore(playerId,score)
-# param_2 = obj.top(K)
-# obj.reset(playerId)
+
+if __name__ == '__main__':
+    obj = Leaderboard()
+    obj.addScore(1, 73)
+    obj.addScore(2, 56)
+    obj.addScore(3, 39)
+    obj.addScore(4, 51)
+    obj.addScore(5, 4)
+    print(obj.top(1))
+    obj.reset(1)
+    obj.reset(2)
+    obj.addScore(2, 51)
+    print(obj.top(3))
