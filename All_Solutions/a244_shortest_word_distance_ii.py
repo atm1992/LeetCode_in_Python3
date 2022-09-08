@@ -27,17 +27,36 @@ word1 and word2 are in wordsDict.
 word1 != word2
 At most 5000 calls will be made to shortest.
 """
+from collections import defaultdict
 from typing import List
 
 
 class WordDistance:
+    """哈希表 + 双指针"""
 
     def __init__(self, wordsDict: List[str]):
-        pass
+        self.word2idxs = defaultdict(list)
+        for idx, word in enumerate(wordsDict):
+            self.word2idxs[word].append(idx)
 
     def shortest(self, word1: str, word2: str) -> int:
-        pass
+        # wordsDict.length <= 3 * 10^4
+        res = 30000
+        idxs1, idxs2 = self.word2idxs[word1], self.word2idxs[word2]
+        i1 = i2 = 0
+        n1, n2 = len(idxs1), len(idxs2)
+        while i1 < n1 and i2 < n2:
+            if idxs1[i1] < idxs2[i2]:
+                res = min(res, idxs2[i2] - idxs1[i1])
+                i1 += 1
+            else:
+                res = min(res, idxs1[i1] - idxs2[i2])
+                i2 += 1
+            if res == 1:
+                break
+        return res
 
-# Your WordDistance object will be instantiated and called as such:
-# obj = WordDistance(wordsDict)
-# param_1 = obj.shortest(word1,word2)
+
+if __name__ == '__main__':
+    obj = WordDistance(["practice", "makes", "perfect", "coding", "makes"])
+    print(obj.shortest("makes", "coding"))
