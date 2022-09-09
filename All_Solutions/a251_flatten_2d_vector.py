@@ -79,7 +79,7 @@ class Vector2D_3:
         self.vector = vec
         self.outer = 0
         self.inner = 0
-        self.size = len(self.vector)
+        self.size = len(vec)
 
     def go_to_next_outer(self):
         # 只有当inner走到头了，才会移动到下一个outer，并且下一个outer不是空数组。如果是空数组的话，outer会继续往后移

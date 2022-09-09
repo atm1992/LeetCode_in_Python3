@@ -44,11 +44,43 @@ from typing import List
 class SnakeGame:
 
     def __init__(self, width: int, height: int, food: List[List[int]]):
-        pass
+        self.width = width
+        self.height = height
+        self.path = [(0, 0)]
+        self.points = {(0, 0)}
+        self.food = food
+        self.idx = 0
 
     def move(self, direction: str) -> int:
-        pass
+        x, y = self.path[-1]
+        if direction == 'U':
+            x -= 1
+        elif direction == 'D':
+            x += 1
+        elif direction == 'L':
+            y -= 1
+        else:
+            y += 1
+        if not 0 <= x < self.height or not 0 <= y < self.width:
+            return -1
+        cur_point = (x, y)
+        if self.idx < len(self.food) and cur_point == tuple(self.food[self.idx]):
+            self.idx += 1
+        else:
+            self.points.remove(self.path[-(self.idx + 1)])
+        # 需要先从self.points中remove(self.path[-(self.idx + 1)])，再判断cur_point是否在self.points中
+        if cur_point in self.points:
+            return -1
+        self.path.append(cur_point)
+        self.points.add(cur_point)
+        return self.idx
 
-# Your SnakeGame object will be instantiated and called as such:
-# obj = SnakeGame(width, height, food)
-# param_1 = obj.move(direction)
+
+if __name__ == '__main__':
+    obj = SnakeGame(3, 2, [[1, 2], [0, 1]])
+    print(obj.move("R"))
+    print(obj.move("D"))
+    print(obj.move("R"))
+    print(obj.move("U"))
+    print(obj.move("L"))
+    print(obj.move("U"))
