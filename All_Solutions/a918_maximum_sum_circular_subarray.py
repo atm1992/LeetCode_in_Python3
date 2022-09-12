@@ -32,4 +32,25 @@ from typing import List
 
 class Solution:
     def maxSubarraySumCircular(self, nums: List[int]) -> int:
-        pass
+        """
+        贪心
+        可将原问题分为两种情况：
+        1、子数组不是环状的，即 首尾不相连，按正常的贪心思路找出最大子数组的和
+        2、子数组是环状的，一部分在首部、一部分在尾部，即 去除了中间的某部分，此时子数组的最大和 = 数组总和 - 中间那部分(最小子数组)的和
+        """
+        # total - 数组总和；max_sum - 最大子数组的和；cur_max_sum - 包含当前元素的最大子数组的和；
+        # min_sum - 最小子数组的和；cur_min_sum - 包含当前元素的最小子数组的和
+        total = max_sum = cur_max_sum = min_sum = cur_min_sum = nums[0]
+        for num in nums[1:]:
+            total += num
+            cur_max_sum = max(cur_max_sum + num, num)
+            max_sum = max(max_sum, cur_max_sum)
+            cur_min_sum = min(cur_min_sum + num, num)
+            min_sum = min(min_sum, cur_min_sum)
+        # 考虑特殊情况：所有元素均为负数，此时的最小子数组就是原数组本身，total - min_sum = 0，max_sum = max(nums)
+        # 若max_sum > 0，则说明存在正数
+        return max(max_sum, total - min_sum) if max_sum > 0 else max_sum
+
+
+if __name__ == '__main__':
+    print(Solution().maxSubarraySumCircular(nums=[-3, -2, -3]))
