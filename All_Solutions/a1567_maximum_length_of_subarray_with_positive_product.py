@@ -32,4 +32,25 @@ from typing import List
 
 class Solution:
     def getMaxLen(self, nums: List[int]) -> int:
-        pass
+        """
+        动态规划
+        positive[i] 表示以下标 i 结尾的乘积为正数的最长子数组的长度
+        negative[i] 表示以下标 i 结尾的乘积为负数的最长子数组的长度
+        若元素i+1为正数，则 positive[i+1], negative[i+1] = positive[i] + 1, negative[i] + 1 if negative[i] > 0 else 0
+        若元素i+1为负数，则 positive[i+1], negative[i+1] = negative[i] + 1 if negative[i] > 0 else 0, positive[i] + 1
+        若元素i+1为0，则 positive[i+1] = negative[i+1] = 0
+        """
+        res = positive = negative = 0
+        for num in nums:
+            if num > 0:
+                positive, negative = positive + 1, negative + 1 if negative > 0 else 0
+            elif num < 0:
+                positive, negative = negative + 1 if negative > 0 else 0, positive + 1
+            else:
+                positive = negative = 0
+            res = max(res, positive)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().getMaxLen([-1, -2, -3, 0, 1]))
