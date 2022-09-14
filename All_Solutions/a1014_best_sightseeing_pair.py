@@ -25,4 +25,19 @@ from typing import List
 
 class Solution:
     def maxScoreSightseeingPair(self, values: List[int]) -> int:
-        pass
+        """
+        一次遍历
+        从前往后遍历j，对于每个j，都找出最大的组合(i < j)得分值，这些组合得分值的最大值就是最终结果
+        values[i] + values[j] + i - j = values[i] + i + values[j] - j
+        其中，values[j] - j 对于每个j而言，是确定值。因此需要让values[i] + i尽可能大，
+        在从前往后遍历j的过程中，可以使用一个变量max_i_score来记录当前最大的values[i] + i
+        """
+        res = max_i_score = 0
+        for j in range(1, len(values)):
+            max_i_score = max(max_i_score, values[j - 1] + j - 1)
+            res = max(res, max_i_score + values[j] - j)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().maxScoreSightseeingPair([8, 1, 5, 2, 6]))
