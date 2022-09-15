@@ -26,4 +26,17 @@ from typing import List
 
 class Solution:
     def minFallingPathSum(self, matrix: List[List[int]]) -> int:
-        pass
+        """动态规划"""
+        n = len(matrix)
+        dp = [float('inf')] + matrix[0] + [float('inf')]
+        for i in range(1, n):
+            pre = dp[0]
+            for j in range(1, n + 1):
+                cur = dp[j]
+                dp[j] = min(pre, cur, dp[j + 1]) + matrix[i][j - 1]
+                pre = cur
+        return int(min(dp))
+
+
+if __name__ == '__main__':
+    print(Solution().minFallingPathSum([[2, 1, 3], [6, 5, 4], [7, 8, 9]]))
