@@ -35,4 +35,23 @@ from typing import List
 
 class Solution:
     def wiggleMaxLength(self, nums: List[int]) -> int:
-        pass
+        """
+        动态规划
+        假设up[i]表示在前i个元素中，以某个元素结尾的最长上升摆动序列的长度；down[i]表示在前i个元素中，以某个元素结尾的最长下降摆动序列的长度。
+        计算up[i+1]时，要么维持up[i]，要么满足down[i] + 1的条件。要想让down[i] + 1，down[i]表示最后一个是下降，所以加1就需要在后面拼接一个上升，即 nums[i] <  nums[i+1]。
+        计算down[i+1]时，要么维持down[i]，要么满足up[i] + 1的条件。要想让up[i] + 1，up[i]表示最后一个是上升，所以加1就需要在后面拼接一个下降，即 nums[i] >  nums[i+1]。
+        初始值：只有一个元素时，既可以表示上升，也可以表示下降，即 up[0] = down[0] = 1
+        """
+        up = down = 1
+        for i in range(1, len(nums)):
+            # 上升
+            if nums[i - 1] < nums[i]:
+                up = max(up, down + 1)
+            # 下降
+            elif nums[i - 1] > nums[i]:
+                down = max(down, up + 1)
+        return max(up, down)
+
+
+if __name__ == '__main__':
+    print(Solution().wiggleMaxLength([1, 17, 5, 10, 13, 15, 10, 5, 16, 8]))
