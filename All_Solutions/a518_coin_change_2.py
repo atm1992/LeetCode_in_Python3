@@ -37,4 +37,20 @@ from typing import List
 
 class Solution:
     def change(self, amount: int, coins: List[int]) -> int:
-        pass
+        """
+        动态规划
+        假设dp[i]表示凑成总金额i的硬币组合数，[c0, c1, ……, cn-1] 表示可选的n种硬币面值。
+        状态转移方程为：dp[i] += dp[i-c]，其中的c表示凑成总金额i的最后一枚硬币
+        边界条件：dp[0] = 1，当amount为0时，只有1种组合，就是一枚硬币都不选
+        """
+        dp = [1] + [0] * amount
+        # 不会存在重复计算的情况，因为外层循环每次枚举的都是不同硬币，而内层循环是使用当前硬币来凑成总金额coin ~ amount，
+        # 把总金额coin ~ amount都计算一遍后，再退到外层循环，枚举下一枚硬币。因此每个组合中的硬币顺序都与coins中的顺序相同。
+        for coin in coins:
+            for i in range(coin, amount + 1):
+                dp[i] += dp[i - coin]
+        return dp[-1]
+
+
+if __name__ == '__main__':
+    print(Solution().change(amount=5, coins=[1, 2, 5]))
