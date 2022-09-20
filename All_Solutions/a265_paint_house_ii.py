@@ -33,4 +33,29 @@ from typing import List
 
 class Solution:
     def minCostII(self, costs: List[List[int]]) -> int:
-        pass
+        """
+        动态规划。
+        dp[i][j] 表示将 house i 刷成 color j 的最少花费
+        状态转移方程：dp[i][j] = costs[i][j] + min(dp[i-1][0], ……, dp[i-1][j-1], dp[i-1][j+1], ……, dp[i-1][k-1])
+        边界条件：dp[0][j] = costs[0][j]
+        """
+        n, k = len(costs), len(costs[0])
+        dp = costs[0].copy()
+        for i in range(1, n):
+            # min_1 - 最小值；min_2 - 次小值。这两个值可以是相等的
+            if dp[0] < dp[1]:
+                min_1, min_2 = dp[0], dp[1]
+            else:
+                min_1, min_2 = dp[1], dp[0]
+            for j in range(2, k):
+                if dp[j] < min_1:
+                    min_1, min_2 = dp[j], min_1
+                elif dp[j] < min_2:
+                    min_2 = dp[j]
+            for j in range(k):
+                dp[j] = costs[i][j] + (min_1 if dp[j] != min_1 else min_2)
+        return min(dp)
+
+
+if __name__ == '__main__':
+    print(Solution().minCostII(costs=[[1, 5, 3], [2, 9, 4]]))
