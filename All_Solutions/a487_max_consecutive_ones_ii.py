@@ -32,4 +32,23 @@ from typing import List
 
 class Solution:
     def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
-        pass
+        """
+        动态规划
+        假设dp[i][0]表示以i结尾翻转0次的最大连续1的个数；dp[i][1]表示以i结尾翻转1次的最大连续1的个数。
+        状态转移方程：
+        若nums[i] == 0，则 dp[i][0] = 0；dp[i][1] = dp[i-1][0] + 1
+        若nums[i] == 1，则 dp[i][0] = dp[i-1][0] + 1；dp[i][1] = dp[i-1][1] + 1
+        """
+        res = dp_0 = dp_1 = 0
+        for num in nums:
+            if num == 0:
+                dp_0, dp_1 = 0, dp_0 + 1
+            else:
+                dp_0, dp_1 = dp_0 + 1, dp_1 + 1
+            # dp_1 始终会大于等于 dp_0
+            res = max(res, dp_1)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().findMaxConsecutiveOnes([1, 0, 1, 1, 0, 1]))
