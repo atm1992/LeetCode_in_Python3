@@ -25,4 +25,21 @@ from typing import List
 
 class Solution:
     def maxSumAfterOperation(self, nums: List[int]) -> int:
-        pass
+        """
+        动态规划
+        假设 dp[i][0] 表示以元素i结尾经过0次操作后的最大子数组和； dp[i][1] 表示以元素i结尾经过1次操作后的最大子数组和。
+        状态转移方程：
+        dp[i][0] = max(dp[i-1][0] + nums[i], 0)
+        dp[i][1] = max(dp[i-1][1] + nums[i], dp[i-1][0] + nums[i] * nums[i])
+        因为dp[i-1][0]始终大于等于0, nums[i] * nums[i]也始终大于等于0，所以dp[i][1]始终大于等于0
+        最终结果肯定是大于等于0的，因为如果nums全负数，那么最终结果就是最小负数(离0最远的那个)的平方
+        """
+        res = dp_0 = dp_1 = 0
+        for num in nums:
+            dp_0, dp_1 = max(dp_0 + num, 0), max(dp_1 + num, dp_0 + num * num)
+            res = max(res, dp_1)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().maxSumAfterOperation([2, -1, -4, -3]))
