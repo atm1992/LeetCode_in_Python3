@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title:
+title: 两个字符串的最小ASCII删除和
 Given two strings s1 and s2, return the lowest ASCII sum of deleted characters to make two strings equal.
 
 
