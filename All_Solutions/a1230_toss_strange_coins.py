@@ -25,4 +25,23 @@ from typing import List
 
 class Solution:
     def probabilityOfHeads(self, prob: List[float], target: int) -> float:
-        pass
+        """
+        动态规划
+        假设 dp[i][j] 表示前i枚硬币中，正面朝上的硬币数量为j的概率。
+        状态转移方程：
+        当j == 0时，dp[i][0] = dp[i-1][0] * (1 - prob[i])
+        当j > 0时，dp[i][j] = dp[i-1][j] * (1 - prob[i]) + dp[i-1][j-1] * prob[i]
+        初始值：
+        0枚硬币中，正面朝上的硬币数量等于0的概率 dp[0][0] = 1.0
+        0枚硬币中，正面朝上的硬币数量大于0的概率 dp[0][j>0] = 0.0
+        """
+        dp = [1.0] + [0.0] * target
+        for p in prob:
+            for j in range(target, 0, -1):
+                dp[j] = dp[j] * (1 - p) + dp[j - 1] * p
+            dp[0] = dp[0] * (1 - p)
+        return dp[-1]
+
+
+if __name__ == '__main__':
+    print(Solution().probabilityOfHeads(prob=[0.5, 0.5, 0.5, 0.5, 0.5], target=0))
