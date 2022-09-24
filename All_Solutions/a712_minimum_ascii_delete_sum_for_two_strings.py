@@ -29,4 +29,35 @@ s1 and s2 consist of lowercase English letters.
 
 class Solution:
     def minimumDeleteSum(self, s1: str, s2: str) -> int:
-        pass
+        """
+        动态规划
+        假设 dp[i][j] 表示使s1[:i]和s2[:j]相同的最小ASCII删除和
+        状态转移方程：
+        当i>0且j>0时，
+            若s1[i-1] == s2[j-1]，则 dp[i][j] = dp[i-1][j-1]
+            若s1[i-1] != s2[j-1]，则 dp[i][j] = min(dp[i-1][j] + ord(s1[i-1]), dp[i][j-1] + ord(s2[j-1]))
+        边界条件：
+        当i==0且j==0时，两个都是空字符串，已经相同，无需删除任何字符，所以 dp[0][0] = 0
+        当i==0且j>0时，一个是空字符串，一个是非空字符串，要使相同，则需删除非空字符串的所有字符，所以 dp[0][j>0] = dp[0][j-1] + ord(s2[j-1])
+        当i>0且j==0时，和上面同理，此时 dp[i>0][0] = dp[i-1][0] + ord(s1[i-1])
+        """
+        n = len(s2)
+        dp = [0]
+        for ch2 in s2:
+            dp.append(dp[-1] + ord(ch2))
+        for ch1 in s1:
+            pre = dp[0]
+            dp[0] += ord(ch1)
+            for j in range(1, n + 1):
+                cur = dp[j]
+                ch2 = s2[j - 1]
+                if ch1 == ch2:
+                    dp[j] = pre
+                else:
+                    dp[j] = min(dp[j] + ord(ch1), dp[j - 1] + ord(ch2))
+                pre = cur
+        return dp[-1]
+
+
+if __name__ == '__main__':
+    print(Solution().minimumDeleteSum(s1="delete", s2="leet"))
