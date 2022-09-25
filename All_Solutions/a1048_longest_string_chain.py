@@ -30,9 +30,28 @@ Constraints:
 1 <= words[i].length <= 16
 words[i] only consists of lowercase English letters.
 """
+from collections import defaultdict
 from typing import List
 
 
 class Solution:
     def longestStrChain(self, words: List[str]) -> int:
-        pass
+        """
+        排序 + 哈希表 + 动态规划
+        假设 dp[word] 表示以word结尾的单词链的最大长度
+        状态转移方程：
+        dp[word] 可以从比word长度小1的pre_word转移而来
+        dp[word] = max(dp[word], dp[pre_word] + 1)
+        """
+        res = 0
+        word2maxlen = defaultdict(int)
+        for word in sorted(words, key=lambda word: len(word)):
+            for i in range(len(word)):
+                pre_word = word[:i] + word[i + 1:]
+                word2maxlen[word] = max(word2maxlen[word], word2maxlen[pre_word] + 1)
+            res = max(res, word2maxlen[word])
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().longestStrChain(["xbc", "pcxbcf", "xb", "cxbc", "pcxbc"]))
