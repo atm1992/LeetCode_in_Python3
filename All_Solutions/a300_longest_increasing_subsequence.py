@@ -34,17 +34,18 @@ class Solution:
         动态规划。dp[i] 表示以nums[i]结尾的最长递增子序列(必须包含nums[i])的长度。
         状态转移方程：dp[i] = max(dp[j]) + 1 其中，0 <= j < i 且 nums[j] < nums[i]
         """
+        res = 0
         dp = []
-        for i in range(len(nums)):
-            tmp_res = 0
-            num_i = nums[i]
+        for i, num in enumerate(nums):
+            cur_len = 0
             for j in range(i - 1, -1, -1):
-                if j + 1 <= tmp_res:
+                if j + 1 <= cur_len:
                     break
-                if nums[j] < num_i:
-                    tmp_res = max(tmp_res, dp[j])
-            dp.append(tmp_res + 1)
-        return max(dp)
+                if nums[j] < num:
+                    cur_len = max(cur_len, dp[j])
+            dp.append(cur_len + 1)
+            res = max(res, cur_len + 1)
+        return res
 
     def lengthOfLIS_2(self, nums: List[int]) -> int:
         """
