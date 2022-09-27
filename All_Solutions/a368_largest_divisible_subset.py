@@ -27,4 +27,24 @@ from typing import List
 
 class Solution:
     def largestDivisibleSubset(self, nums: List[int]) -> List[int]:
-        pass
+        """
+        排序 + 动态规划。参考LeetCode题300
+        """
+        sorted_nums = sorted(nums)
+        subsets = []
+        max_idx = -1
+        for i, num in enumerate(sorted_nums):
+            cur_subset = []
+            for j in range(i - 1, -1, -1):
+                if j + 1 <= len(cur_subset):
+                    break
+                if num % sorted_nums[j] == 0 and len(subsets[j]) > len(cur_subset):
+                    cur_subset = subsets[j]
+            subsets.append(cur_subset + [num])
+            if max_idx == -1 or len(subsets[max_idx]) < len(subsets[-1]):
+                max_idx = i
+        return subsets[max_idx]
+
+
+if __name__ == '__main__':
+    print(Solution().largestDivisibleSubset([1, 2, 3]))
