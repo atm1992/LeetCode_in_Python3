@@ -29,4 +29,23 @@ source and target consist of lowercase English letters.
 
 class Solution:
     def shortestWay(self, source: str, target: str) -> int:
-        pass
+        """
+        贪心 + 模拟 + 双指针
+        """
+        res = i = 0
+        n = len(target)
+        flag = True
+        while flag and i < n:
+            flag = False
+            for ch in source:
+                if i == n:
+                    break
+                elif ch == target[i]:
+                    flag = True
+                    i += 1
+            res += 1
+        return res if flag else -1
+
+
+if __name__ == '__main__':
+    print(Solution().shortestWay(source="xyz", target="xzyxz"))
