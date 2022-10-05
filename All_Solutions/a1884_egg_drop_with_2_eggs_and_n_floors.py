@@ -32,4 +32,26 @@ Constraints:
 
 class Solution:
     def twoEggDrop(self, n: int) -> int:
-        pass
+        """
+        动态规划
+        假设 dp[i][j] 表示当前有i枚鸡蛋、需要验证j层楼的最小操作次数
+        状态转移方程：
+        当i为1时，只有1枚鸡蛋，此时只能选择从1楼开始逐层向上验证，即 dp[1][j] = j
+        当i为2时，第一次操作可选择在[1, j]中的任一楼层k进行验证，
+            若第一枚鸡蛋碎了，则问题转化为当前有1枚鸡蛋、需要验证k-1层楼的最小操作次数，即 dp[2][j] = 1 + dp[1][k-1] = k
+            若第一枚鸡蛋没碎，则问题转化为当前有2枚鸡蛋、需要验证j-k层楼的最小操作次数，即 dp[2][j] = 1 + dp[2][j-k]
+            综上，考虑最坏情况，选择上面两种情况的较大值，dp[2][j] = min(dp[2][j], max(k, dp[2][j-k] + 1))
+        """
+        # 因为dp[1][j] = j，可根据j直接获取dp[1]的结果，因此dp数组只需保存dp[2]的结果。初始值dp[2][0] = 0，0层楼无需操作
+        dp = [0]
+        for j in range(1, n + 1):
+            # n <= 1000，最多只需操作1000次
+            tmp = 1000
+            for k in range(1, j + 1):
+                tmp = min(tmp, max(k, dp[j - k] + 1))
+            dp.append(tmp)
+        return dp[-1]
+
+
+if __name__ == '__main__':
+    print(Solution().twoEggDrop(1000))
