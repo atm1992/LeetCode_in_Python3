@@ -39,4 +39,31 @@ from typing import List
 
 class Solution:
     def stringShift(self, s: str, shift: List[List[int]]) -> str:
-        pass
+        """模拟"""
+        n = len(s)
+        direction, amount = 0, 0
+        for d, a in shift:
+            a %= n
+            if d == direction:
+                amount = (amount + a) % n
+            elif a > amount:
+                direction = 1 - direction
+                amount = a - amount
+            else:
+                amount = amount - a
+        return s[-amount:] + s[:-amount] if direction else s[amount:] + s[:amount]
+
+    def stringShift_2(self, s: str, shift: List[List[int]]) -> str:
+        """模拟"""
+        amount = 0
+        for d, a in shift:
+            # 右移为正，左移为负
+            amount += (2 * d - 1) * a
+        # Python取模与常规不同，若amount为负数，则取模结果为len(s) - (abs(amount) % len(s))；若amount为正数，则取模结果为amount % len(s)
+        amount %= len(s)
+        # 这里统一转换为右移
+        return s[-amount:] + s[:-amount]
+
+
+if __name__ == '__main__':
+    print(Solution().stringShift(s="abcdefg", shift=[[1, 1], [1, 1], [0, 2], [1, 3]]))
