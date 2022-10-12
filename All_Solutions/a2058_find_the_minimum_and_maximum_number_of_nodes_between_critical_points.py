@@ -50,4 +50,19 @@ class ListNode:
 
 class Solution:
     def nodesBetweenCriticalPoints(self, head: Optional[ListNode]) -> List[int]:
-        pass
+        pre, cur = None, head
+        cnt = 0
+        min_idx = pre_idx = 0
+        res = [-1, -1]
+        while cur.next:
+            if pre and (cur.val - pre.val) * (cur.val - cur.next.val) > 0:
+                if min_idx == 0:
+                    min_idx = cnt
+                else:
+                    res[0] = cnt - pre_idx if res[0] == -1 else min(res[0], cnt - pre_idx)
+                    res[1] = cnt - min_idx
+                pre_idx = cnt
+            pre = cur
+            cur = cur.next
+            cnt += 1
+        return res
