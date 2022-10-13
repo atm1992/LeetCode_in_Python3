@@ -52,4 +52,27 @@ class ListNode:
 
 class Solution:
     def reverseEvenLengthGroups(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        pass
+        """模拟"""
+        cur = head
+        pre_len = 1
+        while True:
+            pre_tail = cur
+            cur_len = 0
+            while cur.next and cur_len < pre_len + 1:
+                cur = cur.next
+                cur_len += 1
+            if cur_len > 0 and cur_len % 2 == 0:
+                tmp = pre_tail.next
+                new_nxt = cur.next
+                while tmp != cur:
+                    old_nxt = tmp.next
+                    tmp.next = new_nxt
+                    new_nxt = tmp
+                    tmp = old_nxt
+                tmp.next = new_nxt
+                cur = pre_tail.next
+                pre_tail.next = tmp
+            if cur_len != pre_len + 1:
+                break
+            pre_len = cur_len
+        return head
