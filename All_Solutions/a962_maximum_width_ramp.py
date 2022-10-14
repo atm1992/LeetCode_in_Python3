@@ -25,4 +25,16 @@ from typing import List
 
 class Solution:
     def maxWidthRamp(self, nums: List[int]) -> int:
-        pass
+        """排序"""
+        n = min_idx = len(nums)
+        res = 0
+        # 对元素下标0 ~ n-1排序，根据元素值nums[i]升序
+        for i in sorted(range(n), key=lambda i: nums[i]):
+            res = max(res, i - min_idx)
+            # 记录当前最小的下标，for循环遍历过程中，元素值nums[i]是逐渐增大的，所以元素值的大小关系肯定是符合要求的，因此只需让下标之差尽量大
+            min_idx = min(min_idx, i)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().maxWidthRamp([9, 8, 1, 0, 1, 9, 4, 0, 4, 1]))
