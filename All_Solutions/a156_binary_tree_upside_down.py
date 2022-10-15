@@ -41,4 +41,30 @@ class TreeNode:
 
 class Solution:
     def upsideDownBinaryTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
-        pass
+        """递归"""
+
+        def dfs(parent: TreeNode, cur_node: TreeNode) -> TreeNode:
+            new_root = cur_node if not cur_node.left else dfs(cur_node, cur_node.left)
+            cur_node.left = parent.right
+            cur_node.right = parent
+            parent.left = parent.right = None
+            return new_root
+
+        if not root or not root.left:
+            return root
+        return dfs(root, root.left)
+
+    def upsideDownBinaryTree_2(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        """递归"""
+
+        def dfs(parent: TreeNode, cur_node: TreeNode) -> TreeNode:
+            new_root = cur_node if not cur_node.left else dfs(cur_node, cur_node.left)
+            cur_node.left = parent.right
+            cur_node.right = parent
+            return new_root
+
+        if not root or not root.left:
+            return root
+        new_root = dfs(root, root.left)
+        root.left = root.right = None
+        return new_root
