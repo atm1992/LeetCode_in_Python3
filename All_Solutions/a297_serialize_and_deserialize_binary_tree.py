@@ -20,7 +20,7 @@ The number of nodes in the tree is in the range [0, 10^4].
 -1000 <= Node.val <= 1000
 """
 from collections import deque
-from typing import List, Optional
+from typing import Deque, Optional
 
 
 # Definition for a binary tree node.
@@ -53,8 +53,8 @@ class Codec:
         :rtype: TreeNode
         """
 
-        def make_tree(vals: List[str]) -> Optional[TreeNode]:
-            val = vals.pop(0)
+        def make_tree(vals: Deque[str]) -> Optional[TreeNode]:
+            val = vals.popleft()
             if val == '#':
                 return None
             root = TreeNode(int(val))
@@ -62,71 +62,12 @@ class Codec:
             root.right = make_tree(vals)
             return root
 
-        return make_tree(data.split(','))
+        # 这里使用deque，相比list，可以明显加速
+        return make_tree(deque(data.split(',')))
 
 
-class Codec_2:
-    """BFS。通过51/52个测试用例，最后一个测试用例超时"""
-
-    def serialize(self, root):
-        """Encodes a tree to a single string.
-
-        :type root: TreeNode
-        :rtype: str
-        """
-        if not root:
-            return '#'
-        queue = deque([root])
-        res = []
-        while queue:
-            has_child = False
-            size = len(queue)
-            for _ in range(size):
-                node = queue.popleft()
-                if node:
-                    if not has_child and (node.left or node.right):
-                        has_child = True
-                    queue.extend([node.left, node.right])
-                    res.append(str(node.val))
-                else:
-                    queue.extend([None, None])
-                    res.append('#')
-            if not has_child:
-                break
-        return ','.join(res)
-
-    def deserialize(self, data):
-        """Decodes your encoded data to tree.
-
-        :type data: str
-        :rtype: TreeNode
-        """
-        vals = data.split(',')
-        if vals[0] == '#':
-            return None
-        root = TreeNode(int(vals[0]))
-        idx2node = {0: root}
-        idx = 0
-        n = len(vals)
-        while idx < n and idx2node:
-            if vals[idx] != '#':
-                node = idx2node.pop(idx)
-                left_idx = 2 * idx + 1
-                right_idx = 2 * idx + 2
-                if left_idx < n and vals[left_idx] != '#':
-                    left_node = TreeNode(int(vals[left_idx]))
-                    idx2node[left_idx] = left_node
-                    node.left = left_node
-                if right_idx < n and vals[right_idx] != '#':
-                    right_node = TreeNode(int(vals[right_idx]))
-                    idx2node[right_idx] = right_node
-                    node.right = right_node
-            idx += 1
-        return root
-
-
-class Codec_3:
-    """BFS。运行速度最快"""
+class Codec2:
+    """BFS"""
 
     def serialize(self, root):
         """Encodes a tree to a single string.

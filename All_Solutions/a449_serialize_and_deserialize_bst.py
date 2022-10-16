@@ -21,7 +21,7 @@ The number of nodes in the tree is in the range [0, 10^4].
 The input tree is guaranteed to be a binary search tree.
 """
 from collections import deque
-from typing import List, Optional
+from typing import Deque, Optional
 
 
 # Definition for a binary tree node.
@@ -48,8 +48,8 @@ class Codec:
         """Decodes your encoded data to tree.
         """
 
-        def make_tree(vals: List[str]) -> Optional[TreeNode]:
-            val = vals.pop(0)
+        def make_tree(vals: Deque[str]) -> Optional[TreeNode]:
+            val = vals.popleft()
             if val == '#':
                 return None
             root = TreeNode(int(val))
@@ -57,11 +57,11 @@ class Codec:
             root.right = make_tree(vals)
             return root
 
-        return make_tree(data.split(','))
+        return make_tree(deque(data.split(',')))
 
 
 class Codec2:
-    """BFS。运行速度最快"""
+    """BFS"""
 
     def serialize(self, root: TreeNode) -> str:
         """Encodes a tree to a single string.
