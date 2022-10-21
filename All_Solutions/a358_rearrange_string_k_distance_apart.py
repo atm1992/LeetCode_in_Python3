@@ -25,8 +25,30 @@ Constraints:
 s consists of only lowercase English letters.
 0 <= k <= s.length
 """
+import heapq
+from collections import Counter, deque
 
 
 class Solution:
     def rearrangeString(self, s: str, k: int) -> str:
-        pass
+        """贪心 + 优先队列 + 队列"""
+        if k <= 1:
+            return s
+        pq = [(-cnt, ch) for ch, cnt in Counter(s).items()]
+        heapq.heapify(pq)
+        queue = deque()
+        res = []
+        while pq:
+            cnt, ch = heapq.heappop(pq)
+            res.append(ch)
+            # 因为cnt是个负数
+            queue.append((cnt + 1, ch))
+            if len(queue) == k:
+                cnt, ch = queue.popleft()
+                if cnt < 0:
+                    heapq.heappush(pq, (cnt, ch))
+        return ''.join(res) if len(res) == len(s) else ""
+
+
+if __name__ == '__main__':
+    print(Solution().rearrangeString(s="aabbcc", k=3))
