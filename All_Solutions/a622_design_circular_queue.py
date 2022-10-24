@@ -40,28 +40,95 @@ At most 3000 calls will be made to enQueue, deQueue, Front, Rear, isEmpty, a
 """
 
 
+class ListNode:
+    def __init__(self, val: int):
+        self.val = val
+        self.next = None
+
+
 class MyCircularQueue:
+    """链表"""
 
     def __init__(self, k: int):
-        pass
+        self.head = self.tail = None
+        self.k = k
+        self.size = 0
 
     def enQueue(self, value: int) -> bool:
-        pass
+        if self.isFull():
+            return False
+        node = ListNode(value)
+        if self.size == 0:
+            self.head = self.tail = node
+        else:
+            self.tail.next = node
+            self.tail = node
+        self.size += 1
+        return True
 
     def deQueue(self) -> bool:
-        pass
+        if self.isEmpty():
+            return False
+        tmp = self.head
+        if self.size == 1:
+            self.head = self.tail = None
+        else:
+            self.head = self.head.next
+        del tmp
+        self.size -= 1
+        return True
 
     def Front(self) -> int:
-        pass
+        return -1 if self.isEmpty() else self.head.val
 
     def Rear(self) -> int:
-        pass
+        return -1 if self.isEmpty() else self.tail.val
 
     def isEmpty(self) -> bool:
-        pass
+        return self.size == 0
 
     def isFull(self) -> bool:
-        pass
+        return self.size == self.k
+
+
+class MyCircularQueue2:
+    """
+    数组。
+    数组长度capacity = k+1，判断队列空：head == tail；判断队列满：head == (tail + 1) % capacity；计算队列长度size = (tail + capacity - head) % capacity
+    """
+
+    def __init__(self, k: int):
+        # 初始时，head、tail都指向下标0
+        self.head = self.tail = 0
+        # 初始值可以是任意值
+        self.nums = [0] * (k + 1)
+        self.capacity = k + 1
+
+    def enQueue(self, value: int) -> bool:
+        if self.isFull():
+            return False
+        self.nums[self.tail] = value
+        self.tail = (self.tail + 1) % self.capacity
+        return True
+
+    def deQueue(self) -> bool:
+        if self.isEmpty():
+            return False
+        self.head = (self.head + 1) % self.capacity
+        return True
+
+    def Front(self) -> int:
+        return -1 if self.isEmpty() else self.nums[self.head]
+
+    def Rear(self) -> int:
+        # -1 % 5 == 4
+        return -1 if self.isEmpty() else self.nums[(self.tail - 1) % self.capacity]
+
+    def isEmpty(self) -> bool:
+        return self.head == self.tail
+
+    def isFull(self) -> bool:
+        return self.head == (self.tail + 1) % self.capacity
 
 # Your MyCircularQueue object will be instantiated and called as such:
 # obj = MyCircularQueue(k)
