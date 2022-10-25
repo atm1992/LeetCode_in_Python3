@@ -33,30 +33,55 @@ Constraints:
 All the tweets have unique IDs.
 At most 3 * 10^4 calls will be made to postTweet, getNewsFeed, follow, and unfollow.
 """
-
+import heapq
+from collections import defaultdict, deque
 from typing import List
 
 
 class Twitter:
+    """哈希表 + 队列 + 优先队列"""
 
     def __init__(self):
-        pass
+        self.user2tweets = defaultdict(deque)
+        self.user2follows = defaultdict(set)
+        self.capacity = 10
+        self.time = 0
 
     def postTweet(self, userId: int, tweetId: int) -> None:
-        pass
+        if len(self.user2tweets[userId]) == self.capacity:
+            self.user2tweets[userId].pop()
+        self.user2tweets[userId].appendleft((self.time, tweetId))
+        self.time += 1
 
     def getNewsFeed(self, userId: int) -> List[int]:
-        pass
+        self.user2follows[userId].add(userId)
+        queue = []
+        for followee_id in self.user2follows[userId]:
+            if self.user2tweets[followee_id]:
+                queue.append((-self.user2tweets[followee_id][0][0], followee_id, 0))
+        heapq.heapify(queue)
+        res, cnt = [], 0
+        while queue and cnt < self.capacity:
+            _, followee_id, i = heapq.heappop(queue)
+            res.append(self.user2tweets[followee_id][i][1])
+            if i + 1 < len(self.user2tweets[followee_id]):
+                heapq.heappush(queue, (-self.user2tweets[followee_id][i + 1][0], followee_id, i + 1))
+            cnt += 1
+        return res
 
     def follow(self, followerId: int, followeeId: int) -> None:
-        pass
+        self.user2follows[followerId].add(followeeId)
 
     def unfollow(self, followerId: int, followeeId: int) -> None:
-        pass
+        self.user2follows[followerId].discard(followeeId)
 
-# Your Twitter object will be instantiated and called as such:
-# obj = Twitter()
-# obj.postTweet(userId,tweetId)
-# param_2 = obj.getNewsFeed(userId)
-# obj.follow(followerId,followeeId)
-# obj.unfollow(followerId,followeeId)
+
+if __name__ == '__main__':
+    obj = Twitter()
+    obj.postTweet(1, 5)
+    print(obj.getNewsFeed(1))
+    obj.follow(1, 2)
+    obj.postTweet(2, 6)
+    print(obj.getNewsFeed(1))
+    obj.unfollow(1, 2)
+    print(obj.getNewsFeed(1))
