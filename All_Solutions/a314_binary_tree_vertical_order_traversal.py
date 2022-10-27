@@ -22,6 +22,7 @@ Constraints:
 The number of nodes in the tree is in the range [0, 100].
 -100 <= Node.val <= 100
 """
+from collections import defaultdict, deque
 from typing import List, Optional
 
 
@@ -35,4 +36,22 @@ class TreeNode:
 
 class Solution:
     def verticalOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
-        pass
+        """层序遍历 + 哈希表"""
+        res = []
+        if not root:
+            return res
+        queue = deque([(root, 0)])
+        col2nodes = defaultdict(list)
+        # 记录最左侧的列下标。root的列下标为0
+        min_col = 0
+        while queue:
+            node, col = queue.popleft()
+            col2nodes[col].append(node.val)
+            if node.left:
+                queue.append((node.left, col - 1))
+            if node.right:
+                queue.append((node.right, col + 1))
+            min_col = min(min_col, col)
+        for col in range(min_col, min_col + len(col2nodes)):
+            res.append(col2nodes[col])
+        return res
