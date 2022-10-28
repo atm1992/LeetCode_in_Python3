@@ -36,4 +36,25 @@ class TreeNode:
 
 class Solution:
     def str2tree(self, s: str) -> Optional[TreeNode]:
-        pass
+        if not s:
+            return None
+        if '(' not in s:
+            return TreeNode(int(s))
+        # 第一个'('的下标，即 root的左子树序列的起始位置
+        start = idx = s.index('(')
+        root = TreeNode(int(s[:idx]))
+        cnt = 0
+        for i in range(idx, len(s)):
+            if s[i] == '(':
+                cnt += 1
+            elif s[i] == ')':
+                cnt -= 1
+            if cnt == 0:
+                # s[start + 1:i] 为root的左子树序列
+                if start == idx:
+                    root.left = self.str2tree(s[start + 1:i])
+                    start = i + 1
+                # s[start + 1:i] 为root的右子树序列
+                else:
+                    root.right = self.str2tree(s[start + 1:i])
+        return root
