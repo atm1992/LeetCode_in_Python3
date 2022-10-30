@@ -29,7 +29,7 @@ class Solution:
     def wiggleSort(self, nums: List[int]) -> None:
         """
         Do not return anything, modify nums in-place instead.
-        排序后，双指针逆序穿插
+        排序 + 双指针
         原数组排序后得到新数组：[1,1,2,2,2,3]
         分割为前后两个子数组：[1,1,2]、[2,2,3]。若n为奇数，则前半部分的长度多1
         逆序后：[2, 1, 1]、[3, 2, 2]
@@ -39,14 +39,13 @@ class Solution:
         """
         sorted_nums = sorted(nums)
         n = len(nums)
-        left, right = (n - 1) >> 1, n - 1
-        for i in range(0, n - 1, 2):
+        left, right = (n - 1) // 2, n - 1
+        for i in range(0, n, 2):
             nums[i] = sorted_nums[left]
-            nums[i + 1] = sorted_nums[right]
+            if i + 1 < n:
+                nums[i + 1] = sorted_nums[right]
             left -= 1
             right -= 1
-        if n & 1:
-            nums[n - 1] = sorted_nums[left]
 
 
 if __name__ == '__main__':

@@ -29,5 +29,23 @@ class Solution:
     def wiggleSort(self, nums: List[int]) -> None:
         """
         Do not return anything, modify nums in-place instead.
+        先排序，然后从第二个元素开始，逐对交换元素位置
         """
-        pass
+        nums.sort()
+        for i in range(1, len(nums) - 1, 2):
+            nums[i], nums[i + 1] = nums[i + 1], nums[i]
+
+    def wiggleSort_2(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        一次遍历，比较当前元素和下一个元素，若顺序不正确，则交换位置
+        """
+        for i in range(len(nums) - 1):
+            if (i & 1) == (nums[i] < nums[i + 1]):
+                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+
+
+if __name__ == '__main__':
+    nums = [3, 5, 2, 1, 6, 4]
+    Solution().wiggleSort_2(nums)
+    print(nums)
