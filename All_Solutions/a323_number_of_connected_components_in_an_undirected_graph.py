@@ -22,9 +22,74 @@ edges[i].length == 2
 ai != bi
 There are no repeated edges.
 """
+from collections import defaultdict, deque
 from typing import List
 
 
 class Solution:
     def countComponents(self, n: int, edges: List[List[int]]) -> int:
-        pass
+        """并查集"""
+
+        def union(i: int, j: int) -> None:
+            parent[find(i)] = find(j)
+
+        def find(i: int) -> int:
+            if parent[i] != i:
+                parent[i] = find(parent[i])
+            return parent[i]
+
+        parent = list(range(n))
+        for i, j in edges:
+            union(i, j)
+
+        return sum(idx == num for idx, num in enumerate(parent))
+
+    def countComponents_2(self, n: int, edges: List[List[int]]) -> int:
+        """DFS"""
+
+        def dfs(i: int) -> None:
+            visited[i] = True
+            for j in graph[i]:
+                if not visited[j]:
+                    dfs(j)
+
+        graph = defaultdict(list)
+        for i, j in edges:
+            graph[i].append(j)
+            graph[j].append(i)
+        visited = [False] * n
+        res = 0
+        for i in range(n):
+            if not visited[i]:
+                res += 1
+                dfs(i)
+        return res
+
+    def countComponents_3(self, n: int, edges: List[List[int]]) -> int:
+        """BFS"""
+
+        def bfs(i: int) -> None:
+            queue = deque([i])
+            while queue:
+                cur = queue.popleft()
+                for j in graph[cur]:
+                    if not visited[j]:
+                        visited[j] = True
+                        queue.append(j)
+
+        graph = defaultdict(list)
+        for i, j in edges:
+            graph[i].append(j)
+            graph[j].append(i)
+        visited = [False] * n
+        res = 0
+        for i in range(n):
+            if not visited[i]:
+                res += 1
+                visited[i] = True
+                bfs(i)
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().countComponents_3(n=5, edges=[[0, 1], [1, 2], [2, 3], [3, 4]]))
