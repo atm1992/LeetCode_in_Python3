@@ -43,4 +43,31 @@ mat[i] is sorted in non-decreasing order.
 
 class Solution:
     def leftMostColumnWithOne(self, binaryMatrix: 'BinaryMatrix') -> int:
-        pass
+        """二分查找。时间复杂度为O(mlogn)"""
+        m, n = binaryMatrix.dimensions()
+        left, right = 0, n
+        while left < right:
+            mid = (left + right) // 2
+            flag = False
+            for i in range(m):
+                if binaryMatrix.get(i, mid):
+                    flag = True
+                    break
+            if flag:
+                right = mid
+            else:
+                left = mid + 1
+        return -1 if left == n else left
+
+    def leftMostColumnWithOne_2(self, binaryMatrix: 'BinaryMatrix') -> int:
+        """从右下角往左上角验证，若当前单元格为1，则往左走；若当前单元格为0，则往上走。时间复杂度为O(m + n)"""
+        m, n = binaryMatrix.dimensions()
+        r, c = m - 1, n - 1
+        res = -1
+        while r >= 0 and c >= 0:
+            if binaryMatrix.get(r, c):
+                res = c
+                c -= 1
+            else:
+                r -= 1
+        return res
