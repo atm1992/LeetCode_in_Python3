@@ -36,30 +36,69 @@ At most 2000 calls will be made to get, addAtHead, addAtTail, addAtIndex and del
 """
 
 
-class MyLinkedList:
+class ListNode:
+    def __init__(self, val: int):
+        self.val = val
+        self.pre = None
+        self.nxt = None
 
+
+class MyLinkedList:
+    """双向链表"""
     def __init__(self):
-        pass
+        self.size = 0
+        self.head, self.tail = ListNode(-1), ListNode(-1)
+        self.head.nxt = self.tail
+        self.tail.pre = self.head
+
+    def __goto(self, index: int) -> ListNode:
+        if 2 * index < self.size:
+            cur_node = self.head
+            for _ in range(index + 1):
+                cur_node = cur_node.nxt
+        else:
+            cur_node = self.tail
+            for _ in range(self.size - index):
+                cur_node = cur_node.pre
+        return cur_node
 
     def get(self, index: int) -> int:
-        pass
+        if index >= self.size:
+            return -1
+        cur_node = self.__goto(index)
+        return cur_node.val
+
+    def __addBefore(self, val: int, next_node: ListNode) -> None:
+        cur_node = ListNode(val)
+        cur_node.pre = next_node.pre
+        cur_node.pre.nxt = cur_node
+        next_node.pre = cur_node
+        cur_node.nxt = next_node
+        self.size += 1
 
     def addAtHead(self, val: int) -> None:
-        pass
+        self.__addBefore(val, self.head.nxt)
 
     def addAtTail(self, val: int) -> None:
-        pass
+        self.__addBefore(val, self.tail)
 
     def addAtIndex(self, index: int, val: int) -> None:
-        pass
+        if index <= self.size:
+            self.__addBefore(val, self.__goto(index))
 
     def deleteAtIndex(self, index: int) -> None:
-        pass
+        if index < self.size:
+            cur_node = self.__goto(index)
+            cur_node.pre.nxt = cur_node.nxt
+            cur_node.nxt.pre = cur_node.pre
+            self.size -= 1
 
-# Your MyLinkedList object will be instantiated and called as such:
-# obj = MyLinkedList()
-# param_1 = obj.get(index)
-# obj.addAtHead(val)
-# obj.addAtTail(val)
-# obj.addAtIndex(index,val)
-# obj.deleteAtIndex(index)
+
+if __name__ == '__main__':
+    obj = MyLinkedList()
+    obj.addAtHead(1)
+    obj.addAtTail(3)
+    obj.addAtIndex(1, 2)
+    print(obj.get(1))
+    obj.deleteAtIndex(1)
+    print(obj.get(1))
