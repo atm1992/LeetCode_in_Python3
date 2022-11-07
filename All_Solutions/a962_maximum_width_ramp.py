@@ -35,6 +35,27 @@ class Solution:
             min_idx = min(min_idx, i)
         return res
 
+    def maxWidthRamp_2(self, nums: List[int]) -> int:
+        """单调递减栈"""
+        n = len(nums)
+        stack = [0]
+        # 若i < i1 < j and nums[i] <= nums[i1] <= nums[j]，则区间[i1, j]无需考虑，因为存在比它更长的区间[i, j]，
+        # 这也就是为什么要从左往右遍历i来构建严格单调递减栈。注意：单调递减栈中保存的是元素下标，因为最终结果是下标j - 下标i
+        for i in range(1, n):
+            if nums[stack[-1]] > nums[i]:
+                stack.append(i)
+        res = 0
+        # 若i < j1 < j and nums[i] <= nums[j1] <= nums[j]，则区间[i, j1]无需考虑，因为存在比它更长的区间[i, j]，
+        # 这也就是为什么要从右往左遍历j
+        for j in range(n - 1, 0, -1):
+            # j 一定会大于等于 stack[-1]，因为当j等于stack[-1]时，nums[j] 肯定等于 nums[stack[-1]]，此时的stack[-1]会被pop掉
+            # 其实无论j 是否大于等于 stack[-1]，都无所谓，因为如果 j < stack[-1]，则 j - stack.pop() < 0，res初始值为0，取max，所以对res没有影响
+            while stack and nums[stack[-1]] <= nums[j]:
+                res = max(res, j - stack.pop())
+            if res >= j:
+                break
+        return res
+
 
 if __name__ == '__main__':
-    print(Solution().maxWidthRamp([9, 8, 1, 0, 1, 9, 4, 0, 4, 1]))
+    print(Solution().maxWidthRamp_2([9, 8, 1, 0, 1, 9, 4, 0, 4, 1]))

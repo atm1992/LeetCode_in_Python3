@@ -26,4 +26,27 @@ from typing import List
 
 class Solution:
     def longestWPI(self, hours: List[int]) -> int:
-        pass
+        """
+        前缀和 + 单调递减栈。得到前缀和数组后，问题就等价于LeetCode题962
+        """
+        n = len(hours)
+        # 若pre_sum[4] - pre_sum[1] > 0，则表示 hours[1] + hours[2] + hours[3] > 0，即 区间[1, 3]是个表现良好的时间段
+        pre_sum = [0]
+        for h in hours:
+            pre_sum.append(pre_sum[-1] + 1 if h > 8 else pre_sum[-1] - 1)
+        # 单调递减栈中保存的是pre_sum数组的下标
+        stack = [0]
+        for i in range(1, n + 1):
+            if pre_sum[stack[-1]] > pre_sum[i]:
+                stack.append(i)
+        res = 0
+        for j in range(n, 0, -1):
+            while stack and pre_sum[j] - pre_sum[stack[-1]] > 0:
+                res = max(res, j - stack.pop())
+            if res >= j:
+                break
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().longestWPI(hours=[9, 9, 6, 0, 6, 6, 9]))
