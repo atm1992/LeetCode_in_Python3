@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title:
+title: 最小绝对差
 Given an array of distinct integers arr, find all pairs of elements with the minimum absolute difference of any two elements.
 Return a list of pairs in ascending order(with respect to pairs), each pair [a, b] follows
 a, b are from arr
@@ -31,4 +31,19 @@ from typing import List
 
 class Solution:
     def minimumAbsDifference(self, arr: List[int]) -> List[List[int]]:
-        pass
+        """排序 + 一次遍历。排序后，具有最小绝对差的元素对一定是相邻的两个元素"""
+        res = []
+        arr.sort()
+        min_diff = 10 ** 7
+        for i in range(1, len(arr)):
+            cur_diff = arr[i] - arr[i - 1]
+            if cur_diff < min_diff:
+                min_diff = cur_diff
+                res = [[arr[i - 1], arr[i]]]
+            elif cur_diff == min_diff:
+                res.append([arr[i - 1], arr[i]])
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().minimumAbsDifference(arr=[3, 8, -10, 23, 19, -4, -14, 27]))
