@@ -34,12 +34,10 @@ from typing import List
 class Solution:
     def lastStoneWeight(self, stones: List[int]) -> int:
         """优先队列(最大堆)模拟"""
-        queue = []
-        for stone in stones:
-            heapq.heappush(queue, -stone)
+        queue = [-s for s in stones]
+        heapq.heapify(queue)
         while len(queue) > 1:
-            first = heapq.heappop(queue)
-            second = heapq.heappop(queue)
-            if first != second:
-                heapq.heappush(queue, first - second)
+            s1, s2 = heapq.heappop(queue), heapq.heappop(queue)
+            if s1 != s2:
+                heapq.heappush(queue, s1 - s2)
         return -queue[0] if queue else 0
