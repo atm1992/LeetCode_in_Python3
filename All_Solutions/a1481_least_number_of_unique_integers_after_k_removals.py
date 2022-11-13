@@ -19,9 +19,21 @@ Constraints:
 1 <= arr[i] <= 10^9
 0 <= k <= arr.length
 """
+from collections import Counter
 from typing import List
 
 
 class Solution:
     def findLeastNumOfUniqueInts(self, arr: List[int], k: int) -> int:
-        pass
+        """排序 + 贪心。优先删除出现次数少的数字"""
+        cnts = sorted(Counter(arr).values())
+        for i, cnt in enumerate(cnts):
+            k -= cnt
+            if k < 0:
+                return len(cnts) - i
+            elif k == 0:
+                return len(cnts) - i - 1
+
+
+if __name__ == '__main__':
+    print(Solution().findLeastNumOfUniqueInts(arr=[4, 3, 1, 1, 3, 3, 2], k=3))
