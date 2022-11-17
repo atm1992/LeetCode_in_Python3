@@ -3,9 +3,9 @@
 title: 水果成篮
 You are visiting a farm that has a single row of fruit trees arranged from left to right. The trees are represented by an integer array fruits where fruits[i] is the type of fruit the ith tree produces.
 You want to collect as much fruit as possible. However, the owner has some strict rules that you must follow:
-You only have two baskets, and each basket can only hold a single type of fruit. There is no limit on the amount of fruit each basket can hold.
-Starting from any tree of your choice, you must pick exactly one fruit from every tree (including the start tree) while moving to the right. The picked fruits must fit in one of your baskets.
-Once you reach a tree with fruit that cannot fit in your baskets, you must stop.
+    You only have two baskets, and each basket can only hold a single type of fruit. There is no limit on the amount of fruit each basket can hold.
+    Starting from any tree of your choice, you must pick exactly one fruit from every tree (including the start tree) while moving to the right. The picked fruits must fit in one of your baskets.
+    Once you reach a tree with fruit that cannot fit in your baskets, you must stop.
 Given the integer array fruits, return the maximum number of fruits you can pick.
 
 
@@ -31,9 +31,27 @@ Constraints:
 1 <= fruits.length <= 10^5
 0 <= fruits[i] < fruits.length
 """
+from collections import defaultdict
 from typing import List
 
 
 class Solution:
     def totalFruit(self, fruits: List[int]) -> int:
-        pass
+        """哈希表 + 滑动窗口"""
+        fruit2cnt = defaultdict(int)
+        left = 0
+        for fruit in fruits:
+            fruit2cnt[fruit] += 1
+            # 滑动窗口的长度要么维持，要么加1。遍历结束时的窗口长度就是最终结果
+            if len(fruit2cnt) > 2:
+                tmp = fruits[left]
+                if fruit2cnt[tmp] == 1:
+                    fruit2cnt.pop(tmp)
+                else:
+                    fruit2cnt[tmp] -= 1
+                left += 1
+        return len(fruits) - left
+
+
+if __name__ == '__main__':
+    print(Solution().totalFruit(fruits=[1, 2, 3, 2, 2]))
