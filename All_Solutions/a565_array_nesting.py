@@ -32,4 +32,17 @@ from typing import List
 
 class Solution:
     def arrayNesting(self, nums: List[int]) -> int:
-        pass
+        """
+        遍历有向图，查找最大环的节点个数
+        """
+        res, n = 0, len(nums)
+        # 标记已访问过的节点。若允许修改nums的话，也可将nums中已访问过的节点的值修改为n或-1，从而表示该节点已被访问过
+        visited = [False] * n
+        for i in range(n):
+            cnt = 0
+            while not visited[i]:
+                visited[i] = True
+                i = nums[i]
+                cnt += 1
+            res = max(res, cnt)
+        return res
