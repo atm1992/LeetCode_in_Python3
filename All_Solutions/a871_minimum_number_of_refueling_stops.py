@@ -34,9 +34,33 @@ Constraints:
 1 <= positioni < positioni+1 < target
 1 <= fueli < 10^9
 """
+import heapq
 from typing import List
 
 
 class Solution:
     def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]]) -> int:
-        pass
+        """
+        贪心 + 优先队列(最大堆)。使用优先队列(最大堆)记录所有已路过的加油站的油量，若当前的剩余油量不足以到达下一个加油站(或目的地)，
+        则从优先队列(最大堆)中pop最大的油量，补充进当前的剩余油量，此时的加油次数加1，直到能够到达下一个加油站(或目的地)，否则返回 -1
+        """
+        n = len(stations)
+        res, remain_fuel, pre_pos, queue = 0, startFuel, 0, []
+        for i in range(n + 1):
+            cur_pos = stations[i][0] if i < n else target
+            remain_fuel -= cur_pos - pre_pos
+            while remain_fuel < 0 and queue:
+                # 补充当前的剩余油量。最大堆中使用的是负数
+                remain_fuel += -heapq.heappop(queue)
+                # 加油次数加1
+                res += 1
+            if remain_fuel < 0:
+                return -1
+            if i < n:
+                heapq.heappush(queue, -stations[i][1])
+                pre_pos = cur_pos
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().minRefuelStops(target=100, startFuel=10, stations=[[10, 60], [20, 30], [30, 30], [60, 40]]))
