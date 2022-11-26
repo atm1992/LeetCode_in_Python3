@@ -30,4 +30,15 @@ from typing import List
 
 class Solution:
     def partitionDisjoint(self, nums: List[int]) -> int:
-        pass
+        """贪心"""
+        left_max = cur_max = nums[0]
+        left_size = 1
+        for i, num in enumerate(nums, 1):
+            cur_max = max(cur_max, num)
+            if num < left_max:
+                left_max, left_size = cur_max, i
+        return left_size
+
+
+if __name__ == '__main__':
+    print(Solution().partitionDisjoint(nums=[5, 0, 3, 8, 6]))
