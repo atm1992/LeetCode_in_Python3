@@ -38,4 +38,58 @@ formula is always valid.
 
 class Solution:
     def countOfAtoms(self, formula: str) -> str:
-        pass
+        """
+        栈 + 哈希表
+        看到括号，首先应想到使用栈或递归。看到需要计数，应想到使用哈希表。
+        """
+
+        def parse_num() -> int:
+            """此方法会移动外部变量i，退出时，i会移动到下一个待处理的字符"""
+            nonlocal i
+            num = 0
+            while i < n and formula[i].isdigit():
+                num = num * 10 + int(formula[i])
+                i += 1
+            return max(1, num)
+
+        def parse_atom() -> str:
+            """此方法会移动外部变量i，退出时，i会移动到下一个待处理的字符"""
+            nonlocal i
+            start = i
+            i += 1
+            while i < n and formula[i].islower():
+                i += 1
+            return formula[start:i]
+
+        n, i = len(formula), 0
+        # 栈底的哈希表用于记录最终的统计结果
+        stack = [{}]
+        while i < n:
+            ch = formula[i]
+            if ch == '(':
+                i += 1
+                # 此哈希表用于记录当前()中的统计结果
+                stack.append({})
+            elif ch == ')':
+                i += 1
+                num = parse_num()
+                cur_dict = stack.pop()
+                parent_dict = stack[-1]
+                for atom, cnt in cur_dict.items():
+                    parent_dict[atom] = parent_dict.get(atom, 0) + cnt * num
+            else:
+                atom = parse_atom()
+                num = parse_num()
+                cur_dict = stack[-1]
+                cur_dict[atom] = cur_dict.get(atom, 0) + num
+
+        res = []
+        for atom in sorted(stack[0].keys()):
+            res.append(atom)
+            if stack[0][atom] > 1:
+                res.append(str(stack[0][atom]))
+        return ''.join(res)
+
+
+if __name__ == '__main__':
+    print(Solution().countOfAtoms(formula="Mg(OH)2"))
