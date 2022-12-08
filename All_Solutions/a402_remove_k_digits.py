@@ -29,4 +29,28 @@ num does not have any leading zeros except for the zero itself.
 
 class Solution:
     def removeKdigits(self, num: str, k: int) -> str:
-        pass
+        """
+        贪心 + 单调栈
+        要想使剩余的数字尽可能小，则需保证靠前的数字尽可能小。
+        从左往右遍历num字符串，若只能删除一位数字，则找到第一个满足条件 num[i] < num[i-1] 的下标i，然后删除num[i-1]。
+        若整个num字符串已符合单调递增，则从右侧逐个删除。
+        暴力的做法需要遍历num字符串k次，可使用单调栈来进一步优化，只需遍历一次num字符串
+        """
+        stack = []
+        for d in num:
+            while k > 0 and stack and stack[-1] > d:
+                stack.pop()
+                k -= 1
+            # 忽略前导0
+            if not stack and d == '0':
+                continue
+            stack.append(d)
+        # 因为前面忽略了前导0，所以在这里当k > 0时，有可能stack已经为空了
+        while k > 0 and stack:
+            stack.pop()
+            k -= 1
+        return ''.join(stack) if stack else '0'
+
+
+if __name__ == '__main__':
+    print(Solution().removeKdigits(num="10", k=2))
