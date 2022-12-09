@@ -25,4 +25,22 @@ from typing import List
 
 class Solution:
     def constructArray(self, n: int, k: int) -> List[int]:
-        pass
+        """
+        脑筋急转弯。从特殊情况到一般情况
+        当k为1时，序列1 ~ n可以按如下顺序[1, 2, 3, ……, n-1, n]排列，相邻元素的差值均为1
+        当k取最大值n-1时，序列1 ~ n可以按如下顺序[1, n, 2, n-1, 3, ……]排列，相邻元素的差值从n-1到1
+        对于其它的一般情况，可以让前半部分完全升序(即 相邻元素的差值均为1)，后半部分的差值从k到1，即 [1, 2, ……, n-k, n, n-k+1, n-1, n-k+2, ……]
+        """
+        res = list(range(1, n - k))
+        i, j = n - k, n
+        while i <= j:
+            res.append(i)
+            if i < j:
+                res.append(j)
+            i += 1
+            j -= 1
+        return res
+
+
+if __name__ == '__main__':
+    print(Solution().constructArray(n=7, k=5))
