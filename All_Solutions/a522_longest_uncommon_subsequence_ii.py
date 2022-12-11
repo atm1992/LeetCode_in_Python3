@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 """
-title:
+title: 最长特殊序列 II
 Given an array of strings strs, return the length of the longest uncommon subsequence between them. If the longest uncommon subsequence does not exist, return -1.
 An uncommon subsequence between an array of strings is a string that is a subsequence of one string but not the others.
 A subsequence of a string s is a string that can be obtained after deleting any number of characters from s.
