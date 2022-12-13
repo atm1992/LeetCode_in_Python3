@@ -23,6 +23,7 @@ Constraints:
 The number of the nodes in the tree will be in the range [1, 5000]
 -200 <= Node.val <= 200
 """
+from collections import defaultdict
 from typing import List, Optional
 
 
@@ -36,4 +37,22 @@ class TreeNode:
 
 class Solution:
     def findDuplicateSubtrees(self, root: Optional[TreeNode]) -> List[Optional[TreeNode]]:
-        pass
+        """
+        先序遍历 + 哈希表
+        使用先序遍历序列化所有的子树，遍历过程中，使用一个哈希表来存储所有的子树序列及其根节点
+        """
+
+        def dfs(node: Optional[TreeNode]) -> str:
+            if not node:
+                return ''
+            serial = str(node.val) + ',' + dfs(node.left) + ',' + dfs(node.right)
+            serial2nodes[serial].append(node)
+            return serial
+
+        serial2nodes = defaultdict(list)
+        dfs(root)
+        res = []
+        for nodes in serial2nodes.values():
+            if len(nodes) > 1:
+                res.append(nodes[0])
+        return res
