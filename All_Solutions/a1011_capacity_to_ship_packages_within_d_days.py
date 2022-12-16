@@ -44,4 +44,29 @@ from typing import List
 
 class Solution:
     def shipWithinDays(self, weights: List[int], days: int) -> int:
-        pass
+        """二分check"""
+
+        def check(weights: List[int], days: int, capacity: int) -> bool:
+            tmp = 0
+            for w in weights:
+                if tmp + w > capacity:
+                    tmp = w
+                    days -= 1
+                    if days == 0:
+                        return False
+                else:
+                    tmp += w
+            return True
+
+        left, right = max(weights), sum(weights)
+        while left < right:
+            mid = (left + right) // 2
+            if not check(weights, days, mid):
+                left = mid + 1
+            else:
+                right = mid
+        return left
+
+
+if __name__ == '__main__':
+    print(Solution().shipWithinDays(weights=[3, 2, 2, 4, 1, 4], days=3))
