@@ -65,7 +65,7 @@ class Solution:
     def findMedianSortedArrays_2(self, nums1: List[int], nums2: List[int]) -> float:
         """
         二分查找
-        题目要求时间复杂度为O(log (m+n))，看到有log，并且是有序数组，第一想法就应该是二分查找。
+        题目要求时间复杂度为O(log(m+n))，看到有log，并且是有序数组，首先就应想到使用二分查找。
         找到nums1与nums2之间的较短数组，对其进行二分查找，确定了一个数组的下标，自然也就确定了另一个数组的下标，因为中位数的下标是确定的。
         用i与j分别去划分数组nums1与nums2，划分为左半边（[0, i) + [0, j)）和右半边（[i, m) + [j, n)）。
         若m+n为偶数，则 i + j == m-i + n-j，即 i + j == (m+n)/2；此时的中位数为左半边的最大值与右半边的最小值相加后除以2
@@ -78,18 +78,16 @@ class Solution:
             return self.findMedianSortedArrays_2(nums2, nums1)
         m, n = len(nums1), len(nums2)
         median_idx = (m + n + 1) // 2
-        # -10^6 <= nums1[i], nums2[i] <= 10^6
-        infinity = 10 ** 6 + 1
         # 分别记录 左半边的最大值、右半边的最小值
-        max_left, min_right = 0, 0
+        max_left = min_right = 0
         left, right = 0, m
         while left <= right:
             i = (left + right) // 2
             j = median_idx - i
-            nums1_left = -infinity if i == 0 else nums1[i - 1]
-            nums1_right = infinity if i == m else nums1[i]
-            nums2_left = -infinity if j == 0 else nums2[j - 1]
-            nums2_right = infinity if j == n else nums2[j]
+            nums1_left = float('-inf') if i == 0 else nums1[i - 1]
+            nums1_right = float('inf') if i == m else nums1[i]
+            nums2_left = float('-inf') if j == 0 else nums2[j - 1]
+            nums2_right = float('inf') if j == n else nums2[j]
             if nums1_left <= nums2_right:
                 max_left, min_right = max(nums1_left, nums2_left), min(nums1_right, nums2_right)
                 # i 向右移，逐渐增大nums1_left、nums1_right
