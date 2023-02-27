@@ -46,6 +46,17 @@ class Solution:
 
         return min(helper(0), helper(1))
 
+    def movesToMakeZigzag_2(self, nums: List[int]) -> int:
+        """贪心。一次遍历"""
+        res, n = [0, 0], len(nums)
+        for i, num in enumerate(nums):
+            # 通过减小num，使其满足 left > nums[i] < right
+            # 1 <= nums[i] <= 1000
+            left = nums[i - 1] if i - 1 >= 0 else 1001
+            right = nums[i + 1] if i + 1 < n else 1001
+            res[i % 2] += max(0, num - min(left, right) + 1)
+        return min(res)
+
 
 if __name__ == '__main__':
     print(Solution().movesToMakeZigzag(nums=[9, 6, 1, 6, 2]))
