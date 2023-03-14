@@ -67,6 +67,8 @@ class Solution:
         若还需添加时间点，则从右到左合并小区间
         """
         tasks.sort(key=lambda task: task[1])
+        # 因为1 <= start，所以初始值(哨兵)的右端点不能为0，若为(0, 0, 0)，则当第一个task的start为1时，会将初始值(哨兵)进行合并。
+        # 需要保证初始值(哨兵)不被合并，即 stack 始终不为空
         stack = [(-1, -1, 0)]
         for s, e, d in tasks:
             l, r = 0, len(stack) - 1
