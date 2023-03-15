@@ -90,7 +90,7 @@ class Solution:
             while e - stack[-1][1] <= d:
                 ts, te, _ = stack.pop()
                 d += te - ts + 1
-            # 将上面右侧的若干个小区间合并为一个大区间。退出上述while循环时，e - d + 1 > stack[-1][1]
+            # 将上面右侧的若干个小区间合并为一个大区间。退出上述while循环时，e - d > stack[-1][1]，即 e - d + 1 > stack[-1][1]
             stack.append((e - d + 1, e, stack[-1][2] + d))
         return stack[-1][2]
 

@@ -55,37 +55,27 @@ class Solution:
         那么只需删去这两个重复位置之间的所有位置 以及 这两个重复位置之一，就可得到一条符合题目要求的最短路径。
         """
         m, n = len(grid), len(grid[0])
-        # 总共有m*n个节点，所有节点到达(0, 0)的最短带权路径长度都不会超过 m + n。初始起点(0, 0)到达(0, 0)的最短路径长度为0
-        # 每次循环都能确定一个节点到达(0, 0)的最短路径长度，然后每次都pop当前路径长度最短的那个节点，所以需要使用优先队列
-        # dist 数组其实也可使用二维数组，转成一维数组后，访问下标需要从 [i][j] 转换为 [i * n + j]
-        dist = [0] + [m + n] * (m * n - 1)
-        # dist, i, j。按照每个节点到达(0, 0)的最短路径长度dist进行升序
-        queue = [(0, 0, 0)]
-        # 用于记录当前有哪些节点已经确定了最短路径长度。其实不用visited数组也可以。不过用了，可以运行更快些。
+        # 用于记录当前有哪些节点已经确定了到达(0, 0)的最短路径长度及其相应的最短路径长度
         # 可使用下面这个示例来验证，求出的最短路径中确实会存在重复位置。
         # [[3, 4, 3], [2, 2, 2], [2, 1, 1], [4, 3, 2], [2, 1, 4], [2, 4, 1], [3, 3, 3], [1, 4, 2], [2, 2, 1], [2, 1, 1],
         #          [3, 3, 1], [4, 1, 4], [2, 1, 4], [3, 2, 2], [3, 3, 1], [4, 4, 1], [1, 2, 2], [1, 1, 1], [1, 3, 4], [1, 2, 1],
         #          [2, 2, 4], [2, 1, 3], [1, 2, 1], [4, 3, 2], [3, 3, 4], [2, 2, 1], [3, 4, 3], [4, 2, 3], [4, 4, 4]]
-        visited = [False] * (m * n)
+        point2dist = {}
+        # dist, i, j。按照每个节点到达(0, 0)的最短路径长度dist进行升序
+        queue = [(0, 0, 0)]
+        # 每次while循环都能确定一个节点到达(0, 0)的最短路径长度
         while queue:
-            cur_dist, i, j = heapq.heappop(queue)
-            cur_pos = i * n + j
-            if visited[cur_pos]:
-                print('重复: ', cur_pos)
+            dist, i, j = heapq.heappop(queue)
+            if i == m - 1 and j == n - 1:
+                return dist
+            if (i, j) in point2dist:
                 continue
-            visited[cur_pos] = True
-            # 当前位置 (i, j) 上的方向
-            cur_direction = grid[i][j]
-            # enumerate 的起始下标改为从1开始，是为了方便与题目给定的4个方向标识进行匹配。
+            point2dist[(i, j)] = dist
+            cur_dir = grid[i][j]
             # 1 - right；2 - left；3 - bottom；4 - top
-            for idx, (x, y) in enumerate([(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], 1):
-                new_pos = x * n + y
-                # 若移动的位置与 (i, j) 处的箭头方向一致，则移动的代价为 0，否则为 1
-                new_dist = cur_dist + (1 if cur_direction != idx else 0)
-                if 0 <= x < m and 0 <= y < n and new_dist < dist[new_pos]:
-                    dist[new_pos] = new_dist
-                    heapq.heappush(queue, (new_dist, x, y))
-        return dist[-1]
+            for x, y, dir in [(i, j + 1, 1), (i, j - 1, 2), (i + 1, j, 3), (i - 1, j, 4)]:
+                if 0 <= x < m and 0 <= y < n and (x, y) not in point2dist:
+                    heapq.heappush(queue, (dist + (cur_dir != dir), x, y))
 
     def minCost_2(self, grid: List[List[int]]) -> int:
         """
@@ -99,36 +89,35 @@ class Solution:
         与常规的BFS相比，在 0-1 BFS 中，每个节点最多被添加进双端队列两次(队首一次、队尾一次)；而在常规的BFS中，每个节点最多被添加进队列一次。
         """
         m, n = len(grid), len(grid[0])
-        dist = [0] + [m + n] * (m * n - 1)
-        queue = deque([(0, 0)])
-        # 用于记录当前有哪些节点已经确定了最短路径长度。其实不用visited数组也可以。不过用了，可以运行更快些。
+        # 用于记录当前有哪些节点已经确定了到达(0, 0)的最短路径长度及其相应的最短路径长度
         # 可使用下面这个示例来验证，求出的最短路径中确实会存在重复位置。
         # [[3, 4, 3], [2, 2, 2], [2, 1, 1], [4, 3, 2], [2, 1, 4], [2, 4, 1], [3, 3, 3], [1, 4, 2], [2, 2, 1], [2, 1, 1],
         #          [3, 3, 1], [4, 1, 4], [2, 1, 4], [3, 2, 2], [3, 3, 1], [4, 4, 1], [1, 2, 2], [1, 1, 1], [1, 3, 4], [1, 2, 1],
         #          [2, 2, 4], [2, 1, 3], [1, 2, 1], [4, 3, 2], [3, 3, 4], [2, 2, 1], [3, 4, 3], [4, 2, 3], [4, 4, 4]]
-        visited = [False] * (m * n)
+        point2dist = {}
+        # dist, i, j。
+        queue = deque([(0, 0, 0)])
+        # 每次while循环都能确定一个节点到达(0, 0)的最短路径长度
         while queue:
-            i, j = queue.popleft()
-            cur_pos = i * n + j
-            if visited[cur_pos]:
-                print('重复: ', cur_pos)
+            dist, i, j = queue.popleft()
+            if i == m - 1 and j == n - 1:
+                return dist
+            if (i, j) in point2dist:
                 continue
-            visited[cur_pos] = True
-            cur_direction = grid[i][j]
-            for idx, (x, y) in enumerate([(i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j)], 1):
-                new_pos = x * n + y
-                new_dist = dist[cur_pos] + (1 if cur_direction != idx else 0)
-                if 0 <= x < m and 0 <= y < n and new_dist < dist[new_pos]:
-                    dist[new_pos] = new_dist
-                    if cur_direction == idx:
-                        queue.appendleft((x, y))
+            point2dist[(i, j)] = dist
+            cur_dir = grid[i][j]
+            # 1 - right；2 - left；3 - bottom；4 - top
+            for x, y, dir in [(i, j + 1, 1), (i, j - 1, 2), (i + 1, j, 3), (i - 1, j, 4)]:
+                if 0 <= x < m and 0 <= y < n and (x, y) not in point2dist:
+                    # 若移动到的位置与(i, j)处的箭头方向一致，则加入到双端队列的队首，否则加到队尾
+                    if cur_dir == dir:
+                        queue.appendleft((dist, x, y))
                     else:
-                        queue.append((x, y))
-        return dist[-1]
+                        queue.append((dist + 1, x, y))
 
 
 if __name__ == '__main__':
-    print(Solution().minCost_2(
+    print(Solution().minCost(
         [[3, 4, 3], [2, 2, 2], [2, 1, 1], [4, 3, 2], [2, 1, 4], [2, 4, 1], [3, 3, 3], [1, 4, 2], [2, 2, 1], [2, 1, 1],
          [3, 3, 1], [4, 1, 4], [2, 1, 4], [3, 2, 2], [3, 3, 1], [4, 4, 1], [1, 2, 2], [1, 1, 1], [1, 3, 4], [1, 2, 1],
          [2, 2, 4], [2, 1, 3], [1, 2, 1], [4, 3, 2], [3, 3, 4], [2, 2, 1], [3, 4, 3], [4, 2, 3], [4, 4, 4]]))
