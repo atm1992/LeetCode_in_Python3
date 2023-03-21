@@ -28,4 +28,33 @@ from typing import List
 
 class Solution:
     def orderOfLargestPlusSign(self, n: int, mines: List[List[int]]) -> int:
-        pass
+        """动态规划"""
+        # dp[i][j]表示以(i,j)为中心的最大加号标志的阶数，二维数组dp中的最大值即为最终结果
+        # 每个点(i,j)的最大阶数等于up、down、left、right这4个方向上的1的个数的最小值，所以将每个点的初始值设为n
+        dp = [[n] * n for _ in range(n)]
+        for r, c in mines:
+            dp[r][c] = 0
+        # 可将i作为行，j、k均为列；还可将i作为列，j、k均为行
+        for i in range(n):
+            up = down = left = right = 0
+            for j, k in zip(range(n), range(n - 1, -1, -1)):
+                # left 从左往右统计每行中的1的个数。第0行 ——> 第n-1行
+                left = left + 1 if dp[i][j] else 0
+                dp[i][j] = min(dp[i][j], left)
+
+                # right 从右往左统计每行中的1的个数。第0行 ——> 第n-1行
+                right = right + 1 if dp[i][k] else 0
+                dp[i][k] = min(dp[i][k], right)
+
+                # up 从上往下统计每列中的1的个数。第0列 ——> 第n-1列
+                up = up + 1 if dp[j][i] else 0
+                dp[j][i] = min(dp[j][i], up)
+
+                # down 从下往上统计每列中的1的个数。第0列 ——> 第n-1列
+                down = down + 1 if dp[k][i] else 0
+                dp[k][i] = min(dp[k][i], down)
+        return max(max(row) for row in dp)
+
+
+if __name__ == '__main__':
+    print(Solution().orderOfLargestPlusSign(n=5, mines=[[4, 2]]))
