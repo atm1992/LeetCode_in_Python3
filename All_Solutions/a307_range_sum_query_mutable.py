@@ -139,6 +139,7 @@ class NumArray2:
     """树状数组。sumRange 以及 update的时间复杂度均为O(logn)"""
 
     def low_bit(self, idx: int) -> int:
+        # 负数的补码为其绝对值的原码按位取反(符号位除外)，然后加1
         return idx & -idx
 
     def __init__(self, nums: List[int]):
