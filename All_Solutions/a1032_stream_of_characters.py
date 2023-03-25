@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# @Date: 2023/3/24
-# @Auther: liuquan
+# @date: 2023/3/24
+# @author: liuquan
 """
 title: 字符流
 Design an algorithm that accepts a stream of characters and checks if a suffix of these characters is a string of a given array of strings words.
