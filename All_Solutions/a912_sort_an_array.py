@@ -24,7 +24,7 @@ from typing import List
 
 
 class Solution:
-    # 最优方法：递归版的三路随机快排，其次是归并排序
+    # 最优方法：三路随机快排，其次是归并排序
     def sortArray(self, nums: List[int]) -> List[int]:
         """堆(最大堆)排序。用时 1240 ms"""
 
@@ -52,28 +52,57 @@ class Solution:
     def sortArray_2(self, nums: List[int]) -> List[int]:
         """递归版的普通随机快排。运行超时"""
         import random
-        if len(nums) < 2:
-            return nums
-        # 固定使用nums[0]作为分界值pivot。通过 11/20 个测试用例
-        # mid_num = nums[0]
-        # 随机确定分界值pivot。通过 17/20 个测试用例
-        mid_idx = random.randrange(0, len(nums))
-        mid_num = nums[mid_idx]
-        left = self.sortArray_2([num for idx, num in enumerate(nums) if num <= mid_num and idx != mid_idx])
-        right = self.sortArray_2([num for idx, num in enumerate(nums) if num > mid_num and idx != mid_idx])
-        return left + [mid_num] + right
+
+        def helper(low: int, high: int) -> None:
+            if high <= low:
+                return
+            # 固定使用nums[high]作为分界值pivot。通过 11/20 个测试用例
+            # pivot = nums[high]
+            # 随机确定分界值pivot。通过 17/20 个测试用例
+            p_idx = random.randint(low, high)
+            nums[p_idx], nums[high] = nums[high], nums[p_idx]
+            pivot = nums[high]
+            i = low
+            for j in range(low, high):
+                if nums[j] <= pivot:
+                    nums[i], nums[j] = nums[j], nums[i]
+                    i += 1
+            nums[i], nums[high] = nums[high], nums[i]
+            helper(low, i - 1)
+            helper(i + 1, high)
+
+        helper(0, len(nums) - 1)
+        return nums
 
     def sortArray_2_2(self, nums: List[int]) -> List[int]:
-        """递归版的三路随机快排。用时 752 ms"""
+        """递归版的三路随机快排。用时 1092 ms"""
         import random
-        n = len(nums)
-        if n < 2:
-            return nums
-        mid_idx = random.randrange(0, n)
-        mid_num = nums[mid_idx]
-        left = self.sortArray_2_2([num for num in nums if num < mid_num])
-        right = self.sortArray_2_2([num for num in nums if num > mid_num])
-        return left + [mid_num] * (n - len(left) - len(right)) + right
+
+        def helper(low: int, high: int) -> None:
+            if high <= low:
+                return
+            p_idx = random.randint(low, high)
+            pivot = nums[p_idx]
+            lt, gt = low, high
+            i = low
+            while i <= gt:
+                if nums[i] < pivot:
+                    # lt指向等于pivot的第一个元素
+                    nums[i], nums[lt] = nums[lt], nums[i]
+                    lt += 1
+                    i += 1
+                elif nums[i] > pivot:
+                    # gt指向等于pivot的最后一个元素
+                    nums[i], nums[gt] = nums[gt], nums[i]
+                    # 注意：此时的i不变，因为之后需要再判断交换后的新nums[i]
+                    gt -= 1
+                else:
+                    i += 1
+            helper(low, lt - 1)
+            helper(gt + 1, high)
+
+        helper(0, len(nums) - 1)
+        return nums
 
     def sortArray_3(self, nums: List[int]) -> List[int]:
         """迭代版的普通随机快排。运行超时"""
@@ -86,14 +115,13 @@ class Solution:
             # 固定使用nums[high]作为分界值pivot。通过 11/20 个测试用例
             # pivot = nums[high]
             # 随机确定分界值pivot。通过 17/20 个测试用例
-            p_idx = random.randrange(low, high + 1)
+            p_idx = random.randint(low, high)
             nums[p_idx], nums[high] = nums[high], nums[p_idx]
             pivot = nums[high]
             i = low
             for j in range(low, high):
                 if nums[j] <= pivot:
-                    if j != i:
-                        nums[i], nums[j] = nums[j], nums[i]
+                    nums[i], nums[j] = nums[j], nums[i]
                     i += 1
             nums[i], nums[high] = nums[high], nums[i]
             if i - 1 > low:
@@ -103,34 +131,32 @@ class Solution:
         return nums
 
     def sortArray_3_2(self, nums: List[int]) -> List[int]:
-        """迭代版的三路随机快排。用时 1244 ms"""
+        """迭代版的三路随机快排。用时 1092 ms"""
         import random
         if len(nums) < 2:
             return nums
         stack = [(0, len(nums) - 1)]
         while stack:
             low, high = stack.pop()
-            p_idx = random.randrange(low, high + 1)
-            nums[p_idx], nums[high] = nums[high], nums[p_idx]
-            pivot = nums[high]
-            lt, gt = low - 1, high
+            p_idx = random.randint(low, high)
+            pivot = nums[p_idx]
+            lt, gt = low, high
             i = low
-            while i < gt:
+            while i <= gt:
                 if nums[i] < pivot:
-                    # lt指向小于pivot的最后一个元素，lt + 1指向大于等于pivot的第一个元素
-                    nums[i], nums[lt + 1] = nums[lt + 1], nums[i]
+                    # lt指向等于pivot的第一个元素
+                    nums[i], nums[lt] = nums[lt], nums[i]
                     lt += 1
                     i += 1
                 elif nums[i] > pivot:
-                    # gt指向大于pivot的第一个元素，gt - 1指向小于等于pivot的最后一个元素
-                    nums[i], nums[gt - 1] = nums[gt - 1], nums[i]
+                    # gt指向等于pivot的最后一个元素
+                    nums[i], nums[gt] = nums[gt], nums[i]
                     # 注意：此时的i不变，因为之后需要再判断交换后的新nums[i]
                     gt -= 1
                 else:
                     i += 1
-            nums[high], nums[gt] = nums[gt], nums[high]
-            if lt > low:
-                stack.append((low, lt))
+            if lt - 1 > low:
+                stack.append((low, lt - 1))
             if high > gt + 1:
                 stack.append((gt + 1, high))
         return nums
