@@ -31,7 +31,7 @@ Constraints:
 words[i] only consists of lowercase English letters.
 """
 from collections import defaultdict
-from typing import List
+from typing import List, DefaultDict
 
 
 class Solution:
@@ -52,6 +52,23 @@ class Solution:
             res = max(res, word2maxlen[word])
         return res
 
+    def longestStrChain_2(self, words: List[str]) -> int:
+        """哈希表 + 动态规划"""
+        size2words = defaultdict(DefaultDict[str, int])
+        for word in words:
+            size2words[len(word)][word] = 1
+        res = 1
+        for size in sorted(size2words.keys()):
+            if not size2words[size - 1]:
+                continue
+            for word in size2words[size]:
+                for i in range(size):
+                    pre = word[:i] + word[i + 1:]
+                    if pre in size2words[size - 1] and size2words[size - 1][pre] + 1 > size2words[size][word]:
+                        size2words[size][word] = size2words[size - 1][pre] + 1
+                        res = max(res, size2words[size][word])
+        return res
+
 
 if __name__ == '__main__':
-    print(Solution().longestStrChain(["xbc", "pcxbcf", "xb", "cxbc", "pcxbc"]))
+    print(Solution().longestStrChain_2(["xbc", "pcxbcf", "xb", "cxbc", "pcxbc"]))
